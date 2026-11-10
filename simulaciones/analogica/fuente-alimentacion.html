@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fuente de alimentación por bloques</title>
+<meta name="description" content="Fuente lineal paso a paso: transformador, rectificador, filtro y regulador 7805. La señal a la salida de cada bloque.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.bl{cursor:pointer}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Medida y señales" data-eu="Analogikoa · Neurketa eta seinaleak"></p>
+      <h1 data-es="Fuente de alimentación por bloques" data-eu="Elikadura-iturria blokeka"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="blokeak" data-es="Bloques" data-eu="Blokeak">
+    <figure class="fig"><svg id="blq" viewBox="0 0 340 120" role="img" aria-label="Diagrama de bloques"></svg>
+      <figcaption data-es="Toca un bloque para ver la señal a su salida." data-eu="Ukitu bloke bat bere irteerako seinalea ikusteko."></figcaption></figure>
+    <figure class="fig"><svg id="gr" viewBox="0 0 340 190" role="img" aria-label="Señal"></svg></figure>
+    <div class="card" id="exp"></div>
+    <div class="card mandos"><div class="deslizador"><label><span data-es="Corriente de la carga" data-eu="Kargaren korrontea"></span><output id="io"></output></label><input id="i" type="range" min="50" max="1000" step="50" value="300"></div></div>
+    <div class="lectura-g"><div><small data-es="Rizado del filtro" data-eu="Iragazkiaren kizkurdura"></small><b id="vr"></b></div><div><small data-es="Potencia en el 7805" data-eu="7805-eko potentzia"></small><b id="pr"></b></div><div><small data-es="Salida" data-eu="Irteera"></small><b id="vs"></b></div></div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="7805" data-es="Regulador 78xx" data-eu="78xx erregulatzailea" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 210">
+        <rect x="100" y="10" width="100" height="40" rx="4" fill="#c9cfd8" stroke="#5d6382" stroke-width="2"/><circle cx="150" cy="30" r="10" fill="#fff" stroke="#5d6382" stroke-width="2"/>
+        <rect x="100" y="50" width="100" height="80" fill="#2d3340"/><text x="150" y="96" text-anchor="middle" style="font-size:16px;font-weight:700;fill:#fff">7805</text>
+        <path d="M118 130v60M150 130v60M182 130v60" stroke="#9aa3ad" stroke-width="6" stroke-linecap="round"/>
+        <text x="118" y="206" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#242d5f">IN</text><text x="150" y="206" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#242d5f">GND</text><text x="182" y="206" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#242d5f">OUT</text>
+      </svg></figure>
+      <div class="card"><h2 data-es="Regulador lineal" data-eu="Erregulatzaile lineala"></h2>
+        <p class="es">Da una salida <b>fija</b> aunque la entrada tenga rizado: 7805 → 5 V, 7809 → 9 V, 7812 → 12 V. Necesita en la entrada <b>al menos 2–3 V más</b> que su salida.</p>
+        <p class="eu">Irteera <b>finkoa</b> ematen du sarrerak kizkurdura izan arren: 7805 → 5 V, 7809 → 9 V, 7812 → 12 V. Sarreran bere irteera baino <b>gutxienez 2–3 V gehiago</b> behar ditu.</p>
+        <p><span class="formula">P = (Vin − Vout) · I</span></p>
+        <p class="es">Esa potencia se pierde en calor: con más de ~1 W necesita <b>disipador</b>.</p><p class="eu">Potentzia hori beroan galtzen da: ~1 W baino gehiagorekin <b>xahutzailea</b> behar du.</p>
+        <p class="nota es">Lleva condensadores de 0,33 µF en la entrada y 0,1 µF en la salida, cerca de las patillas.</p><p class="nota eu">0,33 µF-eko kondentsadoreak sarreran eta 0,1 µF-ekoak irteeran eramaten ditu, hanketatik gertu.</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var etapa = 4, C = 2200e-6, Vp2 = 12 * Math.SQRT2;
+  var B = [
+    { es:"Red", eu:"Sarea", c:"#2b6cb0", exp:["La red da 230 V eficaces de alterna a 50 Hz (325 V de pico). Es peligrosa y demasiado alta para la electrónica.", "Sareak 230 V eraginkor ematen ditu korronte alternoan, 50 Hz-tan (325 V-ko gailurra). Arriskutsua da eta altuegia elektronikarako."] },
+    { es:"Transformador", eu:"Transformadorea", c:"#c87533", exp:["Baja la tensión a 12 V eficaces (17 V de pico) y aísla de la red. Sigue siendo alterna.", "Tentsioa 12 V eraginkorretara jaisten du (17 V-ko gailurra) eta saretik isolatzen du. Alternoa da oraindik."] },
+    { es:"Rectificador", eu:"Artezgailua", c:"#f39200", exp:["El puente de diodos da la vuelta a los semiciclos negativos: continua pulsante de 100 Hz (pierde 1,4 V).", "Diodo-zubiak zikloerdi negatiboei buelta ematen die: 100 Hz-ko korronte zuzen pultsatzailea (1,4 V galtzen ditu)."] },
+    { es:"Filtro", eu:"Iragazkia", c:"#7d3fc4", exp:["El condensador (2200 µF) rellena los huecos: queda continua con un poco de rizado.", "Kondentsadoreak (2200 µF) hutsuneak betetzen ditu: korronte zuzena geratzen da kizkurdura apur batekin."] },
+    { es:"Regulador", eu:"Erregulatzailea", c:"#1e9a45", exp:["El 7805 quita el rizado y deja 5 V exactos y estables.", "7805-ak kizkurdura kentzen du eta 5 V zehatz eta egonkor uzten ditu."] }
+  ];
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function senal(t, I){ // tensión a la salida de la etapa en el instante t (s)
+    var w = 2 * Math.PI * 50 * t;
+    if (etapa === 0) return 325 * Math.sin(w);
+    if (etapa === 1) return Vp2 * Math.sin(w);
+    var r = Math.max(Math.abs(Vp2 * Math.sin(w)) - 1.4, 0);
+    if (etapa === 2) return r;
+    var Vr = I / (100 * C), pico = Vp2 - 1.4, ph = (t * 100) % 1, vf = Math.max(r, pico - Vr * ph);
+    if (etapa === 3) return vf;
+    return vf - 5 >= 2 ? 5 : Math.max(vf - 2, 0);
+  }
+  function pinta(){
+    var I = +$("i").value / 1000, Vr = I / (100 * C), Vmin = Vp2 - 1.4 - Vr, Pr = ((Vp2 - 1.4 - Vr / 2) - 5) * I;
+    $("io").textContent = (I * 1000) + " mA"; $("vr").textContent = n(Vr, 2) + " V"; $("pr").textContent = n(Pr, 2) + " W"; $("vs").textContent = Vmin >= 7 ? "5,00 V" : T("cae", "erortzen da");
+    var s = "";
+    B.forEach(function(b, i){
+      var x = 4 + i * 67, act = i === etapa;
+      s += '<g class="bl" data-i="' + i + '"><rect x="' + x + '" y="30" width="60" height="50" rx="10" fill="' + (act ? b.c : "#fff") + '" stroke="' + b.c + '" stroke-width="3"/>';
+      s += '<text x="' + (x + 30) + '" y="60" text-anchor="middle" style="font-size:9.5px;font-weight:700;fill:' + (act ? "#fff" : "#242d5f") + '">' + T(b.es, b.eu) + '</text></g>';
+      if (i < 4) s += '<path d="M' + (x + 60) + ' 55h7" stroke="#242d5f" stroke-width="2.5"/>';
+      s += '<text class="txt" x="' + (x + 30) + '" y="100" text-anchor="middle">' + ["230 V~","12 V~","~16 V","~15 V","5 V"][i] + '</text>';
+    });
+    $("blq").innerHTML = s;
+    var mx = etapa === 0 ? 350 : 20, g = '<rect x="30" y="10" width="300" height="160" fill="#fbfcfe" stroke="#d0d6db"/>', y0 = etapa <= 1 ? 90 : 160, k = (etapa <= 1 ? 76 : 146) / mx, d = "";
+    g += '<path d="M30 ' + y0 + 'h300" stroke="#8d95a3" stroke-width="1.4"/>';
+    for (var x = 0; x <= 300; x++) { var v = senal(x / 300 * 0.04, I); d += (x ? "L" : "M") + (30 + x) + " " + (y0 - v * k); }
+    g += '<path d="' + d + '" fill="none" stroke="' + B[etapa].c + '" stroke-width="3"/>';
+    g += '<text class="txt" x="26" y="' + (y0 - mx * k + 4) + '" text-anchor="end">' + mx + '</text><text class="txt" x="26" y="' + (y0 + 4) + '" text-anchor="end">0</text><text class="txt" x="326" y="184" text-anchor="end">40 ms</text>';
+    $("gr").innerHTML = g;
+    $("exp").innerHTML = "<h2>" + (etapa + 1) + ". " + T(B[etapa].es, B[etapa].eu) + "</h2><p>" + T(B[etapa].exp[0], B[etapa].exp[1]) + "</p>";
+    var e = $("est");
+    if (Vmin < 7) { e.className = "estado mal"; e.textContent = T("Con tanta corriente el rizado baja la tensión por debajo de 7 V y el 7805 deja de regular. Haría falta más condensador.", "Hainbeste korronterekin kizkurdurak tentsioa 7 V-tik behera jaisten du eta 7805-ak erregulatzeari uzten dio. Kondentsadore handiagoa beharko litzateke."); }
+    else if (Pr > 1) { e.className = "estado"; e.textContent = T("El 7805 disipa " + n(Pr, 1) + " W: necesita disipador.", "7805-ak " + n(Pr, 1) + " W xahutzen ditu: xahutzailea behar du."); }
+    else { e.className = "estado ok"; e.textContent = T("Funciona bien: 5 V estables a la salida.", "Ondo dabil: 5 V egonkor irteeran."); }
+  }
+  $("blq").addEventListener("click", function(e){ var b = e.target.closest(".bl"); if (!b) return; etapa = +b.dataset.i; pinta(); });
+  $("i").addEventListener("input", pinta);
+  alCambiarIdioma(pinta); pinta();
+})();
+</script>
+</body>
+</html>

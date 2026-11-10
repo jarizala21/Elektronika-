@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lógica de un siguelíneas</title>
+<meta name="description" content="Dos sensores, dos motores y una tabla de verdad: diseña la lógica combinacional de un coche siguelíneas y pruébala en la pista.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+table.vt td,table.vt th{text-align:center}
+tr.on td{background:var(--naranja-soft);font-weight:700}
+.cel{border:0;border-radius:10px;width:42px;height:32px;font:inherit;font-weight:700;cursor:pointer;background:var(--superficie-2);color:var(--marino-txt)}
+.cel[data-v="1"]{background:var(--naranja);color:var(--marino)}
+.expr{font-size:20px;font-weight:700;color:var(--marino-txt)}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Digital y FPGA" data-eu="Digitala eta FPGA"></p>
+      <h1 data-es="Lógica de un siguelíneas" data-eu="Lerro-jarraitzaile baten logika"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="pista" data-es="Pista" data-eu="Pista">
+    <figure class="fig"><svg id="pista" viewBox="0 0 340 220" role="img" aria-label="Coche siguiendo la línea"></svg></figure>
+    <div class="mandos">
+      <button type="button" class="boton naranja" id="marcha" data-es="Arrancar" data-eu="Abiatu"></button>
+      <button type="button" class="boton claro" id="reset" data-es="Volver a la salida" data-eu="Irteerara itzuli"></button>
+      <button type="button" class="boton claro" id="lento" aria-pressed="false" data-es="Cámara lenta" data-eu="Kamera geldoa"></button>
+    </div>
+    <div class="dos">
+      <div class="tabla"><table class="vt" id="tv"></table></div>
+      <div class="card"><h2 data-es="Tu tabla de verdad" data-eu="Zure egia-taula"></h2>
+        <p class="es">Sensor = 1 cuando ve la <b>línea negra</b>. Motor = 1 cuando gira. Toca las casillas de MI y MD para cambiar la lógica y prueba si el coche sigue la línea.</p>
+        <p class="eu">Sentsorea = 1 <b>lerro beltza</b> ikusten duenean. Motorra = 1 biratzen duenean. Ukitu MI eta MD laukiak logika aldatzeko eta probatu autoak lerroa jarraitzen duen.</p>
+        <p class="expr" id="expr"></p>
+        <button type="button" class="boton claro" id="solucion" data-es="Poner la tabla correcta" data-eu="Taula zuzena jarri"></button></div>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="Explicación" data-eu="Azalpena" hidden>
+    <div class="card"><h2 data-es="Cómo se piensa" data-eu="Nola pentsatzen da"></h2>
+      <ul class="es"><li>Los dos sensores sobre la línea → recto: <b>MI = 1, MD = 1</b>.</li><li>Solo el sensor izquierdo ve la línea → la línea se va hacia la izquierda → hay que girar a la izquierda: se para la rueda izquierda, <b>MI = 0, MD = 1</b>.</li><li>Solo el derecho → al revés: <b>MI = 1, MD = 0</b>.</li><li>Ninguno ve la línea → parar: <b>MI = 0, MD = 0</b>.</li></ul>
+      <ul class="eu"><li>Bi sentsoreak lerroaren gainean → zuzen: <b>MI = 1, MD = 1</b>.</li><li>Ezkerreko sentsoreak bakarrik ikusten du lerroa → lerroa ezkerrera doa → ezkerrera biratu behar da: ezkerreko gurpila gelditzen da, <b>MI = 0, MD = 1</b>.</li><li>Eskuinekoak bakarrik → alderantziz: <b>MI = 1, MD = 0</b>.</li><li>Batek ere ez du lerroa ikusten → gelditu: <b>MI = 0, MD = 0</b>.</li></ul></div>
+    <div class="recuerda"><h2 data-es="Resultado" data-eu="Emaitza"></h2>
+      <p class="es">Las ecuaciones quedan <b>MI = SD</b> y <b>MD = SI</b>: ¡solo hay que cruzar los cables! En la FPGA se escribe igual, uniendo cada sensor con el motor contrario (a través del driver de motores).</p>
+      <p class="eu">Ekuazioak <b>MI = SD</b> eta <b>MD = SI</b> dira: kableak gurutzatu besterik ez dago! FPGAn berdin idazten da, sentsore bakoitza kontrako motorrarekin lotuz (motor-driverraren bidez).</p></div>
+    <div class="card"><h3 data-es="Para mejorar" data-eu="Hobetzeko"></h3><p class="es">Con 3 sensores se puede distinguir «un poco desviado» de «muy desviado». Y si al perder la línea el coche recuerda hacia dónde giraba, ya es un circuito <b>secuencial</b> (necesita memoria: biestables).</p><p class="eu">3 sentsorerekin «apur bat desbideratuta» eta «oso desbideratuta» bereiz daitezke. Eta lerroa galtzean autoak nora biratzen zuen gogoratzen badu, zirkuitu <b>sekuentziala</b> da (memoria behar du: biegonkorrak).</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var CX = 170, CY = 110, RX = 130, RY = 78, ANCHO = 18;
+  var tabla = { "00":[0,0], "01":[1,0], "10":[0,1], "11":[1,1] }; // clave SI SD → [MI, MD]
+  var coche, marcha = false, lento = false, ultimo = null, estela = [];
+  function salida(){ coche = { x: CX + RX, y: CY + 10, th: -Math.PI / 2 - 0.15 }; estela = []; }
+  function enLinea(x, y){ var r = Math.sqrt(Math.pow((x - CX) / RX, 2) + Math.pow((y - CY) / RY, 2)); return Math.abs(r - 1) * Math.min(RX, RY) < ANCHO / 2; }
+  function sensores(){
+    var c = coche, fx = Math.cos(c.th), fy = Math.sin(c.th), lx = Math.sin(c.th), ly = -Math.cos(c.th);
+    var izq = [c.x + fx * 14 + lx * 6, c.y + fy * 14 + ly * 6], der = [c.x + fx * 14 - lx * 6, c.y + fy * 14 - ly * 6];
+    return { izq: izq, der: der, SI: enLinea(izq[0], izq[1]) ? 1 : 0, SD: enLinea(der[0], der[1]) ? 1 : 0 };
+  }
+  function paso(dt){
+    var s = sensores(), m = tabla["" + s.SI + s.SD], v = 55, base = 14;
+    var vl = m[0] * v, vr = m[1] * v;
+    // en pantalla (y hacia abajo) girar a la izquierda resta ángulo
+    coche.th += (vl - vr) / base * dt; var vv = (vl + vr) / 2;
+    coche.x += Math.cos(coche.th) * vv * dt; coche.y += Math.sin(coche.th) * vv * dt;
+    if (vv > 0) { estela.push([coche.x, coche.y]); if (estela.length > 200) estela.shift(); }
+    if (coche.x < -20 || coche.x > 360 || coche.y < -20 || coche.y > 240) { marcha = false; }
+  }
+  function pinta(){
+    var s = sensores(), m = tabla["" + s.SI + s.SD];
+    var g = '<rect width="340" height="220" fill="#f4f1ea"/><ellipse cx="' + CX + '" cy="' + CY + '" rx="' + RX + '" ry="' + RY + '" fill="none" stroke="#1b1b1b" stroke-width="' + ANCHO + '"/>';
+    if (estela.length > 1) g += '<path d="' + estela.map(function(p, i){ return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join("") + '" fill="none" stroke="#f39200" stroke-width="2" opacity=".6"/>';
+    var deg = coche.th * 180 / Math.PI;
+    g += '<g transform="translate(' + coche.x.toFixed(1) + ' ' + coche.y.toFixed(1) + ') rotate(' + deg.toFixed(1) + ')">';
+    g += '<rect x="-12" y="-10" width="28" height="20" rx="5" fill="#242d5f"/><rect x="-8" y="-14" width="12" height="5" rx="2" fill="' + (m[0] ? "#f39200" : "#5d6382") + '"/><rect x="-8" y="9" width="12" height="5" rx="2" fill="' + (m[1] ? "#f39200" : "#5d6382") + '"/>';
+    g += '<path d="M16 -6h4v12h-4" fill="#c9cfd8"/></g>';
+    g += '<circle cx="' + s.izq[0] + '" cy="' + s.izq[1] + '" r="3.4" fill="' + (s.SI ? "#ff3b30" : "#fff") + '" stroke="#c62f2f" stroke-width="1.5"/><circle cx="' + s.der[0] + '" cy="' + s.der[1] + '" r="3.4" fill="' + (s.SD ? "#ff3b30" : "#fff") + '" stroke="#c62f2f" stroke-width="1.5"/>';
+    g += '<text x="8" y="16" style="font-size:11px;font-weight:700;fill:#242d5f">SI=' + s.SI + ' SD=' + s.SD + ' → MI=' + m[0] + ' MD=' + m[1] + '</text>';
+    $("pista").innerHTML = g;
+    var h = "<tr><th>SI</th><th>SD</th><th>MI</th><th>MD</th></tr>";
+    ["00","01","10","11"].forEach(function(k){
+      var on = k === "" + s.SI + s.SD;
+      h += '<tr class="' + (on ? "on" : "") + '"><td>' + k[0] + "</td><td>" + k[1] + '</td><td><button class="cel" data-k="' + k + '" data-i="0" data-v="' + tabla[k][0] + '">' + tabla[k][0] + '</button></td><td><button class="cel" data-k="' + k + '" data-i="1" data-v="' + tabla[k][1] + '">' + tabla[k][1] + "</button></td></tr>";
+    });
+    if ($("tv").dataset.h !== h) { $("tv").innerHTML = h; $("tv").dataset.h = h; }
+    $("expr").textContent = ecuacion(0, "MI") + " · " + ecuacion(1, "MD");
+    var e = $("est");
+    if (!marcha) { e.className = "estado"; e.textContent = coche.x < -20 || coche.x > 360 || coche.y < -20 || coche.y > 240 ? T("El coche se ha salido de la pista. Revisa la tabla.", "Autoa pistatik atera da. Berrikusi taula.") : T("Pulsa Arrancar.", "Sakatu Abiatu."); }
+    else if (m[0] === 0 && m[1] === 0) { e.className = "estado mal"; e.textContent = T("Los dos motores parados.", "Bi motorrak geldirik."); }
+    else { e.className = "estado ok"; e.textContent = m[0] && m[1] ? T("Recto.", "Zuzen.") : m[1] ? T("Girando a la izquierda.", "Ezkerrera biratzen.") : T("Girando a la derecha.", "Eskuinera biratzen."); }
+    $("marcha").textContent = marcha ? T("Parar", "Gelditu") : T("Arrancar", "Abiatu");
+  }
+  function ecuacion(i, nom){ // suma de productos sencilla
+    var t = ["00","01","10","11"].filter(function(k){ return tabla[k][i]; });
+    if (!t.length) return nom + " = 0"; if (t.length === 4) return nom + " = 1";
+    var mapa = { "01":"SD", "10":"SI", "11":"SI·SD", "00":"SI‾·SD‾" };
+    var j = t.join(",");
+    if (j === "01,11") return nom + " = SD"; if (j === "10,11") return nom + " = SI";
+    if (j === "00,01") return nom + " = SI‾"; if (j === "00,10") return nom + " = SD‾";
+    if (j === "01,10,11") return nom + " = SI + SD"; if (j === "01,10") return nom + " = SI ⊕ SD";
+    return nom + " = " + t.map(function(k){ return mapa[k]; }).join(" + ");
+  }
+  function bucle(a){
+    if (ultimo !== null && marcha) { var dt = Math.min((a - ultimo) / 1000, 0.05) * (lento ? 0.3 : 1); for (var k = 0; k < 4; k++) paso(dt / 4); }
+    ultimo = a; pinta(); requestAnimationFrame(bucle);
+  }
+  $("tv").addEventListener("click", function(e){ var b = e.target.closest(".cel"); if (!b) return; var k = b.dataset.k, i = +b.dataset.i; tabla[k][i] ^= 1; });
+  $("marcha").addEventListener("click", function(){ marcha = !marcha; });
+  $("reset").addEventListener("click", function(){ salida(); marcha = false; });
+  $("lento").addEventListener("click", function(){ lento = !lento; this.setAttribute("aria-pressed", lento); });
+  $("solucion").addEventListener("click", function(){ tabla = { "00":[0,0], "01":[1,0], "10":[0,1], "11":[1,1] }; });
+  salida(); requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

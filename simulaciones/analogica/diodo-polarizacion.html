@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polarización del diodo</title>
+<meta name="description" content="Diodo en polarización directa e inversa, tensión umbral, curva I-V, ánodo y cátodo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Diodos" data-eu="Analogikoa · Diodoak"></p>
+      <h1 data-es="Polarización del diodo" data-eu="Diodoaren polarizazioa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="chips" id="pol">
+      <button data-p="1" aria-pressed="true" data-es="Directa" data-eu="Zuzena"></button>
+      <button data-p="-1" data-es="Inversa" data-eu="Alderantzizkoa"></button>
+    </div>
+    <div class="dos">
+      <figure class="fig"><svg id="cir" viewBox="0 0 320 200" role="img" aria-label="Circuito con diodo"></svg></figure>
+      <figure class="fig"><svg id="gr" viewBox="0 0 320 200" role="img" aria-label="Curva I-V"></svg></figure>
+    </div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Tensión de la pila" data-eu="Pilaren tentsioa"></span><output id="vo"></output></label><input id="v" type="range" min="0" max="5" step="0.05" value="2"></div>
+      <div class="chips" id="mat"><button data-m="si" aria-pressed="true" data-es="Silicio" data-eu="Silizioa"></button><button data-m="ge" data-es="Germanio" data-eu="Germanioa"></button><button data-m="led">LED</button></div>
+    </div>
+    <div class="lectura-g"><div><small>V<sub>D</sub></small><b id="vd"></b></div><div><small>I</small><b id="ii"></b></div><div><small>V<sub>R</sub> (1 kΩ)</small><b id="vr"></b></div></div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="zer-da" data-es="¿Qué es?" data-eu="Zer da?" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 200">
+        <rect x="60" y="40" width="90" height="70" fill="#fde6e3" stroke="#c62f2f" stroke-width="2"/><rect x="150" y="40" width="90" height="70" fill="#e3eefa" stroke="#2b6cb0" stroke-width="2"/>
+        <text x="105" y="82" text-anchor="middle" style="font-size:22px;font-weight:700;fill:#c62f2f">P</text><text x="195" y="82" text-anchor="middle" style="font-size:22px;font-weight:700;fill:#2b6cb0">N</text>
+        <path d="M20 75h40M240 75h40" stroke="#242d5f" stroke-width="3"/><text class="tt" x="40" y="66" text-anchor="middle" data-es="ánodo" data-eu="anodoa"></text><text class="tt" x="260" y="66" text-anchor="middle" data-es="cátodo" data-eu="katodoa"></text>
+        <path d="M60 160h80M160 160h80" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/><rect x="110" y="146" width="80" height="28" rx="6" fill="#2d3340"/><rect x="172" y="146" width="10" height="28" fill="#d0d6db"/>
+        <text class="txt" x="177" y="194" text-anchor="middle" data-es="franja = cátodo" data-eu="banda = katodoa"></text>
+      </svg></figure>
+      <div class="card"><h2 data-es="El diodo" data-eu="Diodoa"></h2>
+        <p class="es">Une un semiconductor tipo <b>P</b> (ánodo) y uno tipo <b>N</b> (cátodo). Deja pasar la corriente <b>en un solo sentido</b>: de ánodo a cátodo.</p>
+        <p class="eu"><b>P</b> motako (anodoa) eta <b>N</b> motako (katodoa) erdieroaleak lotzen ditu. Korrontea <b>noranzko bakarrean</b> uzten du pasatzen: anodotik katodora.</p>
+        <ul class="es"><li><b>Directa:</b> + al ánodo. Conduce a partir de la <b>tensión umbral</b> (Si ≈ 0,7 V; Ge ≈ 0,3 V; LED 1,8–3,3 V).</li><li><b>Inversa:</b> + al cátodo. No conduce (solo una corriente de fuga mínima).</li></ul>
+        <ul class="eu"><li><b>Zuzena:</b> + anodoan. <b>Atari-tentsiotik</b> aurrera eroaten du (Si ≈ 0,7 V; Ge ≈ 0,3 V; LED 1,8–3,3 V).</li><li><b>Alderantzizkoa:</b> + katodoan. Ez du eroaten (ihes-korronte txiki-txiki bat bakarrik).</li></ul>
+      </div>
+    </div>
+    <div class="recuerda"><h2 data-es="Comprobarlo con el polímetro" data-eu="Polimetroarekin egiaztatu"></h2>
+      <p class="es">Posición de diodo: rojo al ánodo y negro al cátodo → marca ~0,6–0,7 V. Al revés → «OL». Si marca 0 en los dos sentidos está en cortocircuito; si marca OL en los dos, abierto.</p>
+      <p class="eu">Diodo-posizioa: gorria anodora eta beltza katodora → ~0,6–0,7 V adierazten du. Alderantziz → «OL». Bi noranzkoetan 0 adierazten badu, zirkuitulaburrean dago; bietan OL, irekita.</p></div>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M8 45h34M78 45h34M78 25v40"/><path class="s-f" d="M42 25v40l36-20z"/><text class="s-t" x="20" y="30">A</text><text class="s-t" x="88" y="30">K</text></svg><b data-es="Diodo rectificador" data-eu="Diodo artezgailua"></b></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var MAT = { si: { vt: 0.7, n: 1.9, col: "#2d3340" }, ge: { vt: 0.3, n: 1.4, col: "#5d6382" }, led: { vt: 2.0, n: 2.2, col: "#c62f2f" } };
+  var pol = 1, mat = "si", R = 1000;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  // modelo sencillo: Is·(e^(Vd/nVt)-1) ajustado para que conduzca 1 mA en la tensión umbral
+  function idiodo(vd){ var m = MAT[mat], k = 0.001 / (Math.exp(m.vt / (m.n * 0.026)) - 1); return k * (Math.exp(vd / (m.n * 0.026)) - 1); }
+  function resolver(V){ // V = Vd + I·R
+    if (V <= 0) return { vd: 0, i: 0 };
+    var lo = 0, hi = V;
+    for (var k = 0; k < 60; k++) { var mid = (lo + hi) / 2; if (mid + idiodo(mid) * R > V) hi = mid; else lo = mid; }
+    return { vd: lo, i: idiodo(lo) };
+  }
+  function pinta(){
+    var V = +$("v").value; $("vo").textContent = n(V, 2) + " V";
+    var r = pol > 0 ? resolver(V) : { vd: -V, i: -1e-9 };
+    $("vd").textContent = n(r.vd, 2) + " V"; $("ii").textContent = pol > 0 ? n(r.i * 1000, 2) + " mA" : "≈ 0 mA"; $("vr").textContent = n(Math.max(r.i, 0) * R, 2) + " V";
+    var on = pol > 0 && r.i > 0.0003;
+    var s = '<path d="M40 70V30h90M190 30h90v140H40v-60" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    s += '<rect x="24" y="70" width="32" height="40" fill="#fff"/>';
+    s += pol > 0 ? '<path d="M28 80h24M34 90h12M28 100h24" stroke="#242d5f" stroke-width="3"/><text class="tt" x="62" y="84">+</text>' : '<path d="M34 80h12M28 90h24M34 100h12" stroke="#242d5f" stroke-width="3"/><text class="tt" x="62" y="108">+</text>';
+    s += '<text class="tt" x="4" y="128">' + n(V, 1) + ' V</text>';
+    var col = mat === "led" ? (on ? "#ff3b30" : "#f3b0aa") : MAT[mat].col;
+    if (mat === "led" && on) s += '<circle cx="160" cy="30" r="' + (16 + Math.min(r.i * 3000, 18)) + '" fill="#ff3b30" opacity=".25"/>';
+    s += '<path d="M130 12v36l36-18z" fill="' + col + '"/><path d="M166 12v36" stroke="' + col + '" stroke-width="4"/><path d="M166 30h24" stroke="#242d5f" stroke-width="3"/>';
+    s += '<text class="txt" x="132" y="64">A</text><text class="txt" x="160" y="64">K</text>';
+    s += '<rect x="272" y="80" width="16" height="50" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="268" y="110" text-anchor="end">1 kΩ</text>';
+    if (on) { var t = (performance.now() / 20) % 30; for (var d = t; d < 520; d += 30) { var x, y; if (d < 40) { x = 40; y = 70 - d; } else if (d < 280) { x = 40 + (d - 40); y = 30; } else if (d < 420) { x = 280; y = 30 + (d - 280); } else { x = 280 - (d - 420) * 2.4; y = 170; } s += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="#f39200"/>'; } }
+    $("cir").innerHTML = s;
+    // curva I-V
+    var g = '<rect x="10" y="10" width="300" height="170" fill="#fbfcfe" stroke="#d0d6db"/><path d="M10 150h300M150 10v170" stroke="#5d6382" stroke-width="1.4"/>';
+    g += '<text class="txt" x="304" y="144" text-anchor="end">V</text><text class="txt" x="156" y="22">I</text><text class="txt" x="20" y="166" data-es="" >' + T("inversa", "alderantzizkoa") + '</text><text class="txt" x="300" y="166" text-anchor="end">' + T("directa", "zuzena") + '</text>';
+    var d2 = "M10 150.5L150 150";
+    for (var vv = 0; vv <= 3.5; vv += 0.02) { var ii = idiodo(vv), y = 150 - ii / 0.005 * 140; if (y < 10) break; d2 += "L" + (150 + vv * 40) + " " + y; }
+    g += '<path d="' + d2 + '" fill="none" stroke="#f39200" stroke-width="3"/>';
+    g += '<path d="M' + (150 + MAT[mat].vt * 40) + ' 150v8" stroke="#242d5f" stroke-width="2"/><text class="txt" x="' + (150 + MAT[mat].vt * 40) + '" y="172" text-anchor="middle">' + n(MAT[mat].vt, 1) + ' V</text>';
+    var px = 150 + Math.max(-3.5, r.vd) * 40, py = 150 - Math.max(r.i, 0) / 0.005 * 140;
+    g += '<circle cx="' + px + '" cy="' + Math.max(py, 10) + '" r="6" fill="#242d5f"/>';
+    $("gr").innerHTML = g;
+    var e = $("est");
+    if (pol < 0) { e.className = "estado mal"; e.textContent = T("Inversa: el + está en el cátodo. El diodo bloquea y toda la tensión cae en él.", "Alderantzizkoa: + katodoan dago. Diodoak blokeatu egiten du eta tentsio osoa bertan erortzen da."); }
+    else if (!on) { e.className = "estado"; e.textContent = T("Directa, pero todavía no se ha superado la tensión umbral: casi no conduce.", "Zuzena, baina oraindik ez da atari-tentsioa gainditu: ia ez du eroaten."); }
+    else { e.className = "estado ok"; e.textContent = T("Conduce. Aunque subas la pila, en el diodo se quedan unos " + n(r.vd, 1) + " V; el resto cae en la resistencia.", "Eroaten du. Pila igo arren, diodoan " + n(r.vd, 1) + " V inguru geratzen dira; gainerakoa erresistentzian erortzen da."); }
+  }
+  function bucle(){ pinta(); requestAnimationFrame(bucle); }
+  $("v").addEventListener("input", pinta);
+  [["pol","p",function(v){ pol = +v; }],["mat","m",function(v){ mat = v; }]].forEach(function(c){
+    $(c[0]).addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; c[2](b.dataset[c[1]]);
+      [].forEach.call($(c[0]).querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); }); });
+  });
+  bucle();
+})();
+</script>
+</body>
+</html>

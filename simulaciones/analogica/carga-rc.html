@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carga y descarga de un condensador (RC)</title>
+<meta name="description" content="Simulador de carga y descarga de un condensador a través de una resistencia: curva, constante de tiempo τ = R·C y qué es un condensador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Condensadores y bobinas" data-eu="Analogikoa · Kondentsadoreak eta bobinak"></p>
+      <h1 data-es="Carga y descarga RC" data-eu="RC karga eta deskarga"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="dos">
+      <figure class="fig"><svg id="cir" viewBox="0 0 320 200" role="img" aria-label="Circuito RC con conmutador"></svg></figure>
+      <figure class="fig"><svg id="gr" viewBox="0 0 320 200" role="img" aria-label="Curva de tensión del condensador"></svg></figure>
+    </div>
+    <div class="mandos">
+      <button type="button" class="boton naranja" id="cargar" data-es="Cargar" data-eu="Kargatu"></button>
+      <button type="button" class="boton" id="descargar" data-es="Descargar" data-eu="Deskargatu"></button>
+    </div>
+    <div class="lectura-g">
+      <div><small>τ = R·C</small><b id="tau"></b></div><div><small>Vc</small><b id="vc"></b></div><div><small>I</small><b id="ic"></b></div><div><small>t / τ</small><b id="tt"></b></div>
+    </div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span>R</span><output id="ro"></output></label><input id="r" type="range" min="0" max="3" value="1"></div>
+      <div class="deslizador"><label><span>C</span><output id="co"></output></label><input id="c" type="range" min="0" max="4" value="2"></div>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="zer-da" data-es="¿Qué es?" data-eu="Zer da?" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 180">
+        <rect x="90" y="30" width="16" height="120" fill="#9aa3ad"/><rect x="194" y="30" width="16" height="120" fill="#9aa3ad"/>
+        <rect x="106" y="30" width="88" height="120" fill="#fff0dc"/>
+        <path d="M20 90h70M210 90h70" stroke="#242d5f" stroke-width="3"/>
+        <g fill="#c62f2f" font-size="16" font-weight="700" font-family="Poppins"><text x="112" y="56">+</text><text x="112" y="96">+</text><text x="112" y="136">+</text></g>
+        <g fill="#2b6cb0" font-size="18" font-weight="700" font-family="Poppins"><text x="178" y="56">−</text><text x="178" y="96">−</text><text x="178" y="136">−</text></g>
+        <text x="150" y="172" text-anchor="middle" class="tt" data-es="dieléctrico (aislante)" data-eu="dielektrikoa (isolatzailea)"></text>
+        <text x="98" y="22" text-anchor="middle" class="txt" data-es="placa" data-eu="xafla"></text><text x="202" y="22" text-anchor="middle" class="txt" data-es="placa" data-eu="xafla"></text>
+      </svg></figure>
+      <div class="card"><h2 data-es="El condensador" data-eu="Kondentsadorea"></h2>
+        <p class="es">Dos placas conductoras separadas por un aislante. <b>Almacena carga eléctrica</b> y la devuelve después. No deja pasar la corriente continua una vez cargado.</p>
+        <p class="eu">Isolatzaile batek bereizitako bi xafla eroale. <b>Karga elektrikoa metatzen du</b> eta gero itzuli egiten du. Behin kargatuta, ez du korronte zuzena pasatzen uzten.</p>
+        <p><span class="formula">Q = C · V</span></p>
+        <p class="es">La <b>capacidad</b> se mide en faradios (F). En electrónica: µF, nF y pF.</p>
+        <p class="eu"><b>Kapazitatea</b> faradiotan (F) neurtzen da. Elektronikan: µF, nF eta pF.</p></div>
+    </div>
+    <div class="tabla"><table>
+      <tr><th data-es="Tiempo" data-eu="Denbora"></th><th data-es="Carga" data-eu="Karga"></th><th data-es="Descarga (queda)" data-eu="Deskarga (geratzen da)"></th></tr>
+      <tr><td>1 τ</td><td>63 %</td><td>37 %</td></tr><tr><td>2 τ</td><td>86 %</td><td>14 %</td></tr><tr><td>3 τ</td><td>95 %</td><td>5 %</td></tr>
+      <tr><td>4 τ</td><td>98 %</td><td>2 %</td></tr><tr><td>5 τ</td><td>99,3 %</td><td>0,7 %</td></tr>
+    </table></div>
+    <div class="recuerda"><h2 data-es="Regla práctica" data-eu="Arau praktikoa"></h2>
+      <p class="es">En <b>5 τ</b> el condensador está prácticamente cargado (o descargado). Se usa para temporizadores, filtros y retardos.</p>
+      <p class="eu"><b>5 τ</b>-tan kondentsadorea ia guztiz kargatuta (edo deskargatuta) dago. Tenporizadoreetan, iragazkietan eta atzerapenetan erabiltzen da.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var RV = [1000, 10000, 47000, 100000], CV = [10e-6, 47e-6, 100e-6, 470e-6, 1000e-6], VS = 12;
+  var modo = "descarga", v0 = 0, t = 0, ultimo = null, puntos = [];
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? n(r / 1000, 0) + " kΩ" : r + " Ω"; }
+  function fT(s){ return s < 1 ? n(s * 1000, 0) + " ms" : n(s, 1) + " s"; }
+  function tau(){ return RV[+$("r").value] * CV[+$("c").value]; }
+  function vc(){ var objetivo = modo === "carga" ? VS : 0; return objetivo + (v0 - objetivo) * Math.exp(-t / tau()); }
+  function cambiar(m){ v0 = vc(); modo = m; t = 0; puntos = []; }
+  function dibuja(){
+    var V = vc(), R = RV[+$("r").value], I = (modo === "carga" ? (VS - V) : -V) / R, tc = tau();
+    $("ro").textContent = fR(R); $("co").textContent = n(CV[+$("c").value] * 1e6, 0) + " µF";
+    $("tau").textContent = fT(tc); $("vc").textContent = n(V, 2) + " V"; $("ic").textContent = n(I * 1000, 2) + " mA"; $("tt").textContent = n(t / tc, 1);
+    // circuito
+    var carga = modo === "carga";
+    var s = '<path d="M40 70V30h60M160 30h120v40M280 130v40H40v-70M200 30" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    s += '<rect x="24" y="70" width="32" height="40" fill="#fff"/><path d="M28 80h24M34 90h12M28 100h24" stroke="#242d5f" stroke-width="3"/><text class="tt" x="4" y="128">12 V</text>';
+    s += '<circle cx="100" cy="30" r="4" fill="#242d5f"/><circle cx="160" cy="30" r="4" fill="#242d5f"/><circle cx="100" cy="64" r="4" fill="#242d5f"/><path d="M100 64v106" stroke="#242d5f" stroke-width="3"/>';
+    s += '<path d="M160 30L' + (carga ? "104 26" : "106 60") + '" stroke="#f39200" stroke-width="5" stroke-linecap="round"/>';
+    s += '<rect x="185" y="21" width="60" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="215" y="58" text-anchor="middle">R</text>';
+    s += '<path d="M260 70h40M260 80h40" stroke="#242d5f" stroke-width="4"/><path d="M280 80v50" stroke="#242d5f" stroke-width="3"/>';
+    var lleno = V / VS;
+    s += '<rect x="262" y="' + (130 - 46 * lleno) + '" width="36" height="' + (46 * lleno) + '" fill="#f39200" opacity=".25"/>';
+    s += '<text class="tt" x="306" y="110" text-anchor="end">C</text><text class="tt" x="214" y="110" text-anchor="end">' + n(V, 1) + ' V</text>';
+    s += '<text class="txt" x="130" y="16" text-anchor="middle">' + (carga ? T("carga", "karga") : T("descarga", "deskarga")) + '</text>';
+    $("cir").innerHTML = s;
+    // gráfica: 6 τ en el eje x
+    var g = '<rect x="36" y="10" width="276" height="160" fill="#fbfcfe" stroke="#d0d6db"/>';
+    for (var k = 1; k <= 5; k++) { var x = 36 + k * 46; g += '<path d="M' + x + ' 10v160" stroke="#eceff3"/><text class="txt" x="' + x + '" y="186" text-anchor="middle">' + k + 'τ</text>'; }
+    g += '<path d="M36 ' + (170 - 0.632 * 150) + 'h276" stroke="#f39200" stroke-dasharray="4 3" opacity=".7"/><text class="txt" x="40" y="' + (166 - 0.632 * 150) + '">63 %</text>';
+    g += '<text class="txt" x="32" y="24" text-anchor="end">12 V</text><text class="txt" x="32" y="174" text-anchor="end">0</text>';
+    if (puntos.length > 1) g += '<path d="' + puntos.map(function(p, i){ return (i ? "L" : "M") + (36 + p[0] * 46) + " " + (170 - p[1] / VS * 150); }).join("") + '" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    g += '<text class="txt" x="306" y="24" text-anchor="end">τ = ' + fT(tc) + '</text>';
+    $("gr").innerHTML = g;
+    var e = $("est");
+    if (!carga && v0 < 0.05) { e.className = "estado"; e.textContent = T("El condensador está descargado. Pulsa Cargar.", "Kondentsadorea deskargatuta dago. Sakatu Kargatu."); }
+    else if (t / tc < 0.05) { e.className = "estado"; e.textContent = carga ? T("Al cerrar, la corriente es máxima (V/R) y el condensador empieza a cargarse.", "Ixtean, korrontea maximoa da (V/R) eta kondentsadorea kargatzen hasten da.") : T("Pulsa Cargar para empezar.", "Sakatu Kargatu hasteko."); }
+    else if (t / tc < 5) { e.className = "estado"; e.textContent = carga ? T("Cuanto más cargado está, menos corriente entra: la curva se va aplanando.", "Zenbat eta kargatuago egon, orduan eta korronte gutxiago sartzen da: kurba lautzen doa.") : T("Se descarga a través de R: rápido al principio, más lento al final.", "R-tik zehar deskargatzen da: hasieran azkar, amaieran mantsoago."); }
+    else { e.className = "estado ok"; e.textContent = carga ? T("Pasado 5 τ está cargado: ya no circula corriente.", "5 τ igarota kargatuta dago: ez dabil korronterik.") : T("Pasado 5 τ está descargado.", "5 τ igarota deskargatuta dago."); }
+  }
+  function bucle(ahora){
+    if (ultimo !== null) {
+      var dt = Math.min((ahora - ultimo) / 1000, 0.1), tc = tau();
+      if (t < 6 * tc) { t += dt * tc; puntos.push([t / tc, vc()]); }
+    }
+    ultimo = ahora; dibuja(); requestAnimationFrame(bucle);
+  }
+  $("cargar").addEventListener("click", function(){ cambiar("carga"); });
+  $("descargar").addEventListener("click", function(){ cambiar("descarga"); });
+  ["r","c"].forEach(function(id){ $(id).addEventListener("input", function(){ v0 = vc(); t = 0; puntos = []; }); });
+  requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

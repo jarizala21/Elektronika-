@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Particiones y formateo</title>
+<meta name="description" content="Gestor de discos de práctica: tabla MBR o GPT, crear y borrar particiones, formatear con NTFS, FAT32, exFAT o ext4.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.disco{display:flex;height:84px;border-radius:14px;overflow:hidden;box-shadow:var(--sombra);background:#fff}
+.seg{border:0;cursor:pointer;padding:6px;display:grid;align-content:center;gap:2px;font:inherit;font-size:11px;font-weight:600;color:#fff;min-width:28px;overflow:hidden;text-align:left;border-right:2px solid #fff}
+.seg b{font-size:12.5px}.seg.libre{background:repeating-linear-gradient(45deg,#e7e2d9,#e7e2d9 8px,#f5f3ef 8px,#f5f3ef 16px);color:var(--marino-txt)}
+.seg[aria-pressed="true"]{box-shadow:inset 0 0 0 4px var(--naranja)}
+.cab-d{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;color:var(--marino-txt)}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Voz y datos · Hardware" data-eu="Ahotsa eta datuak · Hardwarea"></p>
+      <h1 data-es="Particiones y formateo" data-eu="Partizioak eta formateoa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="kudeatzailea" data-es="Gestor de discos" data-eu="Disko-kudeatzailea">
+    <div class="chips" id="tam"><span class="nota" data-es="Disco:" data-eu="Diskoa:"></span><button data-g="500" aria-pressed="true">500 GB</button><button data-g="3000">3 TB</button></div>
+    <div class="cab-d"><span id="tabla"></span><span id="libre"></span></div>
+    <div class="disco" id="disco"></div>
+    <div class="card" id="sel"></div>
+    <div class="card mandos" id="crear">
+      <div class="deslizador"><label><span data-es="Tamaño de la nueva partición" data-eu="Partizio berriaren tamaina"></span><output id="no"></output></label><input id="n" type="range" min="1" max="100" value="50"></div>
+    </div>
+    <div class="chips" id="fs"><span class="nota" data-es="Sistema de archivos:" data-eu="Fitxategi-sistema:"></span><button data-f="NTFS" aria-pressed="true">NTFS</button><button data-f="FAT32">FAT32</button><button data-f="exFAT">exFAT</button><button data-f="ext4">ext4</button></div>
+    <div class="mandos">
+      <button type="button" class="boton naranja" id="b-nueva" data-es="Nueva partición" data-eu="Partizio berria"></button>
+      <button type="button" class="boton" id="b-form" data-es="Formatear" data-eu="Formateatu"></button>
+      <button type="button" class="boton rojo" id="b-borrar" data-es="Borrar partición" data-eu="Partizioa ezabatu"></button>
+      <button type="button" class="boton claro" id="b-mbr" data-es="Inicializar MBR" data-eu="MBR hasieratu"></button>
+      <button type="button" class="boton claro" id="b-gpt" data-es="Inicializar GPT" data-eu="GPT hasieratu"></button>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="kontzeptuak" data-es="Conceptos" data-eu="Kontzeptuak" hidden>
+    <div class="rejilla">
+      <div class="card"><h2 data-es="Partición" data-eu="Partizioa"></h2><p class="es">Trozo del disco que el sistema trata como si fuera un disco independiente (C:, D:…). Sirve para separar sistema y datos o tener dos sistemas operativos.</p><p class="eu">Sistemak disko independente bat balitz bezala tratatzen duen disko-zatia (C:, D:…). Sistema eta datuak bereizteko edo bi sistema eragile izateko balio du.</p></div>
+      <div class="card"><h2 data-es="Formatear" data-eu="Formateatu"></h2><p class="es">Crear el <b>sistema de archivos</b> dentro de una partición. <b>Rápido:</b> solo vacía el índice (los datos se podrían recuperar). <b>Completo:</b> además revisa sectores y sobrescribe.</p><p class="eu">Partizio baten barruan <b>fitxategi-sistema</b> sortzea. <b>Azkarra:</b> aurkibidea bakarrik husten du (datuak berreskura litezke). <b>Osoa:</b> gainera sektoreak berrikusi eta gainidazten ditu.</p></div>
+    </div>
+    <div class="tabla"><table>
+      <tr><th></th><th>MBR</th><th>GPT</th></tr>
+      <tr><td data-es="Tamaño máximo de disco" data-eu="Diskoaren tamaina maximoa"></td><td>2 TB</td><td data-es="Prácticamente ilimitado" data-eu="Ia mugagabea"></td></tr>
+      <tr><td data-es="Particiones" data-eu="Partizioak"></td><td data-es="4 primarias (o 3 + extendida)" data-eu="4 primario (edo 3 + hedatua)"></td><td>128</td></tr>
+      <tr><td data-es="Arranque" data-eu="Abiaraztea"></td><td>BIOS (Legacy)</td><td>UEFI</td></tr>
+    </table></div>
+    <div class="tabla"><table>
+      <tr><th data-es="Sistema" data-eu="Sistema"></th><th data-es="Uso" data-eu="Erabilera"></th><th data-es="Archivo máximo" data-eu="Fitxategi maximoa"></th></tr>
+      <tr><td>NTFS</td><td data-es="Windows" data-eu="Windows"></td><td data-es="enorme" data-eu="izugarria"></td></tr>
+      <tr><td>FAT32</td><td data-es="USB pequeños, compatible con todo" data-eu="USB txikiak, guztiarekin bateragarria"></td><td>4 GB</td></tr>
+      <tr><td>exFAT</td><td data-es="USB y tarjetas grandes" data-eu="USB eta txartel handiak"></td><td data-es="enorme" data-eu="izugarria"></td></tr>
+      <tr><td>ext4</td><td>Linux (Raspberry Pi OS)</td><td>16 TB</td></tr>
+    </table></div>
+    <div class="recuerda"><h2 data-es="¡Cuidado!" data-eu="Kontuz!"></h2><p class="es">Borrar o formatear una partición elimina sus datos. Haz siempre una <b>copia de seguridad</b> antes y comprueba dos veces qué disco has elegido.</p><p class="eu">Partizio bat ezabatzeak edo formateatzeak bere datuak ezabatzen ditu. Egin beti <b>segurtasun-kopia</b> bat lehenago eta egiaztatu bi aldiz zein disko aukeratu duzun.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var COL = { NTFS: "#2b6cb0", FAT32: "#1e9a45", exFAT: "#7d3fc4", ext4: "#c87533", EFI: "#5d6382", RAW: "#9aa3ad" };
+  var disco, sel = -1, fs = "NTFS", msg = null;
+  function inicial(g){ disco = { gb: g, tabla: "GPT", parts: [ { gb: 0.1, fs: "EFI", et: "EFI" }, { gb: Math.min(g * 0.7, 350), fs: "NTFS", et: "C:" } ] }; sel = 1; msg = null; }
+  function libre(){ return disco.gb - disco.parts.reduce(function(a, p){ return a + p.gb; }, 0); }
+  function usable(){ return disco.tabla === "MBR" ? Math.min(disco.gb, 2000) : disco.gb; }
+  function libreUsable(){ return usable() - disco.parts.reduce(function(a, p){ return a + p.gb; }, 0); }
+  function fG(g){ return g >= 1000 ? (Math.round(g / 100) / 10).toLocaleString("es-ES") + " TB" : g < 1 ? Math.round(g * 1000) + " MB" : Math.round(g) + " GB"; }
+  function letra(){ var usadas = disco.parts.map(function(p){ return p.et; }); return "CDEFGHIJ".split("").filter(function(l){ return usadas.indexOf(l + ":") < 0; })[0] + ":"; }
+  function pinta(){
+    $("tabla").textContent = T("Tabla de particiones: ", "Partizio-taula: ") + disco.tabla + " · " + fG(disco.gb);
+    $("libre").textContent = T("Sin asignar: ", "Esleitu gabe: ") + fG(Math.max(libre(), 0));
+    var h = "";
+    disco.parts.forEach(function(p, i){
+      var w = Math.max(p.gb / disco.gb * 100, 6);
+      h += '<button class="seg" data-i="' + i + '" aria-pressed="' + (i === sel) + '" style="flex:' + w + ' 1 0;background:' + COL[p.fs] + '"><b>' + p.et + '</b><span>' + fG(p.gb) + '</span><span>' + (p.fs === "RAW" ? T("sin formato", "formaturik gabe") : p.fs) + '</span></button>';
+    });
+    var L = libre();
+    if (L > 0.5) {
+      var noUsable = disco.tabla === "MBR" && disco.gb > 2000;
+      h += '<button class="seg libre" data-i="-1" aria-pressed="' + (sel === -1) + '" style="flex:' + (L / disco.gb * 100) + ' 1 0"><b>' + T("Sin asignar", "Esleitu gabe") + '</b><span>' + fG(L) + '</span>' + (noUsable ? '<span>' + T("(MBR solo usa 2 TB)", "(MBRk 2 TB bakarrik)") + '</span>' : "") + '</button>';
+    }
+    $("disco").innerHTML = h;
+    var p = disco.parts[sel];
+    $("sel").innerHTML = sel >= 0 && p ? "<h3>" + p.et + " · " + fG(p.gb) + "</h3><p>" + (p.fs === "EFI" ? T("Partición de sistema EFI: guarda el cargador de arranque. No se toca.", "EFI sistema-partizioa: abiarazte-kargatzailea gordetzen du. Ez da ukitzen.") : p.fs === "RAW" ? T("Partición creada pero sin formatear: el sistema no puede guardar archivos todavía.", "Sortutako partizioa baina formaturik gabe: sistemak oraindik ezin du fitxategirik gorde.") : T("Formateada en ", "Formatua: ") + p.fs + ".") + "</p>"
+      : "<h3>" + T("Espacio sin asignar", "Esleitu gabeko espazioa") + "</h3><p>" + T("Aquí puedes crear una partición nueva.", "Hemen partizio berri bat sor dezakezu.") + "</p>";
+    var max = Math.max(libreUsable(), 0);
+    $("crear").hidden = sel !== -1 || max < 1;
+    $("n").max = Math.max(1, Math.floor(max)); if (+$("n").value > max) $("n").value = Math.floor(max);
+    $("no").textContent = fG(+$("n").value);
+    $("b-nueva").disabled = sel !== -1 || max < 1;
+    $("b-form").disabled = !(sel >= 0 && p && p.fs !== "EFI"); $("b-borrar").disabled = !(sel >= 0 && p);
+    var e = $("est");
+    if (msg) { e.className = "estado " + msg[1]; e.textContent = T(msg[0][0], msg[0][1]); }
+    else { e.className = "estado"; e.textContent = T("Toca una partición o el espacio sin asignar.", "Ukitu partizio bat edo esleitu gabeko espazioa."); }
+  }
+  $("disco").addEventListener("click", function(e){ var b = e.target.closest(".seg"); if (!b) return; sel = +b.dataset.i; msg = null; pinta(); });
+  $("fs").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; fs = b.dataset.f; [].forEach.call($("fs").querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); }); });
+  $("n").addEventListener("input", pinta);
+  $("b-nueva").addEventListener("click", function(){
+    if (disco.tabla === "MBR" && disco.parts.length >= 4) { msg = [["MBR solo admite 4 particiones primarias. Con GPT podrías tener hasta 128.", "MBRk 4 partizio primario bakarrik onartzen ditu. GPTrekin 128 arte izan zenitzake."], "mal"]; pinta(); return; }
+    var g = +$("n").value; disco.parts.push({ gb: g, fs: "RAW", et: letra() }); sel = disco.parts.length - 1;
+    msg = [["Partición creada. Ahora hay que formatearla para poder usarla.", "Partizioa sortu da. Orain formateatu egin behar da erabili ahal izateko."], "ok"]; pinta();
+  });
+  $("b-form").addEventListener("click", function(){
+    var p = disco.parts[sel]; if (!p) return;
+    if (fs === "FAT32" && p.gb > 32) msg = [["Windows no deja formatear en FAT32 particiones de más de 32 GB, y FAT32 no admite archivos de más de 4 GB. Usa exFAT o NTFS.", "Windowsek ez du uzten 32 GB baino gehiagoko partizioak FAT32-n formateatzen, eta FAT32-k ez ditu 4 GB baino gehiagoko fitxategiak onartzen. Erabili exFAT edo NTFS."], "mal"];
+    else { p.fs = fs; msg = [[p.et + " formateada en " + fs + ". Los datos que tuviera se han perdido.", p.et + " " + fs + "-n formateatu da. Zituen datuak galdu egin dira."], "ok"]; }
+    pinta();
+  });
+  $("b-borrar").addEventListener("click", function(){
+    var p = disco.parts[sel]; if (!p) return;
+    msg = p.fs === "EFI" ? [["Has borrado la partición EFI: el ordenador ya no arrancará desde este disco.", "EFI partizioa ezabatu duzu: ordenagailua ez da disko honetatik abiaraziko."], "mal"] : [["Partición borrada: su espacio queda sin asignar.", "Partizioa ezabatuta: bere espazioa esleitu gabe geratzen da."], "ok"];
+    disco.parts.splice(sel, 1); sel = -1; pinta();
+  });
+  ["MBR","GPT"].forEach(function(t){ $("b-" + t.toLowerCase()).addEventListener("click", function(){
+    disco.tabla = t; disco.parts = []; sel = -1;
+    msg = t === "MBR" && disco.gb > 2000 ? [["Disco inicializado en MBR: de los 3 TB solo se pueden usar 2 TB. Para discos grandes, GPT.", "Diskoa MBRn hasieratuta: 3 TBetatik 2 TB bakarrik erabil daitezke. Disko handietarako, GPT."], "mal"] : [["Disco inicializado en " + t + ": todas las particiones se han borrado.", "Diskoa " + t + "-n hasieratuta: partizio guztiak ezabatu dira."], ""];
+    pinta(); }); });
+  $("tam").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; inicial(+b.dataset.g); [].forEach.call($("tam").querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); }); pinta(); });
+  alCambiarIdioma(pinta); inicial(500); pinta();
+})();
+</script>
+</body>
+</html>

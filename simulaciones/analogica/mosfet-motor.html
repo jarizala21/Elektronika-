@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOSFET controlando un motor</title>
+<meta name="description" content="Un MOSFET de canal N enciende un motor de 12 V desde una salida de Arduino. Resistencia de puerta, pull-down y diodo volante.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Transistores" data-eu="Analogikoa · Transistoreak"></p>
+      <h1 data-es="MOSFET controlando un motor" data-eu="MOSFETa motor bat kontrolatzen"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 260" role="img" aria-label="MOSFET con motor"></svg></figure>
+    <div class="chips" id="pin">
+      <span class="nota" data-es="Pin del Arduino:" data-eu="Arduinoaren pina:"></span>
+      <button data-p="0" aria-pressed="true">LOW (0 V)</button><button data-p="1">HIGH (5 V)</button><button data-p="2" data-es="Sin conectar" data-eu="Konektatu gabe"></button>
+    </div>
+    <div class="mandos">
+      <button type="button" class="boton claro" id="diodo" aria-pressed="true" data-es="Diodo volante" data-eu="Diodo librea"></button>
+      <button type="button" class="boton claro" id="pull" aria-pressed="true" data-es="Resistencia pull-down" data-eu="Pull-down erresistentzia"></button>
+      <button type="button" class="boton" id="arreglar" data-es="Cambiar MOSFET" data-eu="MOSFETa aldatu" hidden></button>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="zer-da" data-es="¿Qué es?" data-eu="Zer da?" hidden>
+    <div class="card"><h2 data-es="MOSFET de canal N" data-eu="N kanaleko MOSFETa"></h2>
+      <p class="es">Transistor controlado por <b>tensión</b>: la puerta (G) está aislada y casi no consume corriente. Con tensión suficiente entre puerta y fuente (Vgs), el canal entre drenador (D) y fuente (S) conduce con muy poca resistencia (R<sub>DS(on)</sub> de miliohmios).</p>
+      <p class="eu"><b>Tentsioak</b> kontrolatutako transistorea: atea (G) isolatuta dago eta ia ez du korronterik kontsumitzen. Atearen eta iturriaren artean (Vgs) tentsio nahikoa egonda, drainatzailearen (D) eta iturriaren (S) arteko kanalak erresistentzia oso txikiarekin eroaten du (miliohmioetako R<sub>DS(on)</sub>).</p></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Resistencia de puerta (220 Ω)" data-eu="Ateko erresistentzia (220 Ω)"></h3><p class="es">Limita el pico de corriente al cargar la capacidad de la puerta y protege el pin.</p><p class="eu">Atearen kapazitatea kargatzean sortzen den korronte-gailurra mugatzen du eta pina babesten du.</p></div>
+      <div class="card"><h3 data-es="Pull-down (10 kΩ)" data-eu="Pull-down (10 kΩ)"></h3><p class="es">Lleva la puerta a 0 V cuando el pin no está definido (al arrancar o desconectado). Sin ella, el motor puede ponerse en marcha solo.</p><p class="eu">Atea 0 V-ra eramaten du pina zehaztuta ez dagoenean (abiaraztean edo deskonektatuta). Hura gabe, motorra bere kabuz martxan jar daiteke.</p></div>
+      <div class="card"><h3 data-es="Diodo volante" data-eu="Diodo librea"></h3><p class="es">En paralelo con el motor (bobina), con el cátodo al +. Al apagar, absorbe el pico de tensión que rompería el MOSFET.</p><p class="eu">Motorrarekin (bobina) paraleloan, katodoa + aldera. Itzaltzean, MOSFETa hautsiko lukeen tentsio-gailurra xurgatzen du.</p></div>
+      <div class="card"><h3 data-es="BJT frente a MOSFET" data-eu="BJT vs MOSFET"></h3><p class="es">BJT: se controla con <b>corriente</b> de base. MOSFET: con <b>tensión</b> de puerta, se calienta menos con cargas grandes.</p><p class="eu">BJT: oinarriko <b>korrontearekin</b> kontrolatzen da. MOSFET: ateko <b>tentsioarekin</b>, gutxiago berotzen da karga handiekin.</p></div>
+    </div>
+    <div class="simbolos"><div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M14 62h28V28M48 24v12M48 40v12M48 56v12M48 30h30V8M48 62h30v20M48 46h30v16"/><path class="s-f" d="M48 46l10-5v10z"/><text class="s-t" x="6" y="56">G</text><text class="s-t" x="84" y="16">D</text><text class="s-t" x="84" y="86">S</text></svg><b data-es="MOSFET canal N" data-eu="N kanaleko MOSFETa"></b></div></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var pin = 0, diodo = true, pull = true, roto = false, giro = 0, vel = 0, chispa = 0, flot = 0;
+  function pinta(){
+    var vg;
+    if (pin === 1) vg = 5; else if (pin === 0) vg = 0; else { flot = pull ? 0 : (Math.sin(performance.now() / 700) + Math.sin(performance.now() / 290)) * 2.2 + 1.5; vg = Math.max(flot, 0); }
+    var on = !roto && vg > 2.5, objetivo = on ? 1 : 0;
+    if (vel > 0.3 && !on && !diodo && !roto) { roto = true; chispa = 40; }
+    vel += (objetivo - vel) * 0.04; giro = (giro + vel * 14) % 360;
+    var s = '<path d="M250 26v20M250 104v36M250 214v24H50" fill="none" stroke="#242d5f" stroke-width="3"/><text class="tt" x="262" y="22">+12 V</text>';
+    s += '<circle cx="250" cy="75" r="28" fill="#fff" stroke="#242d5f" stroke-width="3"/><text class="tt" x="250" y="80" text-anchor="middle">M</text>';
+    s += '<g transform="rotate(' + giro + ' 250 75)"><path d="M250 47v-8M278 75h8M250 103v8M222 75h-8" stroke="#f39200" stroke-width="4" stroke-linecap="round"/></g>';
+    if (diodo) s += '<path d="M250 40h50v70h-50" fill="none" stroke="#2b6cb0" stroke-width="2.5"/><path d="M290 88h20l-10-16z" fill="#2b6cb0"/><path d="M290 70h20" stroke="#2b6cb0" stroke-width="3"/>';
+    // MOSFET
+    var mc = roto ? "#9aa3ad" : on ? "#f39200" : "#242d5f";
+    s += '<path d="M206 196v-46M216 146v14M216 165v14M216 184v14M216 152h34v-12M216 192h34v22M216 172h34v20" fill="none" stroke="' + mc + '" stroke-width="3"/><path d="M216 172l12-6v12z" fill="' + mc + '"/>';
+    s += '<text class="txt" x="262" y="150">D</text><text class="txt" x="262" y="214">S</text><text class="txt" x="196" y="206" text-anchor="end">G</text>';
+    if (roto) s += '<path d="M226 140l8 10-6 2 10 12" stroke="#c62f2f" stroke-width="3" fill="none"/><text class="tt" x="300" y="180" text-anchor="middle" style="fill:#c62f2f">' + T("¡roto!", "hautsita!") + '</text>';
+    // puerta
+    s += '<path d="M60 196h50M150 196h56" fill="none" stroke="#242d5f" stroke-width="3"/><rect x="110" y="187" width="40" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="130" y="180" text-anchor="middle">220 Ω</text>';
+    if (pull) s += '<path d="M176 196v8M176 230v8" stroke="#242d5f" stroke-width="3"/><rect x="168" y="204" width="16" height="26" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="190" y="226">10 kΩ</text>';
+    s += '<rect x="10" y="166" width="50" height="80" rx="6" fill="#0f7c8c"/><text x="35" y="188" text-anchor="middle" style="font-size:9px;font-weight:700;fill:#fff">ARDUINO</text><text x="35" y="210" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#ffd257">D9</text>';
+    s += '<text x="35" y="228" text-anchor="middle" style="font-size:10px;font-weight:700;fill:#fff">' + (pin === 2 ? "?" : pin ? "5 V" : "0 V") + '</text>';
+    s += '<text class="tt" x="130" y="160" text-anchor="middle" style="fill:#b45f00">Vgs ' + (Math.round(vg * 10) / 10).toLocaleString("es-ES") + ' V</text>';
+    if (chispa > 0) { chispa--; s += '<circle cx="230" cy="170" r="' + (20 + chispa) + '" fill="#ffd257" opacity="' + chispa / 50 + '"/>'; }
+    $("cir").innerHTML = s;
+    $("arreglar").hidden = !roto;
+    var e = $("est");
+    if (roto) { e.className = "estado mal"; e.textContent = T("Al apagar sin diodo volante, el pico de tensión de la bobina del motor ha roto el MOSFET.", "Diodo librerik gabe itzaltzean, motorraren bobinaren tentsio-gailurrak MOSFETa hautsi du."); }
+    else if (pin === 2 && !pull) { e.className = "estado mal"; e.textContent = T("La puerta está «al aire»: recoge ruido y el motor arranca y para solo. Pon la pull-down.", "Atea «airean» dago: zarata jasotzen du eta motorra bere kabuz abiatu eta gelditzen da. Jarri pull-downa."); }
+    else if (on) { e.className = "estado ok"; e.textContent = T("Vgs = 5 V: el canal conduce y el motor gira. La puerta casi no consume corriente.", "Vgs = 5 V: kanalak eroaten du eta motorrak biratzen du. Ateak ia ez du korronterik kontsumitzen."); }
+    else { e.className = "estado"; e.textContent = T("Vgs = 0 V: MOSFET en corte, motor parado.", "Vgs = 0 V: MOSFETa ebakiduran, motorra geldirik."); }
+    requestAnimationFrame(pinta);
+  }
+  $("pin").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; pin = +b.dataset.p;
+    [].forEach.call($("pin").querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); }); });
+  $("diodo").addEventListener("click", function(){ diodo = !diodo; this.setAttribute("aria-pressed", diodo); });
+  $("pull").addEventListener("click", function(){ pull = !pull; this.setAttribute("aria-pressed", pull); });
+  $("arreglar").addEventListener("click", function(){ roto = false; vel = 0; });
+  pinta();
+})();
+</script>
+</body>
+</html>

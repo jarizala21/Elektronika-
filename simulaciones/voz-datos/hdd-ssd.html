@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HDD frente a SSD</title>
+<meta name="description" content="Cómo funcionan por dentro el disco duro mecánico (platos, cabezal) y el disco sólido (memoria flash), una carrera de lectura y la comparación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.tt{font-size:12px;font-weight:700;fill:#242d5f}.txt{font-size:10px;font-weight:600;fill:#5d6382}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Voz y datos · Hardware" data-eu="Ahotsa eta datuak · Hardwarea"></p>
+      <h1 data-es="HDD frente a SSD" data-eu="HDD vs SSD"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="barrutik" data-es="Por dentro" data-eu="Barrutik">
+    <div class="dos">
+      <figure class="fig"><svg id="hdd" viewBox="0 0 300 230" role="img" aria-label="Disco duro por dentro"></svg><figcaption>HDD</figcaption></figure>
+      <figure class="fig"><svg id="ssd" viewBox="0 0 300 230" role="img" aria-label="Disco sólido por dentro"></svg><figcaption>SSD</figcaption></figure>
+    </div>
+    <div class="mandos"><button type="button" class="boton naranja" id="carrera" data-es="Leer 12 archivos repartidos" data-eu="Sakabanatutako 12 fitxategi irakurri"></button></div>
+    <div class="lectura-g"><div><small data-es="HDD leídos" data-eu="HDD irakurrita"></small><b id="nh"></b></div><div><small data-es="SSD leídos" data-eu="SSD irakurrita"></small><b id="ns"></b></div><div><small data-es="Tiempo" data-eu="Denbora"></small><b id="tm"></b></div></div>
+    <div class="rejilla">
+      <div class="card"><h3>HDD</h3><p class="es">Platos magnéticos que giran (5400–7200 rpm) y un <b>cabezal</b> en un brazo que se mueve hasta la pista. Cada salto de pista lleva unos milisegundos: por eso es lento con muchos archivos pequeños.</p><p class="eu">Biratzen duten plater magnetikoak (5400–7200 rpm) eta beso batean dagoen <b>buru</b> bat, pistaraino mugitzen dena. Pista-jauzi bakoitzak milisegundo batzuk behar ditu: horregatik da motela fitxategi txiki askorekin.</p></div>
+      <div class="card"><h3>SSD</h3><p class="es">Chips de <b>memoria flash NAND</b> y un controlador. No tiene piezas móviles: accede a cualquier dato casi al instante y en paralelo a varios chips.</p><p class="eu"><b>NAND flash memoria</b>-txipak eta kontroladore bat. Ez du pieza mugikorrik: edozein datutara ia berehala iristen da eta hainbat txipetara aldi berean.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="konparazioa" data-es="Comparativa" data-eu="Konparazioa" hidden>
+    <div class="tabla"><table>
+      <tr><th></th><th>HDD</th><th>SSD SATA</th><th>SSD NVMe</th></tr>
+      <tr><td data-es="Velocidad lectura" data-eu="Irakurketa-abiadura"></td><td>~150 MB/s</td><td>~550 MB/s</td><td>3000–7000 MB/s</td></tr>
+      <tr><td data-es="Tiempo de acceso" data-eu="Sarbide-denbora"></td><td>~10 ms</td><td>~0,1 ms</td><td>~0,02 ms</td></tr>
+      <tr><td data-es="Conexión" data-eu="Konexioa"></td><td>SATA</td><td>SATA</td><td>M.2 PCIe</td></tr>
+      <tr><td data-es="Ruido y golpes" data-eu="Zarata eta kolpeak"></td><td data-es="Hace ruido, delicado" data-eu="Zarata egiten du, hauskorra"></td><td data-es="Silencioso, resistente" data-eu="Isila, sendoa"></td><td data-es="Silencioso, resistente" data-eu="Isila, sendoa"></td></tr>
+      <tr><td data-es="Precio por GB" data-eu="Prezioa GB-ko"></td><td data-es="El más barato" data-eu="Merkeena"></td><td data-es="Medio" data-eu="Ertaina"></td><td data-es="Medio-alto" data-eu="Ertain-altua"></td></tr>
+      <tr><td data-es="Uso típico" data-eu="Erabilera tipikoa"></td><td data-es="Copias y archivos grandes" data-eu="Kopiak eta fitxategi handiak"></td><td data-es="Mejorar un PC antiguo" data-eu="PC zahar bat hobetu"></td><td data-es="Sistema operativo y programas" data-eu="Sistema eragilea eta programak"></td></tr>
+    </table></div>
+    <div class="recuerda"><h2 data-es="Mantenimiento" data-eu="Mantentze-lanak"></h2><p class="es">Un HDD se puede <b>desfragmentar</b>; un SSD no (lo desgasta): el sistema le manda la orden <b>TRIM</b>. Los dos se vigilan con <b>S.M.A.R.T.</b> para adelantarse a las averías.</p><p class="eu">HDD bat <b>desfragmenta</b> daiteke; SSD bat ez (higatu egiten du): sistemak <b>TRIM</b> agindua bidaltzen dio. Biak <b>S.M.A.R.T.</b> bidez zaintzen dira matxurei aurrea hartzeko.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var giro = 0, brazo = 0.3, objetivo = 0.3, archivos = [], ih = 0, is = 0, t0 = 0, activo = false, espera = 0, ultimo = null, tiempo = 0, ssdFin = 0, chipAct = -1;
+  function nueva(){ archivos = []; for (var k = 0; k < 12; k++) archivos.push({ r: 0.15 + Math.random() * 0.8, a: Math.random() * Math.PI * 2 }); ih = 0; is = 0; activo = true; tiempo = 0; ssdFin = 0; objetivo = archivos[0].r; espera = 0; }
+  function paso(dt){
+    giro += dt * 7200 / 60 * 360 / 40; // a cámara lenta (÷40)
+    if (!activo) return;
+    tiempo += dt;
+    if (is < 12) { is = Math.min(12, is + dt * 12 / 0.35); chipAct = Math.floor(is) % 4; if (is >= 12) ssdFin = tiempo; }
+    if (ih < 12) {
+      var d = objetivo - brazo;
+      if (Math.abs(d) > 0.01) brazo += Math.sign(d) * Math.min(Math.abs(d), dt * 0.9);
+      else { espera += dt; if (espera > 0.35) { espera = 0; ih++; if (ih < 12) objetivo = archivos[ih].r; } }
+    } else activo = false;
+  }
+  function pinta(){
+    var h = '<rect x="10" y="10" width="280" height="210" rx="12" fill="#c9cfd8" stroke="#8a8f98" stroke-width="2"/>';
+    h += '<circle cx="120" cy="115" r="90" fill="#a8b0bc"/><circle cx="120" cy="115" r="86" fill="url(#plato)"/>';
+    h += '<defs><radialGradient id="plato"><stop offset="0" stop-color="#e8ecf1"/><stop offset=".6" stop-color="#b9c1cc"/><stop offset="1" stop-color="#d9dee5"/></radialGradient></defs>';
+    for (var k = 1; k <= 5; k++) h += '<circle cx="120" cy="115" r="' + (18 + k * 13) + '" fill="none" stroke="#8a8f98" stroke-width=".6" opacity=".6"/>';
+    archivos.forEach(function(f, i){ var a = f.a + giro * Math.PI / 180, r = 18 + f.r * 66; h += '<circle cx="' + (120 + r * Math.cos(a)) + '" cy="' + (115 + r * Math.sin(a)) + '" r="4" fill="' + (i < ih ? "#1e9a45" : "#f39200") + '"/>'; });
+    h += '<circle cx="120" cy="115" r="16" fill="#8a8f98"/><circle cx="120" cy="115" r="5" fill="#5d6382"/>';
+    // el cabezal se coloca a la distancia rr del centro, en la pista del archivo que se lee
+    var px = 250, py = 190, rr = 18 + brazo * 66, ang0 = Math.atan2(py - 115, px - 120) - 0.35;
+    var tx = 120 + rr * Math.cos(ang0), ty = 115 + rr * Math.sin(ang0);
+    h += '<path d="M' + px + ' ' + py + 'L' + tx + ' ' + ty + '" stroke="#5d6382" stroke-width="8" stroke-linecap="round"/><circle cx="' + tx + '" cy="' + ty + '" r="5" fill="#242d5f"/><circle cx="' + px + '" cy="' + py + '" r="12" fill="#5d6382"/>';
+    h += '<text class="txt" x="284" y="30" text-anchor="end">' + T("plato", "platera") + '</text><text class="txt" x="284" y="168" text-anchor="end">' + T("cabezal", "burua") + '</text>';
+    $("hdd").innerHTML = h;
+    var s = '<rect x="10" y="40" width="280" height="150" rx="8" fill="#1f5c3c"/>';
+    s += '<rect x="30" y="70" width="60" height="50" rx="4" fill="#111"/><text x="60" y="99" text-anchor="middle" style="font-size:9px;font-weight:700;fill:#c9cfd8">' + T("CONTROL.", "KONTROL.") + '</text>';
+    for (var c = 0; c < 4; c++) { var x = 110 + c * 44; s += '<rect x="' + x + '" y="60" width="36" height="70" rx="3" fill="' + (activo && is < 12 && chipAct === c ? "#f39200" : "#111") + '"/><text x="' + (x + 18) + '" y="100" text-anchor="middle" style="font-size:8px;font-weight:700;fill:#c9cfd8">NAND</text>'; }
+    s += '<rect x="30" y="140" width="40" height="30" rx="3" fill="#111"/><text x="50" y="159" text-anchor="middle" style="font-size:8px;font-weight:700;fill:#c9cfd8">DRAM</text>';
+    s += '<path d="M290 70v80" stroke="#c9a227" stroke-width="6" stroke-dasharray="3 3"/><text class="txt" x="150" y="210" text-anchor="middle">' + T("sin piezas móviles", "pieza mugikorrik gabe") + '</text>';
+    $("ssd").innerHTML = s;
+    $("nh").textContent = ih + " / 12"; $("ns").textContent = Math.floor(is) + " / 12";
+    $("tm").textContent = archivos.length ? (Math.round(tiempo * 10) / 10).toLocaleString("es-ES") + " s" + (ssdFin ? " (SSD " + (Math.round(ssdFin * 10) / 10).toLocaleString("es-ES") + " s)" : "") : "–";
+  }
+  function bucle(a){ if (ultimo !== null) paso(Math.min((a - ultimo) / 1000, 0.05)); ultimo = a; pinta(); requestAnimationFrame(bucle); }
+  $("carrera").addEventListener("click", nueva);
+  requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

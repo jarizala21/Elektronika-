@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipos y códigos de condensadores</title>
+<meta name="description" content="Condensadores cerámicos, electrolíticos, de poliéster, tántalo y variables; cómo leer el código de tres cifras y sus símbolos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.tipo svg{display:block;width:100%;height:110px;background:#fff;border-radius:14px;margin-bottom:8px}
+.cod input{font-size:28px!important;font-weight:700!important;width:130px;text-align:center;padding:6px!important;color:var(--marino-txt)!important;letter-spacing:.1em}
+.grande{font-size:clamp(24px,7vw,34px);font-weight:700;color:var(--marino-txt)}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Condensadores y bobinas" data-eu="Analogikoa · Kondentsadoreak eta bobinak"></p>
+      <h1 data-es="Tipos y códigos de condensadores" data-eu="Kondentsadore motak eta kodeak"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="motak" data-es="Tipos" data-eu="Motak">
+    <div class="rejilla">
+      <div class="card tipo"><svg viewBox="0 0 160 110"><path d="M66 70v35M94 70v35" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><ellipse cx="80" cy="45" rx="34" ry="32" fill="#e8a33a" stroke="#8a5a14" stroke-width="2"/><text x="80" y="51" text-anchor="middle" font-family="Poppins" font-weight="700" font-size="16" fill="#5a3500">104</text></svg>
+        <h3 data-es="Cerámico" data-eu="Zeramikoa"></h3><p class="es">Pequeño, <b>sin polaridad</b>. De pF a ~1 µF. Filtros y desacoplo junto a los chips.</p><p class="eu">Txikia, <b>polaritaterik gabe</b>. pF-etik ~1 µF-era. Iragazkiak eta txipen ondoko desakoplamendua.</p></div>
+      <div class="card tipo"><svg viewBox="0 0 160 110"><path d="M68 92v16M92 92v12" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="52" y="6" width="56" height="86" rx="10" fill="#1f3c88"/><rect x="92" y="6" width="16" height="86" fill="#c9cfd8"/><g fill="#1f3c88" font-family="Poppins" font-weight="700" font-size="14"><text x="96" y="28">−</text><text x="96" y="52">−</text><text x="96" y="76">−</text></g><text x="72" y="54" text-anchor="middle" font-family="Poppins" font-weight="600" font-size="11" fill="#fff" transform="rotate(-90 72 50)">470µF 25V</text></svg>
+        <h3 data-es="Electrolítico" data-eu="Elektrolitikoa"></h3><p class="es"><b>Con polaridad</b>: la franja marca el <b>−</b> y la patilla larga es el <b>+</b>. Mucha capacidad (µF a mF). Si se pone al revés, <b>puede explotar</b>.</p><p class="eu"><b>Polaritatearekin</b>: bandak <b>−</b> adierazten du eta hanka luzea <b>+</b> da. Kapazitate handia (µF-etik mF-ra). Alderantziz jarriz gero, <b>lehertu daiteke</b>.</p></div>
+      <div class="card tipo"><svg viewBox="0 0 160 110"><path d="M64 80v26M96 80v26" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="44" y="20" width="72" height="62" rx="8" fill="#d9532c"/><text x="80" y="48" text-anchor="middle" font-family="Poppins" font-weight="700" font-size="13" fill="#fff">.1J</text><text x="80" y="66" text-anchor="middle" font-family="Poppins" font-weight="600" font-size="11" fill="#fff">100V</text></svg>
+        <h3 data-es="Poliéster / film" data-eu="Poliesterra / filma"></h3><p class="es">Sin polaridad, muy estables. nF a µF. Audio, temporizadores y red (clase X/Y).</p><p class="eu">Polaritaterik gabe, oso egonkorrak. nF-etik µF-era. Audioa, tenporizadoreak eta sarea (X/Y klasea).</p></div>
+      <div class="card tipo"><svg viewBox="0 0 160 110"><path d="M70 74v32M90 74v32" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><path d="M58 50a22 26 0 0 1 44 0v20a8 8 0 0 1-8 8H66a8 8 0 0 1-8-8z" fill="#e3c13a" stroke="#8a7414" stroke-width="2"/><text x="66" y="44" font-family="Poppins" font-weight="700" font-size="14" fill="#5a4a00">+</text><text x="80" y="66" text-anchor="middle" font-family="Poppins" font-weight="600" font-size="11" fill="#5a4a00">10µ</text></svg>
+        <h3 data-es="Tántalo" data-eu="Tantaloa"></h3><p class="es"><b>Con polaridad</b> (marca el <b>+</b>). Pequeño para su capacidad. Fuentes de equipos compactos.</p><p class="eu"><b>Polaritatearekin</b> (<b>+</b> markatzen du). Txikia bere kapazitaterako. Ekipo trinkoen iturriak.</p></div>
+      <div class="card tipo"><svg viewBox="0 0 160 110"><rect x="40" y="38" width="80" height="34" rx="3" fill="#b7956a"/><rect x="34" y="38" width="16" height="34" fill="#c9cfd8"/><rect x="110" y="38" width="16" height="34" fill="#c9cfd8"/><path d="M20 90h120" stroke="#2f7d4f" stroke-width="10"/></svg>
+        <h3>SMD</h3><p class="es">Montaje superficial, sin patillas. Se sueldan sobre la placa. Normalmente no llevan valor impreso.</p><p class="eu">Gainazaleko muntaketa, hankarik gabe. Plakaren gainean soldatzen dira. Normalean ez dute balioa inprimatuta.</p></div>
+      <div class="card tipo"><svg viewBox="0 0 160 110"><path d="M60 80v26M80 80v26M100 80v26" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><rect x="44" y="24" width="72" height="56" rx="6" fill="#f2f2f2" stroke="#8a8f98" stroke-width="2"/><circle cx="80" cy="52" r="18" fill="#2d73c9"/><path d="M70 52h20" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>
+        <h3 data-es="Variable / trimmer" data-eu="Aldakorra / trimmerra"></h3><p class="es">La capacidad se ajusta girando. Sintonía de radio y ajuste fino de osciladores.</p><p class="eu">Kapazitatea biratuz doitzen da. Irrati-sintonia eta osziladoreen doikuntza fina.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="kodea" data-es="Leer el código" data-eu="Kodea irakurri" hidden>
+    <div class="card cod">
+      <h2 data-es="Código de 3 cifras (en pF)" data-eu="3 zifrako kodea (pF-tan)"></h2>
+      <p class="es">Las dos primeras cifras son el número y la tercera, <b>cuántos ceros</b>. El resultado está en <b>picofaradios</b>.</p>
+      <p class="eu">Lehen bi zifrak zenbakia dira eta hirugarrena, <b>zenbat zero</b>. Emaitza <b>pikofaradiotan</b> dago.</p>
+      <div class="mandos"><input id="cod" maxlength="4" value="104" inputmode="text" aria-label="Código"><span class="grande" id="res"></span></div>
+      <p id="paso" class="nota" style="margin-top:8px"></p>
+    </div>
+    <div class="tabla"><table>
+      <tr><th data-es="Letra" data-eu="Letra"></th><th data-es="Tolerancia" data-eu="Tolerantzia"></th><th data-es="Letra" data-eu="Letra"></th><th data-es="Tolerancia" data-eu="Tolerantzia"></th></tr>
+      <tr><td>B</td><td>±0,1 pF</td><td>J</td><td>±5 %</td></tr><tr><td>C</td><td>±0,25 pF</td><td>K</td><td>±10 %</td></tr><tr><td>D</td><td>±0,5 pF</td><td>M</td><td>±20 %</td></tr><tr><td>F</td><td>±1 %</td><td>Z</td><td>+80 / −20 %</td></tr>
+    </table></div>
+    <div class="recuerda"><h2 data-es="Equivalencias" data-eu="Baliokidetasunak"></h2>
+      <p>1 µF = 1000 nF = 1 000 000 pF &nbsp;·&nbsp; 1 nF = 1000 pF</p>
+      <p class="es">También se escribe con la letra en lugar de la coma: <b>4n7</b> = 4,7 nF; <b>µ1</b> o <b>.1</b> = 0,1 µF. En los electrolíticos el valor viene directo: <b>470 µF 25 V</b> (la tensión es la máxima que aguanta).</p>
+      <p class="eu">Letra komaren ordez ere idazten da: <b>4n7</b> = 4,7 nF; <b>µ1</b> edo <b>.1</b> = 0,1 µF. Elektrolitikoetan balioa zuzenean dator: <b>470 µF 25 V</b> (tentsioa jasan dezakeen maximoa da).</p></div>
+  </section>
+
+  <section class="panel" data-tab="sinboloak" data-es="Símbolos" data-eu="Sinboloak" hidden>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h42M68 45h42M52 22v46M68 22v46"/></svg><b data-es="Sin polaridad" data-eu="Polaritaterik gabe"></b></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h42M72 45h38M52 22v46"/><path class="s-l" d="M76 22c-8 8-8 38 0 46"/><text class="s-t" x="34" y="30">+</text></svg><b data-es="Electrolítico (polarizado)" data-eu="Elektrolitikoa (polarizatua)"></b></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h42M68 45h42M52 22v46M68 22v46M36 72L86 18"/><path class="s-f" d="M88 16l-2 10-7-6z"/></svg><b data-es="Variable" data-eu="Aldakorra"></b></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var TOL = { B:"±0,1 pF", C:"±0,25 pF", D:"±0,5 pF", F:"±1 %", G:"±2 %", J:"±5 %", K:"±10 %", M:"±20 %", Z:"+80 / −20 %" };
+  function n(v){ return (Math.round(v * 1000) / 1000).toLocaleString("es-ES"); }
+  function leer(){
+    var c = $("cod").value.trim().toUpperCase(), m = c.match(/^(\d)(\d)(\d)([A-Z]?)$/);
+    if (!m) { $("res").textContent = "–"; $("paso").textContent = T("Escribe tres cifras, por ejemplo 104, 473 o 222K.", "Idatzi hiru zifra, adibidez 104, 473 edo 222K."); return; }
+    var pf = (+m[1] * 10 + +m[2]) * Math.pow(10, +m[3]);
+    var txt = pf >= 1e6 ? n(pf / 1e6) + " µF" : pf >= 1000 ? n(pf / 1000) + " nF" : n(pf) + " pF";
+    $("res").textContent = "= " + txt + (m[4] && TOL[m[4]] ? " " + TOL[m[4]] : "");
+    $("paso").textContent = m[1] + m[2] + " + " + m[3] + T(" ceros = ", " zero = ") + pf.toLocaleString("es-ES") + " pF = " + txt;
+  }
+  $("cod").addEventListener("input", leer);
+  alCambiarIdioma(leer); leer();
+})();
+</script>
+</body>
+</html>

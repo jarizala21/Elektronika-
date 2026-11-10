@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rectificador de media onda</title>
+<meta name="description" content="Un diodo convierte la alterna en una continua pulsante dejando pasar solo los semiciclos positivos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Diodos" data-eu="Analogikoa · Diodoak"></p>
+      <h1 data-es="Rectificador de media onda" data-eu="Uhin erdiko artezgailua"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 170" role="img" aria-label="Circuito rectificador de media onda"></svg></figure>
+    <figure class="fig"><svg id="gr" viewBox="0 0 340 200" role="img" aria-label="Tensión de entrada y de salida"></svg></figure>
+    <div class="mandos">
+      <button type="button" class="boton claro" id="pausa" data-es="Pausa" data-eu="Pausa"></button>
+      <button type="button" class="boton claro" id="girar" aria-pressed="false" data-es="Diodo al revés" data-eu="Diodoa alderantziz"></button>
+    </div>
+    <div class="card mandos"><div class="deslizador"><label><span data-es="Tensión eficaz del secundario" data-eu="Bigarrenaren balio eraginkorra"></span><output id="vo"></output></label><input id="v" type="range" min="6" max="24" value="12"></div></div>
+    <div class="lectura-g"><div><small>Vp</small><b id="vp"></b></div><div><small data-es="Vp salida" data-eu="Irteerako Vp"></small><b id="vps"></b></div><div><small data-es="V media" data-eu="Batez besteko V"></small><b id="vm"></b></div><div><small data-es="Frecuencia" data-eu="Maiztasuna"></small><b>50 Hz</b></div></div>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="Explicación" data-eu="Azalpena" hidden>
+    <div class="card"><h2 data-es="Cómo funciona" data-eu="Nola funtzionatzen duen"></h2>
+      <ul class="es"><li><b>Semiciclo positivo:</b> el ánodo es más positivo que el cátodo → el diodo conduce y la tensión llega a la carga (menos 0,7 V).</li><li><b>Semiciclo negativo:</b> el diodo queda en inversa → no pasa corriente y la salida es 0 V.</li><li>Resultado: una <b>continua pulsante</b> con un pulso cada 20 ms (50 Hz).</li></ul>
+      <ul class="eu"><li><b>Zikloerdi positiboa:</b> anodoa katodoa baino positiboagoa da → diodoak eroaten du eta tentsioa kargara iristen da (0,7 V gutxiago).</li><li><b>Zikloerdi negatiboa:</b> diodoa alderantzizko polarizazioan geratzen da → ez da korronterik pasatzen eta irteera 0 V da.</li><li>Emaitza: <b>korronte zuzen pultsatzailea</b>, pultsu bat 20 ms-ro (50 Hz).</li></ul></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Fórmulas" data-eu="Formulak"></h3><p><span class="formula">Vp = Vef · √2</span></p><p><span class="formula">Vmed ≈ (Vp − 0,7) / π</span></p></div>
+      <div class="card"><h3 data-es="Inconvenientes" data-eu="Desabantailak"></h3><p class="es">Se desaprovecha la mitad de la onda y la salida tiene mucho rizado. Por eso en las fuentes se usa el <b>puente de Graetz</b> con un condensador de filtro.</p><p class="eu">Uhinaren erdia alferrik galtzen da eta irteerak kizkurdura handia du. Horregatik iturrietan <b>Graetz zubia</b> erabiltzen da iragazki-kondentsadore batekin.</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var t = 0, ultimo = null, pausa = false, reves = false;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function salida(vin){ return reves ? Math.min(0, vin + 0.7) : Math.max(0, vin - 0.7); }
+  function pinta(){
+    var Vef = +$("v").value, Vp = Vef * Math.SQRT2, f = 50, vin = Vp * Math.sin(2 * Math.PI * f * t), vo = salida(vin), cond = Math.abs(vo) > 0.01;
+    $("vo").textContent = Vef + " V"; $("vp").textContent = n(Vp, 1) + " V"; $("vps").textContent = n(Vp - 0.7, 1) + " V"; $("vm").textContent = n((reves ? -1 : 1) * (Vp - 0.7) / Math.PI, 1) + " V";
+    var s = '<path d="M60 30h20M60 140h20" stroke="#242d5f" stroke-width="3"/>';
+    s += '<path d="M40 40c12 0 12 14 0 14 12 0 12 14 0 14 12 0 12 14 0 14 12 0 12 14 0 14 12 0 12 14 0 14" fill="none" stroke="#c87533" stroke-width="3" transform="translate(30 0)"/>';
+    s += '<path d="M70 30V40M70 110v30" stroke="#242d5f" stroke-width="3"/><text class="txt" x="6" y="90">230 V</text><text class="txt" x="10" y="104">~</text>';
+    s += '<path d="M24 40c-12 0-12 14 0 14-12 0-12 14 0 14-12 0-12 14 0 14-12 0-12 14 0 14-12 0-12 14 0 14" fill="none" stroke="#c87533" stroke-width="3" transform="translate(30 0)"/><path d="M48 38v74M52 38v74" stroke="#242d5f" stroke-width="2"/>';
+    s += '<path d="M80 30h60M180 30h100v30M280 110v30H80" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    var dcol = cond ? "#f39200" : "#9aa3ad";
+    s += reves ? '<path d="M176 14v32l-34-16z" fill="' + dcol + '"/><path d="M142 14v32" stroke="' + dcol + '" stroke-width="4"/>' : '<path d="M142 14v32l34-16z" fill="' + dcol + '"/><path d="M176 14v32" stroke="' + dcol + '" stroke-width="4"/>';
+    s += '<path d="M176 30h4M138 30h4" stroke="#242d5f" stroke-width="3"/>';
+    s += '<rect x="270" y="60" width="20" height="50" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="tt" x="298" y="90">R<tspan style="font-size:9px">L</tspan></text>';
+    s += '<text class="tt" x="110" y="80">' + n(vin, 1) + ' V</text><text class="tt" x="214" y="80" style="fill:#b45f00">' + n(vo, 1) + ' V</text>';
+    s += '<text class="txt" x="160" y="64" text-anchor="middle">' + (cond ? T("conduce", "eroaten du") : T("bloquea", "blokeatzen du")) + '</text>';
+    $("cir").innerHTML = s;
+    var g = '<rect x="30" y="10" width="300" height="180" fill="#fbfcfe" stroke="#d0d6db"/><path d="M30 100h300" stroke="#8d95a3"/>';
+    for (var gx = 30; gx <= 330; gx += 75) g += '<path d="M' + gx + ' 10v180" stroke="#eceff3"/>';
+    var k = 80 / 34, di = "", dout = "";
+    for (var x = 0; x <= 300; x += 2) { var tt = x / 300 * 0.04, v = Vp * Math.sin(2 * Math.PI * f * tt); di += (x ? "L" : "M") + (30 + x) + " " + (100 - v * k); dout += (x ? "L" : "M") + (30 + x) + " " + (100 - salida(v) * k); }
+    g += '<path d="' + di + '" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-dasharray="5 4"/><path d="' + dout + '" fill="none" stroke="#f39200" stroke-width="3.5"/>';
+    var cx = 30 + ((t % 0.04) / 0.04) * 300; g += '<path d="M' + cx + ' 10v180" stroke="#242d5f" stroke-width="1.5"/>';
+    g += '<text class="txt" x="36" y="24" style="fill:#2b6cb0">' + T("entrada", "sarrera") + '</text><text class="txt" x="100" y="24" style="fill:#b45f00">' + T("salida", "irteera") + '</text><text class="txt" x="326" y="186" text-anchor="end">40 ms</text>';
+    $("gr").innerHTML = g;
+  }
+  function bucle(a){ if (ultimo !== null && !pausa) t += (a - ultimo) / 1000 / 40; ultimo = a; pinta(); requestAnimationFrame(bucle); }
+  $("pausa").addEventListener("click", function(){ pausa = !pausa; this.textContent = pausa ? T("Seguir", "Jarraitu") : T("Pausa", "Pausa"); });
+  $("girar").addEventListener("click", function(){ reves = !reves; this.setAttribute("aria-pressed", reves); });
+  requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

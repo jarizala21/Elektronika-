@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Curvas del transistor BJT</title>
+<meta name="description" content="Curvas características de salida del transistor, recta de carga, punto de trabajo y zonas de corte, activa y saturación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:10.5px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Transistores" data-eu="Analogikoa · Transistoreak"></p>
+      <h1 data-es="Curvas del transistor BJT" data-eu="BJT transistorearen kurbak"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="kurbak" data-es="Curvas" data-eu="Kurbak">
+    <figure class="fig"><svg id="gr" viewBox="0 0 340 250" role="img" aria-label="Curvas de salida y recta de carga"></svg>
+      <figcaption data-es="Ic frente a Vce para distintas corrientes de base. La recta naranja es la recta de carga." data-eu="Ic Vce-ren arabera oinarriko korronte desberdinetarako. Zuzen laranja karga-zuzena da."></figcaption></figure>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Corriente de base Ib" data-eu="Oinarriko korrontea Ib"></span><output id="ibo"></output></label><input id="ib" type="range" min="0" max="100" value="40"></div>
+      <div class="deslizador"><label><span data-es="Resistencia de colector Rc" data-eu="Kolektoreko erresistentzia Rc"></span><output id="rco"></output></label><input id="rc" type="range" min="0" max="4" value="2"></div>
+    </div>
+    <div class="lectura-g"><div><small>I<sub>C</sub></small><b id="ic"></b></div><div><small>V<sub>CE</sub></small><b id="vce"></b></div><div><small data-es="Zona" data-eu="Eremua"></small><b id="zona"></b></div></div>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="Cómo se leen" data-eu="Nola irakurri" hidden>
+    <div class="card"><h2 data-es="Curvas de salida" data-eu="Irteerako kurbak"></h2>
+      <p class="es">Cada curva corresponde a una corriente de base. En la zona plana, <b>Ic = β · Ib</b> casi sin depender de Vce: el transistor es una <b>fuente de corriente</b> controlada por la base.</p>
+      <p class="eu">Kurba bakoitza oinarriko korronte bati dagokio. Zati lauan, <b>Ic = β · Ib</b> ia Vce-ren menpe egon gabe: transistorea oinarriak kontrolatutako <b>korronte-iturri</b> bat da.</p></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Recta de carga" data-eu="Karga-zuzena"></h3><p class="es">Une los puntos (Vce = Vcc; Ic = 0) y (Vce = 0; Ic = Vcc/Rc). El transistor <b>solo puede trabajar sobre esta recta</b>.</p><p class="eu">(Vce = Vcc; Ic = 0) eta (Vce = 0; Ic = Vcc/Rc) puntuak lotzen ditu. Transistoreak <b>zuzen honen gainean bakarrik</b> lan egin dezake.</p></div>
+      <div class="card"><h3 data-es="Punto de trabajo Q" data-eu="Lan-puntua Q"></h3><p class="es">Es el cruce de la recta de carga con la curva de la Ib actual. En un amplificador se coloca en el centro; en un interruptor, en los extremos.</p><p class="eu">Karga-zuzenaren eta uneko Ib-ren kurbaren arteko gurutzea da. Anplifikadore batean erdian jartzen da; etengailu batean, muturretan.</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var VCC = 12, beta = 100, RCs = [220, 470, 1000, 2200, 4700];
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function icurva(ib, vce){ return beta * ib * (1 - Math.exp(-vce / 0.25)) * (1 + vce / 80); }
+  var X0 = 40, Y0 = 210, W = 290, H = 195, VMAX = 14, IMAX = 0.06;
+  function px(v){ return X0 + v / VMAX * W; } function py(i){ return Y0 - i / IMAX * H; }
+  function pinta(){
+    var Ib = +$("ib").value * 1e-6 * 5, Rc = RCs[+$("rc").value];
+    $("ibo").textContent = n(Ib * 1e6, 0) + " µA"; $("rco").textContent = Rc >= 1000 ? n(Rc / 1000, 1) + " kΩ" : Rc + " Ω";
+    var g = '<rect x="' + X0 + '" y="' + (Y0 - H) + '" width="' + W + '" height="' + H + '" fill="#fbfcfe" stroke="#d0d6db"/>';
+    g += '<rect x="' + X0 + '" y="' + (Y0 - H) + '" width="' + (px(0.3) - X0) + '" height="' + H + '" fill="#fde6e3" opacity=".7"/><rect x="' + X0 + '" y="' + (Y0 - 4) + '" width="' + W + '" height="4" fill="#e3eefa"/>';
+    g += '<text class="txt" x="' + (X0 + 3) + '" y="' + (Y0 - H + 12) + '" style="fill:#c62f2f">' + T("sat.", "ase.") + '</text><text class="txt" x="' + (X0 + W - 4) + '" y="' + (Y0 - 8) + '" text-anchor="end" style="fill:#2b6cb0">' + T("corte", "ebakidura") + '</text>';
+    for (var k = 1; k <= 5; k++) {
+      var ibk = k * 100e-6, d = "";
+      for (var v = 0; v <= VMAX; v += 0.1) d += (v ? "L" : "M") + px(v) + " " + Math.max(py(icurva(ibk, v)), Y0 - H);
+      g += '<path d="' + d + '" fill="none" stroke="#9aa3ad" stroke-width="1.6"/><text class="txt" x="' + (X0 + W - 2) + '" y="' + (py(icurva(ibk, VMAX)) - 3) + '" text-anchor="end">' + (k * 100) + ' µA</text>';
+    }
+    var dI = ""; for (var v2 = 0; v2 <= VMAX; v2 += 0.1) dI += (v2 ? "L" : "M") + px(v2) + " " + Math.max(py(icurva(Ib, v2)), Y0 - H);
+    g += '<path d="' + dI + '" fill="none" stroke="#242d5f" stroke-width="2.6"/>';
+    var Icmax = VCC / Rc;
+    g += '<path d="M' + px(0) + ' ' + Math.max(py(Icmax), Y0 - H - 20) + 'L' + px(VCC) + ' ' + py(0) + '" stroke="#f39200" stroke-width="3"/>';
+    // punto Q: icurva(Ib, vce) = (VCC - vce)/Rc
+    var lo = 0, hi = VCC; for (var i = 0; i < 60; i++) { var m = (lo + hi) / 2; if (icurva(Ib, m) > (VCC - m) / Rc) hi = m; else lo = m; }
+    var vq = lo, iq = (VCC - vq) / Rc;
+    g += '<circle cx="' + px(vq) + '" cy="' + py(iq) + '" r="7" fill="#f39200" stroke="#242d5f" stroke-width="2"/><text class="tt" x="' + (px(vq) + 10) + '" y="' + (py(iq) - 8) + '">Q</text>';
+    g += '<path d="M' + X0 + ' ' + Y0 + 'h' + W + 'M' + X0 + ' ' + Y0 + 'v-' + H + '" stroke="#5d6382" stroke-width="1.4"/>';
+    g += '<text class="txt" x="' + (X0 + W) + '" y="' + (Y0 + 16) + '" text-anchor="end">Vce (V)</text><text class="txt" x="' + (X0 + 4) + '" y="' + (Y0 - H - 4) + '">Ic</text>';
+    [0, 4, 8, 12].forEach(function(v){ g += '<text class="txt" x="' + px(v) + '" y="' + (Y0 + 14) + '" text-anchor="middle">' + v + '</text>'; });
+    [0.02, 0.04, 0.06].forEach(function(i){ g += '<text class="txt" x="' + (X0 - 4) + '" y="' + (py(i) + 4) + '" text-anchor="end">' + (i * 1000) + 'm</text>'; });
+    $("gr").innerHTML = g;
+    $("ic").textContent = n(iq * 1000, 1) + " mA"; $("vce").textContent = n(vq, 2) + " V";
+    $("zona").textContent = Ib < 1e-6 ? T("Corte", "Ebakidura") : vq < 0.35 ? T("Saturación", "Asetasuna") : T("Activa", "Aktiboa");
+  }
+  ["ib","rc"].forEach(function(id){ $(id).addEventListener("input", pinta); });
+  alCambiarIdioma(pinta); pinta();
+})();
+</script>
+</body>
+</html>

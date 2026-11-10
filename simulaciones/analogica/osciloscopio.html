@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El osciloscopio</title>
+<meta name="description" content="Ajusta V/div y t/div y lee en la pantalla la tensión de pico, pico a pico, eficaz, el periodo y la frecuencia de una señal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.pant{background:#0d1a12;border-radius:16px;padding:8px}
+.pant svg{display:block;width:100%;height:auto}
+.resp{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.resp label{display:grid;gap:4px;font-size:12.5px;font-weight:600;color:var(--marino-txt)}
+.resp input{width:100%}
+
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Medida y señales" data-eu="Analogikoa · Neurketa eta seinaleak"></p>
+      <h1 data-es="El osciloscopio" data-eu="Osziloskopioa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="praktika" data-es="Practica" data-eu="Praktika">
+    <div class="pant"><svg id="osc" viewBox="0 0 400 320" role="img" aria-label="Pantalla del osciloscopio"></svg></div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span>VOLTS/DIV</span><output id="vdo"></output></label><input id="vd" type="range" min="0" max="7" value="4"></div>
+      <div class="deslizador"><label><span>TIME/DIV</span><output id="tdo"></output></label><input id="td" type="range" min="0" max="9" value="5"></div>
+      <div class="deslizador"><label><span data-es="Posición vertical" data-eu="Posizio bertikala"></span><output id="pyo"></output></label><input id="py" type="range" min="-4" max="4" step="0.5" value="0"></div>
+    </div>
+    <div class="card">
+      <h2 data-es="Mide la señal" data-eu="Neurtu seinalea"></h2>
+      <div class="resp">
+        <label>Vpp (V)<input id="r-vpp" inputmode="decimal"></label>
+        <label>Vp (V)<input id="r-vp" inputmode="decimal"></label>
+        <label>Vef (V)<input id="r-vef" inputmode="decimal"></label>
+        <label>T (ms)<input id="r-t" inputmode="decimal"></label>
+        <label>f (Hz)<input id="r-f" inputmode="decimal"></label>
+      </div>
+      <div class="mandos" style="margin-top:10px">
+        <button type="button" class="boton" id="comp" data-es="Comprobar" data-eu="Egiaztatu"></button>
+        <button type="button" class="boton claro" id="sol" data-es="Ver solución" data-eu="Ebazpena ikusi"></button>
+        <button type="button" class="boton naranja" id="otra" data-es="Otra señal" data-eu="Beste seinale bat"></button>
+      </div>
+    </div>
+    <div class="estado" id="fb" hidden></div>
+  </section>
+
+  <section class="panel" data-tab="nola" data-es="Cómo se mide" data-eu="Nola neurtzen den" hidden>
+    <div class="card"><h2 data-es="Dos mandos clave" data-eu="Bi kontrol nagusi"></h2>
+      <ul class="es"><li><b>VOLTS/DIV:</b> cuántos voltios vale cada cuadro <b>vertical</b>.</li><li><b>TIME/DIV:</b> cuánto tiempo vale cada cuadro <b>horizontal</b>.</li><li>Ajústalos hasta que la señal ocupe casi toda la pantalla y se vean 1–3 ciclos.</li></ul>
+      <ul class="eu"><li><b>VOLTS/DIV:</b> karratu <b>bertikal</b> bakoitzak zenbat volt balio duen.</li><li><b>TIME/DIV:</b> karratu <b>horizontal</b> bakoitzak zenbat denbora balio duen.</li><li>Doitu seinaleak ia pantaila osoa betetzen duen arte eta 1–3 ziklo ikusten diren arte.</li></ul></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Tensiones" data-eu="Tentsioak"></h3><p><span class="formula">Vpp = div · V/div</span></p><p><span class="formula">Vp = Vpp / 2</span></p><p><span class="formula">Vef = Vp / √2</span></p><p class="nota es">Vef solo así para senoidales.</p><p class="nota eu">Vef horrela sinusoidaletarako bakarrik.</p></div>
+      <div class="card"><h3 data-es="Tiempos" data-eu="Denborak"></h3><p><span class="formula">T = div · t/div</span></p><p><span class="formula">f = 1 / T</span></p><p class="nota es">Cuenta los cuadros de un ciclo completo (de pico a pico).</p><p class="nota eu">Zenbatu ziklo oso bateko karratuak (gailurretik gailurrera).</p></div>
+    </div>
+    <div class="recuerda"><h2 data-es="Ejemplo" data-eu="Adibidea"></h2>
+      <p class="es">La onda ocupa 6 cuadros de alto a 2 V/div → Vpp = 12 V, Vp = 6 V, Vef = 4,24 V. Un ciclo ocupa 4 cuadros a 0,5 ms/div → T = 2 ms, f = 500 Hz.</p>
+      <p class="eu">Uhinak 6 karratu hartzen ditu altueran 2 V/div-ekin → Vpp = 12 V, Vp = 6 V, Vef = 4,24 V. Ziklo batek 4 karratu hartzen ditu 0,5 ms/div-ekin → T = 2 ms, f = 500 Hz.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var VD = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20], TD = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10]; // ms
+  var sen = null, fase = 0;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function nueva(){
+    var Vps = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 15], fs = [50, 100, 200, 250, 500, 1000, 2000, 2500, 5000];
+    sen = { vp: Vps[Math.floor(Math.random() * Vps.length)], f: fs[Math.floor(Math.random() * fs.length)] };
+    ["vpp","vp","vef","t","f"].forEach(function(k){ var i = $("r-" + k); i.value = ""; i.className = ""; });
+    $("fb").hidden = true;
+  }
+  function pinta(){
+    var vd = VD[+$("vd").value], td = TD[+$("td").value], pos = +$("py").value;
+    $("vdo").textContent = (vd < 1 ? n(vd * 1000, 0) + " mV" : vd + " V"); $("tdo").textContent = td < 1 ? n(td * 1000, 0) + " µs" : td + " ms"; $("pyo").textContent = n(pos, 1) + " div";
+    var s = '<rect width="400" height="320" fill="#0d1a12"/>', D = 40;
+    for (var x = 0; x <= 400; x += D) s += '<path d="M' + x + ' 0v320" stroke="#2c5a3c" stroke-width="' + (x === 200 ? 1.6 : 0.8) + '"/>';
+    for (var y = 0; y <= 320; y += D) s += '<path d="M0 ' + y + 'h400" stroke="#2c5a3c" stroke-width="' + (y === 160 ? 1.6 : 0.8) + '"/>';
+    for (var k = 0; k <= 400; k += 8) s += '<path d="M' + k + ' 157v6M197 ' + k + 'h6" stroke="#2c5a3c"/>';
+    var d = "";
+    for (var px = 0; px <= 400; px += 1) {
+      var t = px / D * td / 1000, v = sen.vp * Math.sin(2 * Math.PI * sen.f * t + fase), yy = 160 - (v / vd + pos) * D;
+      yy = Math.max(-4, Math.min(324, yy)); d += (px ? "L" : "M") + px + " " + yy;
+    }
+    s += '<path d="' + d + '" fill="none" stroke="#7CFF9E" stroke-width="2.2" style="filter:drop-shadow(0 0 3px #7CFF9E)"/>';
+    s += '<text x="8" y="312" style="font-size:12px;font-weight:600;fill:#7CFF9E;font-family:monospace">CH1 ' + (vd < 1 ? n(vd * 1000, 0) + "mV" : vd + "V") + '/div   ' + (td < 1 ? n(td * 1000, 0) + "µs" : td + "ms") + '/div</text>';
+    $("osc").innerHTML = s;
+  }
+  function soluciones(){ var vp = sen.vp, T = 1000 / sen.f; return { vpp: 2 * vp, vp: vp, vef: vp / Math.SQRT2, t: T, f: sen.f }; }
+  $("comp").addEventListener("click", function(){
+    var s = soluciones(), bien = 0;
+    Object.keys(s).forEach(function(k){
+      var i = $("r-" + k), v = parseFloat(i.value.replace(",", "."));
+      if (i.value === "") { i.className = ""; return; }
+      var ok = isFinite(v) && Math.abs(v - s[k]) <= Math.abs(s[k]) * 0.06; i.className = ok ? "bien" : "malo"; if (ok) bien++;
+    });
+    $("fb").hidden = false; $("fb").className = "estado " + (bien === 5 ? "ok" : ""); $("fb").textContent = bien === 5 ? T("¡Todo correcto!", "Dena zuzen!") : T("Correctas: ", "Zuzenak: ") + bien + " / 5";
+  });
+  $("sol").addEventListener("click", function(){
+    var s = soluciones();
+    $("fb").hidden = false; $("fb").className = "estado";
+    $("fb").textContent = "Vpp = " + n(s.vpp, 2) + " V · Vp = " + n(s.vp, 2) + " V · Vef = " + n(s.vef, 2) + " V · T = " + n(s.t, 3) + " ms · f = " + n(s.f, 0) + " Hz";
+  });
+  $("otra").addEventListener("click", function(){ nueva(); pinta(); });
+  ["vd","td","py"].forEach(function(id){ $(id).addEventListener("input", pinta); });
+  nueva(); pinta();
+})();
+</script>
+</body>
+</html>

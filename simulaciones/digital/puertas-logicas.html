@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Puertas lógicas</title>
+<meta name="description" content="AND, OR, NOT, NAND, NOR y XOR: símbolos, tabla de verdad, expresión y ejercicio para reconocerlas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.txt{font-size:12px;font-weight:700;fill:#242d5f}
+.sw{cursor:pointer}
+table.vt td,table.vt th{text-align:center;font-variant-numeric:tabular-nums}
+tr.on td{background:var(--naranja-soft);font-weight:700}
+.expr{font-size:22px;font-weight:700;color:var(--marino-txt)}
+.opciones{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Digital y FPGA" data-eu="Digitala eta FPGA"></p>
+      <h1 data-es="Puertas lógicas" data-eu="Ate logikoak"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="chips" id="puerta"></div>
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 170" role="img" aria-label="Puerta lógica con interruptores y LED"></svg>
+      <figcaption data-es="Toca los interruptores A y B." data-eu="Ukitu A eta B etengailuak."></figcaption></figure>
+    <div class="dos">
+      <div class="tabla"><table class="vt" id="tv"></table></div>
+      <div class="card"><p class="expr" id="expr"></p><p id="frase"></p><p class="nota" id="ic"></p></div>
+    </div>
+    <div class="simbolos" id="iec"></div>
+  </section>
+
+  <section class="panel" data-tab="ariketa" data-es="¿Qué puerta es?" data-eu="Zein ate da?" hidden>
+    <div class="card"><p class="es">Mira la columna de salida y elige la puerta que cumple esta tabla.</p><p class="eu">Begiratu irteerako zutabea eta aukeratu taula hau betetzen duen atea.</p></div>
+    <div class="tabla"><table class="vt" id="tq"></table></div>
+    <div class="opciones" id="opc"></div>
+    <div class="estado" id="fb" hidden></div>
+    <div class="mandos"><button type="button" class="boton naranja" id="otra" data-es="Otra" data-eu="Beste bat"></button><span class="nota" id="marc"></span></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var P = {
+    AND: { f: function(a, b){ return a & b; }, e: "S = A · B", es: "Sale 1 solo si A <b>y</b> B son 1.", eu: "1 ateratzen da A <b>eta</b> B 1 badira bakarrik.", ic: "74HC08", iec: "&" },
+    OR: { f: function(a, b){ return a | b; }, e: "S = A + B", es: "Sale 1 si A <b>o</b> B (o las dos) son 1.", eu: "1 ateratzen da A <b>edo</b> B (edo biak) 1 badira.", ic: "74HC32", iec: "≥1" },
+    NOT: { f: function(a){ return a ? 0 : 1; }, e: "S = Ā", es: "Invierte: si entra 1 sale 0 y al revés.", eu: "Alderantzikatu egiten du: 1 sartzen bada 0 ateratzen da, eta alderantziz.", ic: "74HC04", iec: "1", uno: true },
+    NAND: { f: function(a, b){ return (a & b) ? 0 : 1; }, e: "S = (A · B)‾", es: "Una AND invertida: sale 0 solo si las dos son 1.", eu: "AND alderantzikatua: 0 ateratzen da biak 1 badira bakarrik.", ic: "74HC00", iec: "&", neg: true },
+    NOR: { f: function(a, b){ return (a | b) ? 0 : 1; }, e: "S = (A + B)‾", es: "Una OR invertida: sale 1 solo si las dos son 0.", eu: "OR alderantzikatua: 1 ateratzen da biak 0 badira bakarrik.", ic: "74HC02", iec: "≥1", neg: true },
+    XOR: { f: function(a, b){ return a ^ b; }, e: "S = A ⊕ B", es: "Sale 1 si A y B son <b>distintas</b>.", eu: "1 ateratzen da A eta B <b>desberdinak</b> badira.", ic: "74HC86", iec: "=1" }
+  };
+  var actual = "AND", A = 0, B = 0;
+  function forma(nom, x, y){ // símbolo ANSI con la entrada en x y centro vertical y
+    var s = "", c = "#242d5f";
+    if (nom === "AND" || nom === "NAND") s += '<path d="M' + x + ' ' + (y - 34) + 'h36a34 34 0 0 1 0 68h-36z" fill="#fff" stroke="' + c + '" stroke-width="3"/>';
+    else if (nom === "OR" || nom === "NOR" || nom === "XOR") s += '<path d="M' + x + ' ' + (y - 34) + 'q60 0 80 34q-20 34-80 34q16-34 0-68z" fill="#fff" stroke="' + c + '" stroke-width="3"/>' + (nom === "XOR" ? '<path d="M' + (x - 10) + ' ' + (y - 34) + 'q16 34 0 68" fill="none" stroke="' + c + '" stroke-width="3"/>' : "");
+    else s += '<path d="M' + x + ' ' + (y - 30) + 'l60 30-60 30z" fill="#fff" stroke="' + c + '" stroke-width="3"/>';
+    if (nom === "NAND" || nom === "NOR" || nom === "NOT") s += '<circle cx="' + (x + (nom === "NOT" ? 66 : 76)) + '" cy="' + y + '" r="6" fill="#fff" stroke="' + c + '" stroke-width="3"/>';
+    return s;
+  }
+  function interruptor(x, y, v, nom){
+    return '<g class="sw" data-s="' + nom + '"><rect x="' + (x - 22) + '" y="' + (y - 16) + '" width="44" height="32" rx="16" fill="' + (v ? "#f39200" : "#d0d6db") + '"/><circle cx="' + (x + (v ? 10 : -10)) + '" cy="' + y + '" r="12" fill="#fff" stroke="#242d5f" stroke-width="2"/><text class="txt" x="' + (x - 36) + '" y="' + (y + 5) + '" text-anchor="end">' + nom + '</text><text class="txt" x="' + x + '" y="' + (y + 32) + '" text-anchor="middle">' + v + '</text></g>';
+  }
+  function pinta(){
+    var p = P[actual], S = p.uno ? p.f(A) : p.f(A, B), y = 80, x = 150;
+    var s = interruptor(60, p.uno ? y : 50, A, "A") + (p.uno ? "" : interruptor(60, 110, B, "B"));
+    var cA = A ? "#f39200" : "#9aa3ad", cB = B ? "#f39200" : "#9aa3ad", cS = S ? "#f39200" : "#9aa3ad";
+    if (p.uno) s += '<path d="M82 ' + y + 'H' + x + '" stroke="' + cA + '" stroke-width="4"/>';
+    else s += '<path d="M82 50h40v14h' + (x - 122 + (actual === "XOR" ? 2 : 6)) + '" fill="none" stroke="' + cA + '" stroke-width="4"/><path d="M82 110h40v-14h' + (x - 122 + (actual === "XOR" ? 2 : 6)) + '" fill="none" stroke="' + cB + '" stroke-width="4"/>';
+    s += forma(actual, x, y);
+    var xs = x + (p.uno ? 72 : (p.neg ? 82 : 80));
+    s += '<path d="M' + xs + ' ' + y + 'H270" stroke="' + cS + '" stroke-width="4"/>';
+    if (S) s += '<circle cx="290" cy="' + y + '" r="34" fill="#ff3b30" opacity=".25"/>';
+    s += '<circle cx="290" cy="' + y + '" r="18" fill="' + (S ? "#ff3b30" : "#f3b0aa") + '" stroke="#242d5f" stroke-width="2"/><text class="txt" x="290" y="' + (y + 40) + '" text-anchor="middle">S = ' + S + '</text>';
+    s += '<text class="txt" x="' + (x + 30) + '" y="' + (y + 54) + '" text-anchor="middle">' + actual + '</text>';
+    $("cir").innerHTML = s;
+    var h = "<tr>" + (p.uno ? "<th>A</th>" : "<th>A</th><th>B</th>") + "<th>S</th></tr>";
+    (p.uno ? [[0],[1]] : [[0,0],[0,1],[1,0],[1,1]]).forEach(function(r){
+      var on = r[0] === A && (p.uno || r[1] === B);
+      h += '<tr class="' + (on ? "on" : "") + '"><td>' + r.join("</td><td>") + "</td><td>" + (p.uno ? p.f(r[0]) : p.f(r[0], r[1])) + "</td></tr>";
+    });
+    $("tv").innerHTML = h;
+    $("expr").textContent = p.e; $("frase").innerHTML = T(p.es, p.eu); $("ic").textContent = T("Circuito integrado: ", "Zirkuitu integratua: ") + p.ic;
+    $("iec").innerHTML = '<div class="simbolo"><svg viewBox="0 0 120 90">' + forma(actual, 30, 45).replace(/stroke-width="3"/g, 'stroke-width="2.4"') + '</svg><b>ANSI</b></div>' +
+      '<div class="simbolo"><svg viewBox="0 0 120 90"><rect class="s-l" x="38" y="16" width="44" height="58"/><text class="s-t" x="60" y="40" text-anchor="middle">' + p.iec + '</text>' + (p.neg || p.uno ? '<circle class="s-l" cx="87" cy="45" r="5"/>' : '') + '<path class="s-l" d="M' + (p.neg || p.uno ? 92 : 82) + ' 45H110' + (p.uno ? "M10 45h28" : "M10 30h28M10 60h28") + '"/></svg><b>IEC</b></div>';
+    $("puerta").innerHTML = Object.keys(P).map(function(k){ return '<button data-p="' + k + '" aria-pressed="' + (k === actual) + '">' + k + "</button>"; }).join("");
+  }
+  $("puerta").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; actual = b.dataset.p; pinta(); });
+  $("cir").addEventListener("click", function(e){ var g = e.target.closest(".sw"); if (!g) return; if (g.dataset.s === "A") A ^= 1; else B ^= 1; pinta(); });
+  // ejercicio
+  var q = null, bien = 0, tot = 0, DOS = ["AND","OR","NAND","NOR","XOR"];
+  function nueva(){ q = { p: DOS[Math.floor(Math.random() * DOS.length)], r: null }; pintaQ(); }
+  function pintaQ(){
+    var h = "<tr><th>A</th><th>B</th><th>S</th></tr>";
+    [[0,0],[0,1],[1,0],[1,1]].forEach(function(r){ h += "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td><b>" + P[q.p].f(r[0], r[1]) + "</b></td></tr>"; });
+    $("tq").innerHTML = h;
+    $("opc").innerHTML = DOS.concat(["NOT"]).map(function(k){
+      var c = q.r === null ? "claro" : k === q.p ? "verde" : k === q.r ? "rojo" : "claro";
+      return '<button type="button" class="boton ' + c + '" data-p="' + k + '"' + (q.r !== null ? " disabled" : "") + ">" + k + "</button>";
+    }).join("");
+    $("fb").hidden = q.r === null;
+    if (q.r !== null) { var ok = q.r === q.p; $("fb").className = "estado " + (ok ? "ok" : "mal"); $("fb").innerHTML = (ok ? T("¡Correcto! ", "Zuzen! ") : T("Era ", "Hau zen: ") + q.p + ". ") + T(P[q.p].es, P[q.p].eu); }
+    $("marc").textContent = T("Aciertos: ", "Asmatuak: ") + bien + " / " + tot;
+  }
+  $("opc").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b || q.r !== null) return; q.r = b.dataset.p; tot++; if (q.r === q.p) bien++; pintaQ(); });
+  $("otra").addEventListener("click", nueva);
+  alCambiarIdioma(function(){ pinta(); if (q) pintaQ(); });
+  pinta(); nueva();
+})();
+</script>
+</body>
+</html>

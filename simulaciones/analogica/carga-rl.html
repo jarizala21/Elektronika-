@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La bobina: circuito RL</title>
+<meta name="description" content="Qué es una bobina, cómo se opone a los cambios de corriente, constante de tiempo τ = L/R y el pico de tensión al abrir el circuito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Condensadores y bobinas" data-eu="Analogikoa · Kondentsadoreak eta bobinak"></p>
+      <h1 data-es="La bobina: circuito RL" data-eu="Bobina: RL zirkuitua"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="dos">
+      <figure class="fig"><svg id="cir" viewBox="0 0 320 200" role="img" aria-label="Circuito RL"></svg></figure>
+      <figure class="fig"><svg id="gr" viewBox="0 0 320 200" role="img" aria-label="Corriente en la bobina"></svg></figure>
+    </div>
+    <div class="mandos">
+      <button type="button" class="boton naranja" id="cerrar" data-es="Cerrar interruptor" data-eu="Etengailua itxi"></button>
+      <button type="button" class="boton" id="abrir" data-es="Abrir interruptor" data-eu="Etengailua ireki"></button>
+      <button type="button" class="boton claro" id="diodo" aria-pressed="false" data-es="Diodo volante" data-eu="Diodo librea"></button>
+    </div>
+    <div class="lectura-g"><div><small>τ = L/R</small><b id="tau"></b></div><div><small>I</small><b id="ii"></b></div><div><small>V<sub>L</sub></small><b id="vl"></b></div></div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span>L</span><output id="lo"></output></label><input id="l" type="range" min="0" max="3" value="1"></div>
+      <div class="deslizador"><label><span>R</span><output id="ro"></output></label><input id="r" type="range" min="0" max="3" value="1"></div>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="zer-da" data-es="¿Qué es?" data-eu="Zer da?" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 170">
+        <rect x="70" y="60" width="160" height="50" rx="6" fill="#8a8f98"/>
+        <g fill="none" stroke="#c87533" stroke-width="7"><path d="M80 52v66M98 52v66M116 52v66M134 52v66M152 52v66M170 52v66M188 52v66M206 52v66M224 52v66"/></g>
+        <path d="M80 118c-20 20-40 20-60 20M224 118c20 20 40 20 60 20" fill="none" stroke="#c87533" stroke-width="4"/>
+        <g fill="none" stroke="#2b6cb0" stroke-width="2" stroke-dasharray="5 4"><ellipse cx="150" cy="85" rx="120" ry="70"/><ellipse cx="150" cy="85" rx="100" ry="52"/></g>
+        <text x="150" y="160" text-anchor="middle" class="tt" data-es="hilo de cobre enrollado sobre un núcleo" data-eu="nukleo baten gainean bildutako kobrezko haria"></text>
+      </svg></figure>
+      <div class="card"><h2 data-es="La bobina (inductor)" data-eu="Bobina (induktorea)"></h2>
+        <p class="es">Un hilo enrollado. Cuando pasa corriente crea un <b>campo magnético</b> y guarda energía en él. Su <b>inductancia</b> se mide en henrios (H): mH y µH.</p>
+        <p class="eu">Bildutako hari bat. Korrontea pasatzean <b>eremu magnetikoa</b> sortzen du eta bertan energia gordetzen du. Bere <b>induktantzia</b> henriotan (H) neurtzen da: mH eta µH.</p>
+        <p class="es"><b>Clave:</b> la bobina se <b>opone a los cambios de corriente</b>. Al conectar, la corriente sube poco a poco; al desconectar, intenta seguir circulando y genera un <b>pico de tensión</b>.</p>
+        <p class="eu"><b>Gakoa:</b> bobinak <b>korronte-aldaketei aurre egiten die</b>. Konektatzean, korrontea poliki igotzen da; deskonektatzean, korronte hori mantentzen saiatzen da eta <b>tentsio-gailur</b> bat sortzen du.</p>
+      </div>
+    </div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Dónde las encuentras" data-eu="Non aurkitzen dituzu"></h3><ul class="es"><li>Bobinas de relés y contactores</li><li>Motores y electroválvulas</li><li>Filtros de fuentes conmutadas</li><li>Transformadores</li></ul><ul class="eu"><li>Erreleen eta kontaktoreen bobinak</li><li>Motorrak eta elektrobalbulak</li><li>Iturri kommutatuen iragazkiak</li><li>Transformadoreak</li></ul></div>
+      <div class="card"><h3 data-es="Condensador frente a bobina" data-eu="Kondentsadorea vs bobina"></h3><p class="es">El condensador se opone a los cambios de <b>tensión</b>; la bobina, a los cambios de <b>corriente</b>.</p><p class="eu">Kondentsadoreak <b>tentsio</b>-aldaketei aurre egiten die; bobinak, <b>korronte</b>-aldaketei.</p></div>
+    </div>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M6 50h14c0-14 16-14 16 0 0-14 16-14 16 0 0-14 16-14 16 0 0-14 16-14 16 0h30"/></svg><b data-es="Bobina" data-eu="Bobina"></b></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M6 54h14c0-14 16-14 16 0 0-14 16-14 16 0 0-14 16-14 16 0 0-14 16-14 16 0h30M20 30h80M20 36h80"/></svg><b data-es="Con núcleo de hierro" data-eu="Burdinazko nukleoarekin"></b></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var LV = [0.01, 0.1, 0.5, 1], RV = [10, 47, 100, 220], VS = 12;
+  var cerrado = false, i0 = 0, t = 0, pico = 0, conDiodo = false, ultimo = null, puntos = [];
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fT(s){ return s < 1 ? n(s * 1000, 1) + " ms" : n(s, 2) + " s"; }
+  function tau(){ return LV[+$("l").value] / RV[+$("r").value]; }
+  function corriente(){
+    var R = RV[+$("r").value], If = VS / R;
+    if (cerrado) return If + (i0 - If) * Math.exp(-t / tau());
+    if (conDiodo) return i0 * Math.exp(-t / (tau() * 0.6));
+    return i0 * Math.exp(-t / (tau() * 0.02)); // sin diodo la corriente se corta casi de golpe (con chispa)
+  }
+  function vl(){
+    var R = RV[+$("r").value], I = corriente();
+    if (cerrado) return VS - I * R;
+    if (conDiodo) return -(I * 0.7 > 0.01 ? 0.7 : 0);
+    return -I * R * 50 * Math.exp(-t / (tau() * 0.02)) * (i0 > 0.001 ? 1 : 0);
+  }
+  function conmutar(c){ if (c === cerrado) return; i0 = corriente(); cerrado = c; t = 0; puntos = []; pico = 0; }
+  function dibuja(){
+    var R = RV[+$("r").value], L = LV[+$("l").value], I = corriente(), V = vl(), tc = tau();
+    pico = Math.min(pico, V);
+    $("lo").textContent = L >= 1 ? L + " H" : n(L * 1000, 0) + " mH"; $("ro").textContent = R + " Ω";
+    $("tau").textContent = fT(tc); $("ii").textContent = n(I * 1000, 0) + " mA"; $("vl").textContent = n(V, 1) + " V";
+    var s = '<path d="M40 70V30h70M150 30h130v40M280 140v30H40v-60" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    s += '<rect x="24" y="70" width="32" height="40" fill="#fff"/><path d="M28 80h24M34 90h12M28 100h24" stroke="#242d5f" stroke-width="3"/><text class="tt" x="4" y="128">12 V</text>';
+    s += '<circle cx="110" cy="30" r="4" fill="#242d5f"/><circle cx="150" cy="30" r="4" fill="#242d5f"/><path d="M110 30L' + (cerrado ? "150 30" : "146 6") + '" stroke="#f39200" stroke-width="5" stroke-linecap="round"/>';
+    s += '<rect x="190" y="21" width="50" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="215" y="56" text-anchor="middle">R</text>';
+    s += '<path d="M280 70c14 0 14 14 0 14 14 0 14 14 0 14 14 0 14 14 0 14 14 0 14 14 0 14" fill="none" stroke="#c87533" stroke-width="4"/><path d="M280 126v14" stroke="#242d5f" stroke-width="3"/><text class="tt" x="306" y="110" text-anchor="end">L</text>';
+    if (conDiodo) s += '<path d="M280 64h-40v82h40" fill="none" stroke="#2b6cb0" stroke-width="2.5"/><path d="M230 112h20l-10-14z" fill="#2b6cb0"/><path d="M230 96h20" stroke="#2b6cb0" stroke-width="3"/>';
+    if (!cerrado && !conDiodo && t < tc * 0.3 && i0 > 0.001) s += '<path d="M120 10l8 8-6 2 10 10M138 8l-4 10 6 0-4 10" stroke="#f39200" stroke-width="3" fill="none"/><text class="tt" x="130" y="64" text-anchor="middle" style="fill:#c62f2f">' + T("¡chispa!", "txinparta!") + '</text>';
+    $("cir").innerHTML = s;
+    var If = VS / R, g = '<rect x="36" y="10" width="276" height="160" fill="#fbfcfe" stroke="#d0d6db"/>';
+    for (var k = 1; k <= 5; k++) { var x = 36 + k * 46; g += '<path d="M' + x + ' 10v160" stroke="#eceff3"/><text class="txt" x="' + x + '" y="186" text-anchor="middle">' + k + 'τ</text>'; }
+    g += '<text class="txt" x="32" y="24" text-anchor="end">' + n(If * 1000, 0) + '</text><text class="txt" x="32" y="174" text-anchor="end">0</text><text class="txt" x="40" y="24">I (mA)</text>';
+    if (puntos.length > 1) g += '<path d="' + puntos.map(function(p, i){ return (i ? "L" : "M") + (36 + Math.min(p[0], 6) * 46) + " " + (170 - p[1] / If * 150); }).join("") + '" fill="none" stroke="#c87533" stroke-width="3"/>';
+    $("gr").innerHTML = g;
+    var e = $("est");
+    if (cerrado) { e.className = "estado"; e.textContent = T("La corriente no salta de golpe: sube y tarda unos 5 τ en llegar a V/R = ", "Korronteak ez du jauzirik egiten: igotzen doa eta 5 τ inguru behar ditu V/R-ra iristeko = ") + n(If * 1000, 0) + " mA."; }
+    else if (i0 < 0.001) { e.className = "estado"; e.textContent = T("Cierra el interruptor.", "Itxi etengailua."); }
+    else if (conDiodo) { e.className = "estado ok"; e.textContent = T("Con el diodo volante, la corriente de la bobina se descarga poco a poco por el diodo: no hay pico peligroso.", "Diodo librearekin, bobinaren korrontea pixkanaka deskargatzen da diodotik: ez dago gailur arriskutsurik."); }
+    else { e.className = "estado mal"; e.textContent = T("Al abrir sin diodo aparece un pico de tensión enorme (" + n(pico, 0) + " V): hace chispa y puede romper transistores.", "Diodorik gabe irekitzean tentsio-gailur izugarria agertzen da (" + n(pico, 0) + " V): txinparta egiten du eta transistoreak hautsi ditzake."); }
+  }
+  function bucle(ahora){
+    if (ultimo !== null) { var dt = Math.min((ahora - ultimo) / 1000, 0.1), tc = tau(); if (t < 8 * tc) { t += dt * tc; puntos.push([t / tc, corriente()]); } }
+    ultimo = ahora; dibuja(); requestAnimationFrame(bucle);
+  }
+  $("cerrar").addEventListener("click", function(){ conmutar(true); });
+  $("abrir").addEventListener("click", function(){ conmutar(false); });
+  $("diodo").addEventListener("click", function(){ conDiodo = !conDiodo; this.setAttribute("aria-pressed", conDiodo); });
+  ["l","r"].forEach(function(id){ $(id).addEventListener("input", function(){ i0 = corriente(); t = 0; puntos = []; }); });
+  requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

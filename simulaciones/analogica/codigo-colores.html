@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Código de colores de resistencias</title>
+<meta name="description" content="Calcula el valor de una resistencia de 4, 5 o 6 bandas y practica la lectura del código de colores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.bandas{display:grid;gap:10px}
+.banda-fila{display:grid;gap:6px}
+.banda-fila > span{font-size:12.5px;font-weight:600;color:var(--muted)}
+.colores{display:flex;flex-wrap:wrap;gap:6px}
+.colores button{width:34px;height:34px;border-radius:50%;border:2px solid rgba(0,0,0,.15);cursor:pointer;padding:0}
+.colores button[aria-pressed="true"]{outline:3px solid var(--naranja);outline-offset:2px}
+.valor{font-size:clamp(26px,7vw,36px);font-weight:700;color:var(--marino-txt);line-height:1.1}
+.tabla td:first-child{white-space:nowrap}
+.mues{display:inline-block;width:16px;height:16px;border-radius:50%;vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.2)}
+.opciones{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Resistencias" data-eu="Analogikoa · Erresistentziak"></p>
+      <h1 data-es="Código de colores" data-eu="Kolore-kodea"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="kalkulagailua" data-es="Calculadora" data-eu="Kalkulagailua">
+    <div class="chips" id="nb">
+      <button data-n="4" aria-pressed="true" data-es="4 bandas" data-eu="4 banda"></button>
+      <button data-n="5" data-es="5 bandas" data-eu="5 banda"></button>
+      <button data-n="6" data-es="6 bandas" data-eu="6 banda"></button>
+    </div>
+    <figure class="fig"><svg id="res" viewBox="0 0 340 110" role="img" aria-label="Resistencia"></svg></figure>
+    <div class="card" style="text-align:center">
+      <div class="valor" id="valor"></div>
+      <p class="nota" id="rango" style="margin:4px 0 0"></p>
+    </div>
+    <div class="card bandas" id="bandas"></div>
+  </section>
+
+  <section class="panel" data-tab="irakurri" data-es="Cómo se lee" data-eu="Nola irakurri" hidden>
+    <div class="card">
+      <h2 data-es="Paso a paso" data-eu="Urratsez urrats"></h2>
+      <ol class="es">
+        <li>Pon la resistencia con la banda de <b>tolerancia</b> (dorada, plateada o más separada) a la <b>derecha</b>.</li>
+        <li>Las primeras bandas son <b>cifras</b>: 2 cifras en las de 4 bandas, 3 cifras en las de 5 y 6 bandas.</li>
+        <li>La siguiente banda es el <b>multiplicador</b>: cuántos ceros añades (dorado = ×0,1; plateado = ×0,01).</li>
+        <li>Luego viene la <b>tolerancia</b>: cuánto puede variar el valor real.</li>
+        <li>En las de 6 bandas, la última es el <b>coeficiente de temperatura</b> (ppm/K).</li>
+      </ol>
+      <ol class="eu">
+        <li>Jarri erresistentzia <b>tolerantzia</b>-banda (urrezkoa, zilarrezkoa edo bereizitakoa) <b>eskuinean</b> duela.</li>
+        <li>Lehen bandak <b>zifrak</b> dira: 2 zifra 4 bandakoetan, eta 3 zifra 5 eta 6 bandakoetan.</li>
+        <li>Hurrengo banda <b>biderkatzailea</b> da: zenbat zero gehitzen dituzun (urrea = ×0,1; zilarra = ×0,01).</li>
+        <li>Ondoren <b>tolerantzia</b> dator: benetako balioa zenbat alda daitekeen.</li>
+        <li>6 bandakoetan, azkena <b>tenperatura-koefizientea</b> da (ppm/K).</li>
+      </ol>
+    </div>
+    <div class="recuerda">
+      <h2 data-es="Ejemplo: amarillo · violeta · rojo · dorado" data-eu="Adibidea: horia · morea · gorria · urrea"></h2>
+      <p class="es">4 y 7 → <b>47</b>. Rojo = ×100 → <b>4700 Ω = 4,7 kΩ</b>. Dorado = ±5 % → entre 4465 Ω y 4935 Ω.</p>
+      <p class="eu">4 eta 7 → <b>47</b>. Gorria = ×100 → <b>4700 Ω = 4,7 kΩ</b>. Urrea = ±% 5 → 4465 Ω eta 4935 Ω artean.</p>
+    </div>
+    <div class="tabla"><table id="tabla"></table></div>
+    <div class="card">
+      <h2 data-es="Truco para acordarse" data-eu="Gogoratzeko trikimailua"></h2>
+      <p class="es">Del <b>negro (0)</b> al <b>blanco (9)</b> los colores siguen el orden del arcoíris: negro, marrón, rojo, naranja, amarillo, verde, azul, violeta, gris, blanco.</p>
+      <p class="eu"><b>Beltzetik (0)</b> <b>zurira (9)</b> koloreek ostadarraren ordena jarraitzen dute: beltza, marroia, gorria, laranja, horia, berdea, urdina, morea, grisa, zuria.</p>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="praktika" data-es="Practica" data-eu="Praktika" hidden>
+    <div class="card"><p class="es">¿Cuánto vale esta resistencia? Elige la respuesta correcta.</p><p class="eu">Zenbat balio du erresistentzia honek? Aukeratu erantzun zuzena.</p></div>
+    <figure class="fig"><svg id="res2" viewBox="0 0 340 110" role="img" aria-label="Resistencia de práctica"></svg></figure>
+    <div class="opciones" id="opc"></div>
+    <div class="estado" id="fb" hidden></div>
+    <div class="mandos"><button type="button" class="boton naranja" id="otra" data-es="Otra resistencia" data-eu="Beste erresistentzia bat"></button><span class="nota" id="marcador"></span></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var C = [
+    { es:"Negro", eu:"Beltza", c:"#1b1b1b", d:0, m:1 },
+    { es:"Marrón", eu:"Marroia", c:"#7a4a1e", d:1, m:10, t:1, tc:100 },
+    { es:"Rojo", eu:"Gorria", c:"#d42a24", d:2, m:100, t:2, tc:50 },
+    { es:"Naranja", eu:"Laranja", c:"#f07f12", d:3, m:1e3, tc:15 },
+    { es:"Amarillo", eu:"Horia", c:"#f5d000", d:4, m:1e4, tc:25 },
+    { es:"Verde", eu:"Berdea", c:"#1e9a45", d:5, m:1e5, t:0.5 },
+    { es:"Azul", eu:"Urdina", c:"#1f5fd1", d:6, m:1e6, t:0.25, tc:10 },
+    { es:"Violeta", eu:"Morea", c:"#7d3fc4", d:7, m:1e7, t:0.1, tc:5 },
+    { es:"Gris", eu:"Grisa", c:"#8a8f98", d:8, m:1e8, t:0.05 },
+    { es:"Blanco", eu:"Zuria", c:"#f4f4f4", d:9, m:1e9 },
+    { es:"Dorado", eu:"Urrea", c:"#c9a227", m:0.1, t:5 },
+    { es:"Plateado", eu:"Zilarra", c:"#bfc5cc", m:0.01, t:10 }
+  ];
+  var n = 4, sel = { 4:[4,7,2,10], 5:[1,0,0,1,1], 6:[2,2,0,1,2,1] };
+  function nm(i){ return T(C[i].es, C[i].eu); }
+  function tipos(n){ // qué representa cada banda
+    var d = n === 4 ? 2 : 3, r = [];
+    for (var i = 0; i < d; i++) r.push("d");
+    r.push("m"); r.push("t"); if (n === 6) r.push("tc");
+    return r;
+  }
+  function validos(tp){
+    return C.map(function(c, i){ return i; }).filter(function(i){
+      var c = C[i];
+      if (tp === "d") return c.d !== undefined;
+      if (tp === "m") return c.m !== undefined;
+      if (tp === "t") return c.t !== undefined;
+      return c.tc !== undefined;
+    });
+  }
+  function fmt(v){
+    var u = ["Ω","kΩ","MΩ","GΩ"], k = 0;
+    while (v >= 1000 && k < 3) { v /= 1000; k++; }
+    var s = (Math.round(v * 1000) / 1000).toLocaleString("es-ES");
+    return s + " " + u[k];
+  }
+  function calcula(n, b){
+    var tp = tipos(n), num = 0, m = 1, t = 0, tc = null;
+    tp.forEach(function(x, i){
+      var c = C[b[i]];
+      if (x === "d") num = num * 10 + c.d;
+      else if (x === "m") m = c.m;
+      else if (x === "t") t = c.t;
+      else tc = c.tc;
+    });
+    return { v: num * m, t: t, tc: tc };
+  }
+  function dibuja(svg, n, b){
+    var s = '<path d="M10 55h70M260 55h70" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/>';
+    s += '<path d="M80 30q0-14 18-14h18q8 0 12 6h84q4-6 12-6h18q18 0 18 14v50q0 14-18 14h-18q-8 0-12-6h-84q-4 6-12 6h-18q-18 0-18-14z" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/>';
+    var xs = n === 4 ? [104,136,168,226] : n === 5 ? [100,128,156,184,230] : [98,124,150,176,214,240];
+    xs.forEach(function(x, i){
+      var c = C[b[i]].c, top = (x < 120 || x > 220) ? 17 : 23, h = (x < 120 || x > 220) ? 76 : 64;
+      s += '<rect x="' + (x - 7) + '" y="' + top + '" width="14" height="' + h + '" fill="' + c + '" stroke="rgba(0,0,0,.25)"/>';
+    });
+    svg.innerHTML = s;
+  }
+  function pintar(){
+    var b = sel[n], r = calcula(n, b);
+    dibuja($("res"), n, b);
+    $("valor").textContent = fmt(r.v) + "  ±" + String(r.t).replace(".", ",") + " %";
+    $("rango").textContent = T("Valor real entre ", "Benetako balioa: ") + fmt(r.v * (1 - r.t / 100)) + T(" y ", " eta ") + fmt(r.v * (1 + r.t / 100)) + (r.tc ? " · " + r.tc + " ppm/K" : "");
+    var nombres = { d: T("Cifra", "Zifra"), m: T("Multiplicador", "Biderkatzailea"), t: T("Tolerancia", "Tolerantzia"), tc: T("Coef. temperatura", "Tenperatura-koef.") };
+    var h = "", cuenta = 0;
+    tipos(n).forEach(function(tp, i){
+      if (tp === "d") cuenta++;
+      h += '<div class="banda-fila"><span>' + (i + 1) + ". " + nombres[tp] + (tp === "d" ? " " + cuenta : "") + " · " + nm(b[i]) + '</span><div class="colores">';
+      validos(tp).forEach(function(ci){
+        h += '<button type="button" data-b="' + i + '" data-c="' + ci + '" style="background:' + C[ci].c + '" aria-label="' + nm(ci) + '" title="' + nm(ci) + '" aria-pressed="' + (b[i] === ci) + '"></button>';
+      });
+      h += "</div></div>";
+    });
+    $("bandas").innerHTML = h;
+  }
+  $("bandas").addEventListener("click", function(e){
+    var x = e.target.closest("button"); if (!x) return;
+    sel[n][+x.dataset.b] = +x.dataset.c; pintar();
+  });
+  $("nb").addEventListener("click", function(e){
+    var x = e.target.closest("button"); if (!x) return;
+    n = +x.dataset.n;
+    [].forEach.call($("nb").children, function(y){ y.setAttribute("aria-pressed", y === x); });
+    pintar();
+  });
+  function tabla(){
+    var h = "<tr><th>" + T("Color", "Kolorea") + "</th><th>" + T("Cifra", "Zifra") + "</th><th>" + T("Multiplicador", "Biderkatzailea") + "</th><th>" + T("Tolerancia", "Tolerantzia") + "</th></tr>";
+    C.forEach(function(c, i){
+      h += '<tr><td><span class="mues" style="background:' + c.c + '"></span>' + nm(i) + "</td><td>" + (c.d !== undefined ? c.d : "–") + "</td><td>×" + c.m.toLocaleString("es-ES") + "</td><td>" + (c.t ? "±" + String(c.t).replace(".", ",") + " %" : "–") + "</td></tr>";
+    });
+    $("tabla").innerHTML = h;
+  }
+  // práctica
+  var bien = 0, total = 0, actual = null;
+  var serie = [10,12,15,18,22,27,33,39,47,56,68,82];
+  function nueva(){
+    var base = serie[Math.floor(Math.random() * serie.length)], mi = 1 + Math.floor(Math.random() * 5);
+    var b = [Math.floor(base / 10), base % 10, mi, 10];
+    var v = base * C[mi].m, ops = [v];
+    while (ops.length < 4) {
+      var o = [v * 10, v / 10, (base % 10 * 10 + Math.floor(base / 10)) * C[mi].m, serie[Math.floor(Math.random() * 12)] * C[mi].m, v * 100][Math.floor(Math.random() * 5)];
+      if (o >= 1 && ops.indexOf(o) < 0) ops.push(o);
+    }
+    ops.sort(function(){ return Math.random() - .5; });
+    actual = { b: b, v: v, ops: ops, resp: null };
+    pintarP();
+  }
+  function pintarP(){
+    dibuja($("res2"), 4, actual.b);
+    $("opc").innerHTML = actual.ops.map(function(o){
+      var cls = actual.resp === null ? "claro" : (o === actual.v ? "verde" : (o === actual.resp ? "rojo" : "claro"));
+      return '<button type="button" class="boton ' + cls + '" data-v="' + o + '"' + (actual.resp !== null ? " disabled" : "") + ">" + fmt(o) + "</button>";
+    }).join("");
+    if (actual.resp === null) { $("fb").hidden = true; }
+    else {
+      var ok = actual.resp === actual.v, b = actual.b;
+      $("fb").hidden = false; $("fb").className = "estado " + (ok ? "ok" : "mal");
+      $("fb").textContent = (ok ? T("¡Correcto! ", "Zuzen! ") : T("No. ", "Ez. ")) + nm(b[0]) + " (" + C[b[0]].d + ") · " + nm(b[1]) + " (" + C[b[1]].d + ") · " + nm(b[2]) + " (×" + C[b[2]].m.toLocaleString("es-ES") + ") = " + fmt(actual.v);
+    }
+    $("marcador").textContent = T("Aciertos: ", "Asmatuak: ") + bien + " / " + total;
+  }
+  $("opc").addEventListener("click", function(e){
+    var x = e.target.closest("button"); if (!x || actual.resp !== null) return;
+    actual.resp = +x.dataset.v; total++; if (actual.resp === actual.v) bien++;
+    pintarP();
+  });
+  $("otra").addEventListener("click", nueva);
+  alCambiarIdioma(function(){ pintar(); tabla(); if (actual) pintarP(); });
+  pintar(); tabla(); nueva();
+})();
+</script>
+</body>
+</html>

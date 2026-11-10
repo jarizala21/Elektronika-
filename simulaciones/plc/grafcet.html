@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grafcet</title>
+<meta name="description" content="Etapas, transiciones y acciones: el Grafcet de un taladro automático, con la etapa activa avanzando según los sensores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.tt{font-size:12px;font-weight:700;fill:#242d5f}.txt{font-size:10.5px;font-weight:600;fill:#5d6382}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Industrial y PLC" data-eu="Industriala eta PLCa"></p>
+      <h1 data-es="Grafcet: taladro automático" data-eu="Grafcet-a: zulagailu automatikoa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="dos">
+      <figure class="fig"><svg id="gf" viewBox="0 0 300 330" role="img" aria-label="Grafcet"></svg></figure>
+      <figure class="fig"><svg id="maq" viewBox="0 0 260 330" role="img" aria-label="Taladro"></svg></figure>
+    </div>
+    <div class="mandos">
+      <button type="button" class="boton verde" id="m" data-es="MARCHA (m)" data-eu="MARTXA (m)"></button>
+      <button type="button" class="boton claro" id="pieza" aria-pressed="true" data-es="Hay pieza (p)" data-eu="Pieza dago (p)"></button>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="arauak" data-es="Elementos y reglas" data-eu="Elementuak eta arauak" hidden>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Etapa" data-eu="Etapa"></h3><p class="es">Un cuadrado con su número. Es un estado de la máquina. La <b>inicial</b> lleva doble cuadro. La activa se marca con un punto.</p><p class="eu">Zenbakia duen karratu bat. Makinaren egoera bat da. <b>Hasierakoak</b> karratu bikoitza du. Aktiboa puntu batekin markatzen da.</p></div>
+      <div class="card"><h3 data-es="Acción" data-eu="Ekintza"></h3><p class="es">Rectángulo a la derecha de la etapa: lo que se hace mientras la etapa está activa (activar una salida).</p><p class="eu">Etaparen eskuineko laukizuzena: etapa aktibo dagoen bitartean egiten dena (irteera bat aktibatu).</p></div>
+      <div class="card"><h3 data-es="Transición y receptividad" data-eu="Trantsizioa eta harkortasuna"></h3><p class="es">Raya horizontal entre etapas con una condición (sensor, pulsador, tiempo). Se supera cuando la etapa anterior está activa <b>y</b> la condición se cumple.</p><p class="eu">Etapen arteko marra horizontala, baldintza batekin (sentsorea, sakagailua, denbora). Aurreko etapa aktibo dagoenean <b>eta</b> baldintza betetzen denean gainditzen da.</p></div>
+    </div>
+    <div class="recuerda"><h2 data-es="Al superar una transición" data-eu="Trantsizio bat gainditzean"></h2><p class="es">Se <b>activa</b> la etapa siguiente y se <b>desactiva</b> la anterior, a la vez. Etapas y transiciones siempre se alternan.</p><p class="eu">Hurrengo etapa <b>aktibatu</b> eta aurrekoa <b>desaktibatu</b> egiten da, aldi berean. Etapak eta trantsizioak beti txandakatzen dira.</p></div>
+    <div class="card"><h3 data-es="En el PLC (Omron)" data-eu="PLCan (Omron)"></h3><p class="es">Cada etapa es un bit de trabajo (W0.00, W0.01…). Se programa con contactos: activar etapa = etapa anterior · receptividad (SET), desactivar con la siguiente (RSET). Las salidas se activan con el contacto de su etapa.</p><p class="eu">Etapa bakoitza lan-bit bat da (W0.00, W0.01…). Kontaktuekin programatzen da: etapa aktibatu = aurreko etapa · harkortasuna (SET), hurrengoarekin desaktibatu (RSET). Irteerak bere etaparen kontaktuarekin aktibatzen dira.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var etapa = 0, pos = 0, pieza = true, mPuls = 0, giro = 0;
+  // pos: 0 = arriba (a0), 1 = abajo (a1)
+  var ET = [
+    { y: 30, acc: null },
+    { y: 130, acc: ["KM1", "Y1"], es: ["Motor broca", "Bajar"], eu: ["Burgilaren motorra", "Jaitsi"] },
+    { y: 230, acc: ["KM1", "Y2"], es: ["Motor broca", "Subir"], eu: ["Burgilaren motorra", "Igo"] }
+  ];
+  function rec(){ var a0 = pos <= 0.001, a1 = pos >= 0.999; return [mPuls && a0 && pieza, a1, a0]; }
+  function avanzar(){
+    var r = rec();
+    if (etapa === 0 && r[0]) etapa = 1; else if (etapa === 1 && r[1]) etapa = 2; else if (etapa === 2 && r[2]) etapa = 0;
+    if (etapa === 1) pos = Math.min(1, pos + 0.006); if (etapa === 2) pos = Math.max(0, pos - 0.01);
+    if (etapa) giro = (giro + 25) % 360;
+  }
+  function pinta(){
+    avanzar();
+    var r = rec(), a0 = pos <= 0.001, a1 = pos >= 0.999;
+    // línea de enlace y retorno de la última transición a la etapa inicial
+    var s = '<path d="M40 10V314H10V10H40" fill="none" stroke="#242d5f" stroke-width="2.5"/><path d="M5 60l5-8 5 8" fill="none" stroke="#242d5f" stroke-width="2"/>';
+    ET.forEach(function(e, i){
+      var act = i === etapa, x = 40, y = e.y;
+      s += '<rect x="' + (x - 20) + '" y="' + y + '" width="40" height="40" fill="' + (act ? "#fff0dc" : "#fff") + '" stroke="#242d5f" stroke-width="2.5"/>';
+      if (i === 0) s += '<rect x="' + (x - 16) + '" y="' + (y + 4) + '" width="32" height="32" fill="none" stroke="#242d5f" stroke-width="2"/>';
+      s += '<text class="tt" x="' + x + '" y="' + (y + 25) + '" text-anchor="middle">' + i + '</text>';
+      if (act) s += '<circle cx="' + (x + 12) + '" cy="' + (y + 30) + '" r="5" fill="#f39200"/>';
+      if (e.acc) {
+        s += '<path d="M' + (x + 20) + ' ' + (y + 20) + 'h16" stroke="#242d5f" stroke-width="2"/>';
+        e.acc.forEach(function(a, k){ var bx = x + 36 + k * 104; s += '<rect x="' + bx + '" y="' + (y + 4) + '" width="104" height="32" fill="' + (act ? "#1e9a45" : "#fff") + '" stroke="#242d5f" stroke-width="2"/><text x="' + (bx + 52) + '" y="' + (y + 18) + '" text-anchor="middle" style="font-size:10px;font-weight:700;fill:' + (act ? "#fff" : "#242d5f") + '">' + a.trim() + '</text><text x="' + (bx + 52) + '" y="' + (y + 31) + '" text-anchor="middle" style="font-size:9px;font-weight:600;fill:' + (act ? "#fff" : "#5d6382") + '">' + T(e.es[k], e.eu[k]) + '</text>'; });
+      }
+    });
+    var TR = [[100, "m · a0 · p", r[0], 0], [200, "a1", r[1], 1], [300, "a0", r[2], 2]];
+    TR.forEach(function(t){ var hab = etapa === t[3], ok = hab && t[2];
+      s += '<path d="M28 ' + t[0] + 'h24" stroke="' + (ok ? "#1e9a45" : hab ? "#f39200" : "#242d5f") + '" stroke-width="' + (hab ? 5 : 3) + '"/><text class="tt" x="66" y="' + (t[0] + 4) + '" style="fill:' + (hab ? "#b45f00" : "#242d5f") + '">' + t[1] + '</text>'; });
+    $("gf").innerHTML = s;
+    // máquina
+    var by = 60 + pos * 120;
+    var m = '<rect x="20" y="300" width="220" height="16" fill="#8a8f98"/><rect x="190" y="20" width="16" height="280" fill="#c9cfd8"/>';
+    m += '<rect x="60" y="' + (by - 40) + '" width="140" height="46" rx="8" fill="#242d5f"/><rect x="190" y="' + (by - 34) + '" width="16" height="34" fill="#f39200" opacity=".6"/>';
+    m += '<rect x="96" y="' + (by + 6) + '" width="28" height="20" fill="#5d6382"/>';
+    var bx = 110, pts = ""; for (var k = 0; k < 6; k++) pts += (k ? "L" : "M") + (bx + (k % 2 ? 5 : -5) * Math.cos(giro * Math.PI / 180)) + " " + (by + 26 + k * 12);
+    m += '<path d="' + pts + '" stroke="#9aa3ad" stroke-width="6" fill="none"/><path d="M' + bx + ' ' + (by + 86) + 'l-4-8h8z" fill="#9aa3ad"/>';
+    if (pieza) m += '<rect x="70" y="250" width="80" height="50" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/>' + (pos > 0.85 ? '<rect x="104" y="250" width="12" height="' + ((pos - 0.85) / 0.15 * 30) + '" fill="#5d6382"/>' : "");
+    m += '<rect x="214" y="56" width="26" height="14" rx="3" fill="' + (a0 ? "#ff3b30" : "#d0d6db") + '"/><text class="txt" x="246" y="68">a0</text>';
+    m += '<rect x="214" y="176" width="26" height="14" rx="3" fill="' + (a1 ? "#ff3b30" : "#d0d6db") + '"/><text class="txt" x="246" y="188">a1</text>';
+    m += '<text class="txt" x="130" y="' + (by - 12) + '" text-anchor="middle" style="fill:#fff">KM1 ' + (etapa ? "ON" : "OFF") + '</text>';
+    $("maq").innerHTML = m;
+    var e = $("est");
+    var txt = [T("Etapa 0 (reposo). Para pasar a la 1 hace falta: m (marcha) · a0 (broca arriba) · p (pieza).", "0. etapa (atsedena). 1.era pasatzeko behar da: m (martxa) · a0 (burgila goian) · p (pieza)."),
+               T("Etapa 1: la broca gira y baja. Cuando llegue abajo (a1) pasará a la 2.", "1. etapa: burgilak biratu eta jaitsi egiten da. Behera iristean (a1) 2.era pasatuko da."),
+               T("Etapa 2: la broca sube. Al llegar arriba (a0) vuelve a la etapa inicial.", "2. etapa: burgila igo egiten da. Goian dagoenean (a0) hasierako etapara itzultzen da.")][etapa];
+    e.className = "estado" + (etapa ? " ok" : ""); e.textContent = txt;
+    requestAnimationFrame(pinta);
+  }
+  var b = $("m");
+  function on(ev){ ev.preventDefault(); mPuls = 1; } function off(){ mPuls = 0; }
+  b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); b.addEventListener("click", function(){ mPuls = 1; setTimeout(off, 150); });
+  $("pieza").addEventListener("click", function(){ pieza = !pieza; this.setAttribute("aria-pressed", pieza); });
+  pinta();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El polímetro</title>
+<meta name="description" content="Cómo medir tensión, intensidad, resistencia y continuidad con el polímetro: posición del selector, bornas y forma de conectar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}
+.paso{display:grid;gap:6px}.paso > span{font-size:12.5px;font-weight:600;color:var(--muted)}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Medida y señales" data-eu="Analogikoa · Neurketa eta seinaleak"></p>
+      <h1 data-es="El polímetro" data-eu="Polimetroa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="neurtu" data-es="Mide tú" data-eu="Neurtu zuk">
+    <div class="paso"><span data-es="1. ¿Qué quieres medir?" data-eu="1. Zer neurtu nahi duzu?"></span><div class="chips" id="tarea"></div></div>
+    <div class="dos">
+      <figure class="fig"><svg id="esc" viewBox="0 0 300 200" role="img" aria-label="Circuito y puntas"></svg></figure>
+      <figure class="fig"><svg id="pol" viewBox="0 0 300 200" role="img" aria-label="Polímetro"></svg></figure>
+    </div>
+    <div class="paso"><span data-es="2. Posición del selector" data-eu="2. Hautagailuaren posizioa"></span><div class="chips" id="dial"></div></div>
+    <div class="paso"><span data-es="3. Borna de la punta roja" data-eu="3. Punta gorriaren borna"></span><div class="chips" id="borna"></div></div>
+    <div class="paso"><span data-es="4. Cómo conectas las puntas" data-eu="4. Nola konektatzen dituzun puntak"></span><div class="chips" id="con"></div></div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="arauak" data-es="Normas" data-eu="Arauak" hidden>
+    <div class="rejilla">
+      <div class="card"><h2 data-es="Tensión (V)" data-eu="Tentsioa (V)"></h2><p class="es">Selector en V⎓ (continua) o V~ (alterna). Roja en VΩ. <b>En paralelo</b> con lo que mides, con el circuito funcionando.</p><p class="eu">Hautagailua V⎓ (zuzena) edo V~ (alternoa) posizioan. Gorria VΩ-n. Neurtzen duzunarekin <b>paraleloan</b>, zirkuitua martxan dagoela.</p></div>
+      <div class="card"><h2 data-es="Intensidad (A)" data-eu="Intentsitatea (A)"></h2><p class="es">Selector en A. Roja en mA (hasta ~400 mA) o 10 A. Hay que <b>abrir el circuito</b> y poner el polímetro <b>en serie</b>. Si no sabes cuánto pasa, empieza por 10 A.</p><p class="eu">Hautagailua A-n. Gorria mA-n (~400 mA arte) edo 10 A-n. <b>Zirkuitua ireki</b> eta polimetroa <b>seriean</b> jarri behar da. Zenbat pasatzen den ez badakizu, hasi 10 A-rekin.</p></div>
+      <div class="card"><h2 data-es="Resistencia (Ω)" data-eu="Erresistentzia (Ω)"></h2><p class="es">Selector en Ω. Roja en VΩ. <b>Siempre sin tensión</b> y mejor con el componente fuera del circuito.</p><p class="eu">Hautagailua Ω-n. Gorria VΩ-n. <b>Beti tentsiorik gabe</b> eta hobe osagaia zirkuitutik kanpo dagoela.</p></div>
+      <div class="card"><h2 data-es="Continuidad" data-eu="Jarraitutasuna"></h2><p class="es">Posición de pitido. Si suena, hay unión eléctrica (cable bueno, fusible bueno). Sin tensión.</p><p class="eu">Txistu-posizioa. Jotzen badu, lotura elektrikoa dago (kable ona, fusible ona). Tentsiorik gabe.</p></div>
+    </div>
+    <div class="recuerda"><h2 data-es="El error más peligroso" data-eu="Akatsik arriskutsuena"></h2>
+      <p class="es">Dejar la punta roja en la borna de <b>A</b> y medir después una tensión: el polímetro es casi un cable y provoca un <b>cortocircuito</b>. Cambia siempre la punta a VΩ al terminar de medir corriente.</p>
+      <p class="eu">Punta gorria <b>A</b> bornan utzi eta gero tentsio bat neurtzea: polimetroa ia kable bat da eta <b>zirkuitulabur</b> bat eragiten du. Korrontea neurtzen amaitzean aldatu beti punta VΩ-ra.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var TAREAS = [ { id:"v", es:"Tensión de la pila", eu:"Pilaren tentsioa" }, { id:"i", es:"Corriente de la bombilla", eu:"Bonbillaren korrontea" }, { id:"r", es:"Una resistencia", eu:"Erresistentzia bat" }, { id:"c", es:"¿Cable roto?", eu:"Kablea hautsita?" } ];
+  var DIAL = [ { id:"off", t:"OFF" }, { id:"vdc", t:"V⎓" }, { id:"vac", t:"V~" }, { id:"a", t:"A⎓" }, { id:"ohm", t:"Ω" }, { id:"cont", t:"•))" } ];
+  var BORNA = [ { id:"v", t:"VΩ" }, { id:"ma", t:"mA" }, { id:"10a", t:"10 A" } ];
+  var CON = [ { id:"par", es:"En paralelo / en los extremos", eu:"Paraleloan / muturretan" }, { id:"serie", es:"En serie (abriendo el circuito)", eu:"Seriean (zirkuitua irekiz)" } ];
+  var st = { tarea:"v", dial:"off", borna:"v", con:"par", fusible:true, cableBueno:true };
+  function chips(id, lista, clave, txt){
+    $(id).innerHTML = lista.map(function(o){ return '<button data-v="' + o.id + '" aria-pressed="' + (st[clave] === o.id) + '">' + (o.t || T(o.es, o.eu)) + '</button>'; }).join("");
+  }
+  function todo(){ chips("tarea", TAREAS, "tarea"); chips("dial", DIAL, "dial"); chips("borna", BORNA, "borna"); chips("con", CON, "con"); pinta(); }
+  function lectura(){
+    var s = st, ok = false, pantalla = "", msg = "", mal = false;
+    if (s.dial === "off") return { p: "", m: T("El polímetro está apagado. Gira el selector.", "Polimetroa itzalita dago. Biratu hautagailua."), mal: false };
+    if (!s.fusible && s.borna === "ma") return { p: "0.00", m: T("El fusible de mA está fundido: hay que cambiarlo (elige otra medida para reponerlo).", "mA-ko fusiblea urtuta dago: aldatu egin behar da (aukeratu beste neurketa bat berriz jartzeko)."), mal: true };
+    var conTension = s.tarea === "v" || s.tarea === "i";
+    // cortocircuito: borna de corriente en paralelo con tensión
+    if ((s.borna === "ma" || s.borna === "10a") && s.con === "par" && conTension) {
+      if (s.borna === "ma") { st.fusible = false; return { p: "0.00", m: T("¡Cortocircuito! Con la punta en mA el polímetro es casi un cable: se ha fundido su fusible.", "Zirkuitulaburra! Punta mA-n dagoela polimetroa ia kable bat da: bere fusiblea urtu da."), mal: true }; }
+      return { p: "9.99", m: T("¡Cortocircuito peligroso a través del polímetro! Nunca midas tensión con la punta en 10 A.", "Zirkuitulabur arriskutsua polimetroan zehar! Ez neurtu inoiz tentsioa punta 10 A-n dagoela."), mal: true };
+    }
+    if ((s.dial === "ohm" || s.dial === "cont") && conTension) return { p: "Err", m: T("No midas resistencia o continuidad con tensión: puede dañar el polímetro y la medida no vale.", "Ez neurtu erresistentzia edo jarraitutasuna tentsioarekin: polimetroa honda dezake eta neurketak ez du balio."), mal: true };
+    if (s.dial === "a" && s.borna === "v") return { p: "0.00", m: T("Selector en A pero la punta está en VΩ: cambia la punta roja a mA o 10 A.", "Hautagailua A-n baina punta VΩ-n dago: aldatu punta gorria mA-ra edo 10 A-ra."), mal: true };
+    if ((s.dial === "vdc" || s.dial === "vac" || s.dial === "ohm" || s.dial === "cont") && s.borna !== "v") return { p: "----", m: T("Para esta medida la punta roja va en VΩ.", "Neurketa honetarako punta gorria VΩ-n doa."), mal: true };
+    if (s.tarea === "v") {
+      if (s.con === "serie") return { p: "9.20", m: T("Una pila no se «abre»: para medir tensión pon las puntas en paralelo, en sus dos bornes.", "Pila bat ez da «irekitzen»: tentsioa neurtzeko jarri puntak paraleloan, bere bi borneetan."), mal: true };
+      if (s.dial === "vdc") return { p: "9.20", m: T("¡Bien! 9,2 V en continua. Si inviertes las puntas verías −9,20.", "Ondo! 9,2 V zuzenean. Puntak alderantzikatuz gero −9,20 ikusiko zenuke."), ok: true };
+      if (s.dial === "vac") return { p: "0.0", m: T("La pila da continua: en V~ marca casi 0. Usa V⎓.", "Pilak korronte zuzena ematen du: V~-n ia 0 adierazten du. Erabili V⎓."), mal: true };
+    }
+    if (s.tarea === "i") {
+      if (s.dial === "a" && s.con === "serie") return { p: s.borna === "ma" ? "250.0" : "0.25", m: T("¡Bien! La bombilla consume 250 mA. El polímetro en serie deja pasar la corriente y la mide.", "Ondo! Bonbillak 250 mA kontsumitzen ditu. Seriean dagoen polimetroak korrontea pasatzen uzten du eta neurtu egiten du."), ok: true };
+      if (s.dial === "vdc" && s.con === "serie") return { p: "9.20", m: T("En V el polímetro es como un circuito abierto: la bombilla se apaga y mides la tensión de la pila. Para corriente: selector en A.", "V-n polimetroa zirkuitu ireki bat bezalakoa da: bonbilla itzali egiten da eta pilaren tentsioa neurtzen duzu. Korronterako: hautagailua A-n."), mal: true };
+      if (s.dial === "vdc") return { p: "9.10", m: T("Esto es la tensión de la bombilla, no su corriente. La corriente se mide en serie.", "Hau bonbillaren tentsioa da, ez bere korrontea. Korrontea seriean neurtzen da."), mal: true };
+    }
+    if (s.tarea === "r") {
+      if (s.dial === "ohm") return { p: "4.70", u: "kΩ", m: T("¡Bien! 4,7 kΩ (amarillo, violeta, rojo).", "Ondo! 4,7 kΩ (horia, morea, gorria)."), ok: true };
+      if (s.dial === "cont") return { p: "OL", m: T("4,7 kΩ es demasiado para que pite: la continuidad solo suena con unos pocos ohmios.", "4,7 kΩ gehiegi da txistua jotzeko: jarraitutasunak ohmio gutxi batzuekin bakarrik jotzen du."), mal: true };
+    }
+    if (s.tarea === "c") {
+      if (s.dial === "cont" || s.dial === "ohm") return st.cableBueno ? { p: "0.3", u: "Ω", m: T("¡Piiii! Hay continuidad: el cable está bien.", "Piiii! Jarraitutasuna dago: kablea ondo dago."), ok: true, pito: true } : { p: "OL", m: T("No pita (OL): el cable está cortado por dentro.", "Ez du jotzen (OL): kablea barrutik moztuta dago."), ok: true };
+    }
+    return { p: "0.00", m: T("Esa posición del selector no sirve para esta medida.", "Hautagailuaren posizio horrek ez du balio neurketa honetarako."), mal: true };
+  }
+  function pinta(){
+    var r = lectura(), s = "";
+    // escena
+    if (st.tarea === "v" || st.tarea === "i") {
+      s += '<rect x="30" y="70" width="44" height="80" rx="6" fill="#2d3340"/><rect x="40" y="60" width="24" height="10" fill="#9aa3ad"/><text x="52" y="116" text-anchor="middle" style="font-size:14px;font-weight:700;fill:#fff">9V</text>';
+      s += '<path d="M52 60V30h170v40M52 150v20h170v-40" fill="none" stroke="#242d5f" stroke-width="3"/>';
+      var luce = st.tarea === "v" || (r.ok);
+      if (st.tarea === "i" && st.con === "serie") s += '<path d="M146 30h-10" stroke="#fff" stroke-width="8"/>';
+      s += '<circle cx="222" cy="100" r="26" fill="' + (luce || st.tarea === "v" ? "#fff3b0" : "#fff") + '" stroke="#242d5f" stroke-width="3"/><path d="M204 82l36 36M240 82l-36 36" stroke="#242d5f" stroke-width="2.5"/>';
+      if (st.tarea === "v") s += st.con === "par" ? '<path d="M52 62L20 20" stroke="#c62f2f" stroke-width="4"/><path d="M52 150L90 190" stroke="#1b1b1b" stroke-width="4"/>' : "";
+      if (st.tarea === "i") s += st.con === "serie" ? '<path d="M136 30L120 4" stroke="#c62f2f" stroke-width="4"/><path d="M146 30L170 4" stroke="#1b1b1b" stroke-width="4"/><text class="txt" x="143" y="52" text-anchor="middle">' + T("circuito abierto", "zirkuitua irekita") + '</text>' : '<path d="M222 74L250 30" stroke="#c62f2f" stroke-width="4"/><path d="M222 126L250 170" stroke="#1b1b1b" stroke-width="4"/>';
+    } else if (st.tarea === "r") {
+      s += '<path d="M40 100h70M190 100h70" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/><rect x="110" y="84" width="80" height="32" rx="12" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/>';
+      s += '<rect x="126" y="84" width="8" height="32" fill="#f5d000"/><rect x="142" y="84" width="8" height="32" fill="#7d3fc4"/><rect x="158" y="84" width="8" height="32" fill="#d42a24"/><rect x="176" y="84" width="8" height="32" fill="#c9a227"/>';
+      s += '<path d="M40 100L20 40" stroke="#c62f2f" stroke-width="4"/><path d="M260 100L280 40" stroke="#1b1b1b" stroke-width="4"/><text class="tt" x="150" y="150" text-anchor="middle">' + T("fuera del circuito", "zirkuitutik kanpo") + '</text>';
+    } else {
+      s += '<path d="M40 110c40-40 80 40 110 0s80-40 110 0" fill="none" stroke="#2b6cb0" stroke-width="8" stroke-linecap="round"/>';
+      if (!st.cableBueno) s += '<path d="M146 96l8 12M154 96l-8 12" stroke="#c62f2f" stroke-width="3"/>';
+      s += '<path d="M40 110L20 50" stroke="#c62f2f" stroke-width="4"/><path d="M260 110L280 50" stroke="#1b1b1b" stroke-width="4"/>';
+      s += '<text class="tt" x="150" y="170" text-anchor="middle" style="cursor:pointer" id="otroCable">↻ ' + T("otro cable", "beste kable bat") + '</text>';
+    }
+    $("esc").innerHTML = s;
+    // polímetro
+    var di = DIAL.map(function(d){ return d.id; }).indexOf(st.dial), ang = -150 + di * 60;
+    var p = '<rect x="70" y="4" width="160" height="192" rx="18" fill="#f2b705" stroke="#8a6a00" stroke-width="2"/><rect x="84" y="14" width="132" height="56" rx="6" fill="#c6d4b8" stroke="#5d6382"/>';
+    p += '<text x="206" y="56" text-anchor="end" style="font-family:monospace;font-size:28px;font-weight:700;fill:#1b2147">' + r.p + '</text>';
+    p += '<text x="96" y="30" style="font-size:10px;font-weight:700;fill:#1b2147">' + (r.u || { vdc:"V⎓", vac:"V~", a: st.borna === "ma" ? "mA" : "A", ohm:"kΩ", cont:"Ω", off:"" }[st.dial]) + '</text>';
+    if (r.pito) p += '<text x="96" y="64" style="font-size:12px;font-weight:700;fill:#1b2147">•))</text>';
+    p += '<circle cx="150" cy="120" r="34" fill="#2d3340"/>';
+    DIAL.forEach(function(d, i){ var a = (-150 + i * 60 - 90) * Math.PI / 180; p += '<text x="' + (150 + 46 * Math.cos(a)) + '" y="' + (124 + 46 * Math.sin(a)) + '" text-anchor="middle" style="font-size:10px;font-weight:700;fill:' + (d.id === st.dial ? "#1b2147" : "#5a4a00") + '">' + d.t + '</text>'; });
+    var a2 = (ang - 90) * Math.PI / 180;
+    p += '<path d="M150 120L' + (150 + 30 * Math.cos(a2)) + ' ' + (120 + 30 * Math.sin(a2)) + '" stroke="#f39200" stroke-width="7" stroke-linecap="round"/>';
+    [["10 A","10a",92],["mA","ma",124],["COM","com",176],["VΩ","v",208]].forEach(function(b){
+      var activa = b[1] === st.borna, col = b[1] === "com" ? "#1b1b1b" : activa ? "#c62f2f" : "#2d3340";
+      p += '<circle cx="' + b[2] + '" cy="176" r="9" fill="' + col + '" stroke="#1b1b1b"/><text x="' + b[2] + '" y="194" text-anchor="middle" style="font-size:8.5px;font-weight:700;fill:#1b2147">' + b[0] + '</text>';
+    });
+    $("pol").innerHTML = p;
+    var e = $("est"); e.className = "estado " + (r.ok ? "ok" : r.mal ? "mal" : ""); e.textContent = r.m;
+    var oc = document.getElementById("otroCable"); if (oc) oc.addEventListener("click", function(){ st.cableBueno = Math.random() > 0.5; pinta(); });
+  }
+  [["tarea","tarea"],["dial","dial"],["borna","borna"],["con","con"]].forEach(function(c){
+    $(c[0]).addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; st[c[1]] = b.dataset.v; if (c[1] === "tarea") st.fusible = true; todo(); });
+  });
+  alCambiarIdioma(todo); todo();
+})();
+</script>
+</body>
+</html>

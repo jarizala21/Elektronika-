@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resistencias en serie, paralelo y mixto</title>
+<meta name="description" content="Resistencia equivalente y reparto de tensiones e intensidades en circuitos serie, paralelo y mixto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.txt{font-size:11.5px;font-weight:600;fill:#242d5f}
+.val{font-size:11px;font-weight:600;fill:#b45f00}
+.pasos p{margin:0 0 4px;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Resistencias" data-eu="Analogikoa · Erresistentziak"></p>
+      <h1 data-es="Serie, paralelo y mixto" data-eu="Seriea, paraleloa eta mistoa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="chips" id="modo">
+      <button data-m="s" aria-pressed="true" data-es="Serie" data-eu="Seriea"></button>
+      <button data-m="p" data-es="Paralelo" data-eu="Paraleloa"></button>
+      <button data-m="x" data-es="Mixto" data-eu="Mistoa"></button>
+    </div>
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 230" role="img" aria-label="Circuito de resistencias"></svg></figure>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Tensión" data-eu="Tentsioa"></span><output id="vo"></output></label><input id="v" type="range" min="1" max="24" step="1" value="12"></div>
+      <div class="deslizador"><label><span>R1</span><output id="o1"></output></label><input id="r1" type="range" min="0" max="24" value="8"></div>
+      <div class="deslizador"><label><span>R2</span><output id="o2"></output></label><input id="r2" type="range" min="0" max="24" value="12"></div>
+      <div class="deslizador"><label><span>R3</span><output id="o3"></output></label><input id="r3" type="range" min="0" max="24" value="15"></div>
+    </div>
+    <div class="card pasos" id="pasos"></div>
+  </section>
+
+  <section class="panel" data-tab="araudia" data-es="Reglas" data-eu="Arauak" hidden>
+    <div class="rejilla">
+      <div class="card"><h2 data-es="En serie" data-eu="Seriean"></h2>
+        <p class="es">Una detrás de otra: <b>un solo camino</b>.</p><p class="eu">Bata bestearen atzean: <b>bide bakarra</b>.</p>
+        <span class="formula">Req = R1 + R2 + R3</span>
+        <ul class="es"><li>La <b>intensidad es la misma</b> en todas.</li><li>La tensión se <b>reparte</b>: la mayor resistencia se queda con más tensión.</li><li>Req es <b>mayor</b> que la mayor de ellas.</li></ul>
+        <ul class="eu"><li><b>Intentsitatea berdina</b> da guztietan.</li><li>Tentsioa <b>banatu</b> egiten da: erresistentzia handienak tentsio gehiago hartzen du.</li><li>Req handiena baino <b>handiagoa</b> da.</li></ul></div>
+      <div class="card"><h2 data-es="En paralelo" data-eu="Paraleloan"></h2>
+        <p class="es">Unidas por sus dos extremos: <b>varios caminos</b>.</p><p class="eu">Bi muturretatik lotuta: <b>hainbat bide</b>.</p>
+        <span class="formula">1/Req = 1/R1 + 1/R2 + 1/R3</span>
+        <ul class="es"><li>La <b>tensión es la misma</b> en todas.</li><li>La intensidad se <b>reparte</b>: por la menor resistencia pasa más corriente.</li><li>Req es <b>menor</b> que la menor de ellas.</li><li>Dos resistencias: Req = R1·R2 / (R1+R2).</li></ul>
+        <ul class="eu"><li><b>Tentsioa berdina</b> da guztietan.</li><li>Intentsitatea <b>banatu</b> egiten da: erresistentzia txikienetik korronte gehiago pasatzen da.</li><li>Req txikiena baino <b>txikiagoa</b> da.</li><li>Bi erresistentzia: Req = R1·R2 / (R1+R2).</li></ul></div>
+      <div class="card"><h2 data-es="Mixto" data-eu="Mistoa"></h2>
+        <p class="es">Se resuelve <b>por partes</b>: primero los grupos en paralelo, luego se suma lo que queda en serie.</p>
+        <p class="eu"><b>Zatika</b> ebazten da: lehenik paraleloko taldeak, gero seriean geratzen dena batu.</p>
+        <span class="formula">Req = R1 + (R2·R3)/(R2+R3)</span></div>
+    </div>
+    <div class="recuerda"><h2 data-es="Leyes de Kirchhoff" data-eu="Kirchhoff-en legeak"></h2>
+      <p class="es"><b>Nudos:</b> la corriente que entra en un nudo es igual a la que sale. <b>Mallas:</b> en un camino cerrado, las caídas de tensión suman la tensión de la pila.</p>
+      <p class="eu"><b>Korapiloak:</b> korapilo batera sartzen den korrontea ateratzen denaren berdina da. <b>Begiztak:</b> bide itxi batean, tentsio-erorketen batura pilaren tentsioa da.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var E = [10,12,15,18,22,27,33,39,47,56,68,82], RS = [];
+  for (var k = 1; k < 3; k++) E.forEach(function(e){ RS.push(e * Math.pow(10, k)); });
+  RS.push(10000);
+  var modo = "s";
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? n(r / 1000, 2) + " kΩ" : n(r, 1) + " Ω"; }
+  function fI(i){ return i < 1 ? n(i * 1000, 1) + " mA" : n(i, 2) + " A"; }
+  // Dibuja una resistencia (horizontal si h = 0, vertical si w = 0) y su rótulo en (lx, ly)
+  function res(x, y, w, h, nom, R, V, I, lx, ly, an){
+    var s = h ? '<rect x="' + (x - 9) + '" y="' + y + '" width="18" height="' + h + '" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/>'
+              : '<rect x="' + x + '" y="' + (y - 9) + '" width="' + w + '" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/>';
+    s += '<text class="txt" x="' + lx + '" y="' + ly + '" text-anchor="' + (an || "middle") + '">' + nom + " = " + fR(R) + '</text>';
+    s += '<text class="val" x="' + lx + '" y="' + (ly + 13) + '" text-anchor="' + (an || "middle") + '">' + n(V, 2) + " V · " + fI(I) + '</text>';
+    return s;
+  }
+  function pila(V){ return '<rect x="14" y="95" width="32" height="44" fill="#fff"/><path d="M18 108h24M24 118h12M18 128h24" stroke="#242d5f" stroke-width="3"/><text class="txt" x="8" y="160">' + V + ' V</text>'; }
+  function pinta(){
+    var V = +$("v").value, R1 = RS[+$("r1").value], R2 = RS[+$("r2").value], R3 = RS[+$("r3").value];
+    $("vo").textContent = V + " V"; $("o1").textContent = fR(R1); $("o2").textContent = fR(R2); $("o3").textContent = fR(R3);
+    var s = "", p = "", Req, I;
+    if (modo === "s") {
+      Req = R1 + R2 + R3; I = V / Req;
+      s = '<path d="M30 95V40h280v150H30v-51" fill="none" stroke="#242d5f" stroke-width="3"/>' + pila(V);
+      s += res(70, 40, 70, 0, "R1", R1, I * R1, I, 105, 16) + res(200, 40, 70, 0, "R2", R2, I * R2, I, 235, 16) + res(310, 80, 0, 70, "R3", R3, I * R3, I, 296, 112, "end");
+      p = "<p><b>Req</b> = R1 + R2 + R3 = " + fR(R1) + " + " + fR(R2) + " + " + fR(R3) + " = <b>" + fR(Req) + "</b></p>" +
+          "<p><b>I</b> = V / Req = " + V + " V / " + fR(Req) + " = <b>" + fI(I) + "</b> " + T("(igual en todas)", "(berdina guztietan)") + "</p>" +
+          "<p>V1 + V2 + V3 = " + n(I * R1, 2) + " + " + n(I * R2, 2) + " + " + n(I * R3, 2) + " = <b>" + n(V, 2) + " V</b></p>";
+    } else if (modo === "p") {
+      Req = 1 / (1 / R1 + 1 / R2 + 1 / R3); I = V / Req;
+      s = '<path d="M30 95V40h260M30 139V200h260M110 40v160M200 40v160M290 40v160" fill="none" stroke="#242d5f" stroke-width="3"/>' + pila(V);
+      s += res(110, 80, 0, 60, "R1", R1, V, V / R1, 110, 168) + res(200, 80, 0, 60, "R2", R2, V, V / R2, 200, 66) + res(290, 80, 0, 60, "R3", R3, V, V / R3, 288, 168, "end");
+      s += '<text class="val" x="40" y="28">I = ' + fI(I) + '</text>';
+      p = "<p><b>1/Req</b> = 1/" + fR(R1) + " + 1/" + fR(R2) + " + 1/" + fR(R3) + " → <b>Req = " + fR(Req) + "</b></p>" +
+          "<p><b>" + T("Tensión", "Tentsioa") + "</b> = " + V + " V " + T("en todas", "guztietan") + "</p>" +
+          "<p><b>I</b> = I1 + I2 + I3 = " + fI(V / R1) + " + " + fI(V / R2) + " + " + fI(V / R3) + " = <b>" + fI(I) + "</b></p>";
+    } else {
+      var Rp = R2 * R3 / (R2 + R3); Req = R1 + Rp; I = V / Req;
+      var Vp = I * Rp;
+      s = '<path d="M30 95V40h200v30M190 70h80M190 70v120M270 70v120M190 190h80M230 190v10H30v-61" fill="none" stroke="#242d5f" stroke-width="3"/>' + pila(V);
+      s += res(80, 40, 80, 0, "R1", R1, I * R1, I, 120, 16) + res(190, 100, 0, 60, "R2", R2, Vp, Vp / R2, 182, 120, "end") + res(270, 100, 0, 60, "R3", R3, Vp, Vp / R3, 280, 120, "start");
+      p = "<p>R2 ∥ R3 = (" + fR(R2) + " · " + fR(R3) + ") / (" + fR(R2) + " + " + fR(R3) + ") = <b>" + fR(Rp) + "</b></p>" +
+          "<p><b>Req</b> = R1 + R2∥R3 = " + fR(R1) + " + " + fR(Rp) + " = <b>" + fR(Req) + "</b></p>" +
+          "<p><b>I</b> = " + V + " V / " + fR(Req) + " = <b>" + fI(I) + "</b> · V1 = " + n(I * R1, 2) + " V · V2 = V3 = " + n(Vp, 2) + " V</p>";
+    }
+    $("cir").innerHTML = s;
+    $("pasos").innerHTML = '<h2>' + T("Cálculo", "Kalkulua") + '</h2>' + p;
+  }
+  $("modo").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return; modo = b.dataset.m;
+    [].forEach.call($("modo").children, function(x){ x.setAttribute("aria-pressed", x === b); }); pinta();
+  });
+  ["v","r1","r2","r3"].forEach(function(id){ $(id).addEventListener("input", pinta); });
+  alCambiarIdioma(pinta); pinta();
+})();
+</script>
+</body>
+</html>

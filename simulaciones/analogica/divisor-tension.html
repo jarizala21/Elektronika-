@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Divisor de tensión y potenciómetro</title>
+<meta name="description" content="Cómo reparten la tensión dos resistencias en serie, qué pasa al conectar una carga y cómo funciona un potenciómetro.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:12px;font-weight:600;fill:#242d5f}.val{font-size:13px;font-weight:700;fill:#b45f00}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Resistencias" data-eu="Analogikoa · Erresistentziak"></p>
+      <h1 data-es="Divisor de tensión" data-eu="Tentsio-zatitzailea"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="zatitzailea" data-es="Divisor" data-eu="Zatitzailea">
+    <div class="dos">
+      <figure class="fig"><svg id="cir" viewBox="0 0 320 250" role="img" aria-label="Divisor de tensión"></svg></figure>
+      <div style="display:grid;gap:14px;align-content:start">
+        <div class="card"><span class="formula">Vout = Vin · R2 / (R1 + R2)</span>
+          <p class="es">Dos resistencias en serie se reparten la tensión. La salida se toma <b>entre R2 y masa</b>.</p>
+          <p class="eu">Seriean dauden bi erresistentziek tentsioa banatzen dute. Irteera <b>R2 eta masaren artean</b> hartzen da.</p></div>
+        <div class="lectura-g"><div><small>Vout</small><b id="vout"></b></div><div><small>I</small><b id="iv"></b></div></div>
+      </div>
+    </div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span>Vin</span><output id="vio"></output></label><input id="vin" type="range" min="1" max="24" value="12"></div>
+      <div class="deslizador"><label><span>R1</span><output id="o1"></output></label><input id="r1" type="range" min="0" max="24" value="12"></div>
+      <div class="deslizador"><label><span>R2</span><output id="o2"></output></label><input id="r2" type="range" min="0" max="24" value="12"></div>
+    </div>
+    <div class="chips" id="carga">
+      <span class="nota" data-es="Carga en la salida:" data-eu="Karga irteeran:"></span>
+      <button data-r="0" aria-pressed="true" data-es="Sin carga" data-eu="Kargarik gabe"></button><button data-r="100000">100 kΩ</button><button data-r="1000">1 kΩ</button><button data-r="100">100 Ω</button>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="potentziometroa" data-es="Potenciómetro" data-eu="Potentziometroa" hidden>
+    <div class="dos">
+      <figure class="fig"><svg id="pot" viewBox="0 0 320 230" role="img" aria-label="Potenciómetro"></svg></figure>
+      <div class="card">
+        <h2 data-es="¿Qué es?" data-eu="Zer da?"></h2>
+        <p class="es">Una resistencia con un <b>cursor</b> que se mueve sobre la pista. Tiene 3 patillas: los dos extremos y el cursor. Es un divisor de tensión que se ajusta girando.</p>
+        <p class="eu">Pistaren gainean mugitzen den <b>kurtsore</b> bat duen erresistentzia. 3 hanka ditu: bi muturrak eta kurtsorea. Biratuz doitzen den tentsio-zatitzailea da.</p>
+        <ul class="es"><li><b>Lineal (B):</b> la resistencia cambia igual en todo el giro.</li><li><b>Logarítmico (A):</b> para volumen de audio.</li><li><b>Trimmer:</b> pequeño, se ajusta con destornillador.</li></ul>
+        <ul class="eu"><li><b>Lineala (B):</b> erresistentzia berdin aldatzen da biraketa osoan.</li><li><b>Logaritmikoa (A):</b> audio-bolumenerako.</li><li><b>Trimmerra:</b> txikia, torlojuzorroarekin doitzen da.</li></ul>
+      </div>
+    </div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Giro del cursor" data-eu="Kurtsorearen biraketa"></span><output id="go"></output></label><input id="giro" type="range" min="0" max="100" value="40"></div>
+    </div>
+    <div class="lectura-g"><div><small data-es="Valor total" data-eu="Balio osoa"></small><b>10 kΩ</b></div><div><small>A–C</small><b id="rac"></b></div><div><small>C–B</small><b id="rcb"></b></div><div><small>Vout</small><b id="vpot"></b></div></div>
+    <div class="recuerda"><h2 data-es="Uso típico" data-eu="Erabilera tipikoa"></h2>
+      <p class="es">Extremos a 5 V y GND, cursor a una entrada analógica del Arduino (A0): <code>analogRead</code> da de 0 a 1023 según el giro.</p>
+      <p class="eu">Muturrak 5 V-ra eta GND-ra, kurtsorea Arduinoaren sarrera analogiko batera (A0): <code>analogRead</code>-ek 0tik 1023ra ematen du biraketaren arabera.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var E = [10,12,15,18,22,27,33,39,47,56,68,82], RS = [];
+  for (var k = 2; k < 4; k++) E.forEach(function(e){ RS.push(e * Math.pow(10, k)); });
+  RS.push(10000);
+  var RL = 0;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? n(r / 1000, 2) + " kΩ" : n(r, 0) + " Ω"; }
+  function rv(x, y, h, nom){ return '<rect x="' + (x - 10) + '" y="' + y + '" width="20" height="' + h + '" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="txt" x="' + (x - 18) + '" y="' + (y + h / 2 + 4) + '" text-anchor="end">' + nom + '</text>'; }
+  function pinta(){
+    var Vin = +$("vin").value, R1 = RS[+$("r1").value], R2 = RS[+$("r2").value];
+    $("vio").textContent = Vin + " V"; $("o1").textContent = fR(R1); $("o2").textContent = fR(R2);
+    var R2e = RL ? R2 * RL / (R2 + RL) : R2, I = Vin / (R1 + R2e), Vo = I * R2e, Vsin = Vin * R2 / (R1 + R2);
+    var s = '<path d="M120 20v20M120 110v30M120 210v20M120 125h110M60 20h60M60 230h60" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    s += '<text class="txt" x="20" y="24">Vin ' + Vin + ' V</text><text class="txt" x="20" y="234">GND</text><path d="M120 230h110" stroke="#242d5f" stroke-width="3"/>';
+    s += rv(120, 40, 70, "R1 " + fR(R1)) + rv(120, 140, 70, "R2 " + fR(R2));
+    s += '<circle cx="230" cy="125" r="4" fill="#242d5f"/><circle cx="230" cy="230" r="4" fill="#242d5f"/><text class="val" x="240" y="130">Vout</text><text class="val" x="240" y="148">' + n(Vo, 2) + ' V</text>';
+    s += '<path d="M250 160v58" stroke="#b45f00" stroke-width="2" marker-end="url(#fl)"/><defs><marker id="fl" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b45f00"/></marker></defs>';
+    if (RL) s += '<path d="M200 125v15M200 210v20" stroke="#2b6cb0" stroke-width="3"/><rect x="190" y="140" width="20" height="70" rx="4" fill="#e3eefa" stroke="#2b6cb0" stroke-width="2"/><text class="txt" x="200" y="226" text-anchor="middle" style="fill:#2b6cb0">RL</text>';
+    $("cir").innerHTML = s;
+    $("vout").textContent = n(Vo, 2) + " V"; $("iv").textContent = n(I * 1000, 2) + " mA";
+    var e = $("est");
+    if (!RL) { e.className = "estado"; e.textContent = T("Sin carga, la salida es exactamente la de la fórmula.", "Kargarik gabe, irteera formulak ematen duena da."); }
+    else {
+      var caida = (Vsin - Vo) / Vsin * 100;
+      e.className = "estado " + (caida < 5 ? "ok" : "mal");
+      e.textContent = T("Con la carga, Vout baja de " + n(Vsin, 2) + " V a " + n(Vo, 2) + " V (" + n(caida, 0) + " %). ", "Kargarekin, Vout " + n(Vsin, 2) + " V-tik " + n(Vo, 2) + " V-ra jaisten da (% " + n(caida, 0) + "). ") +
+        (caida < 5 ? T("La carga es grande frente a R2: casi no afecta.", "Karga handia da R2-rekin alderatuta: ia ez du eraginik.") : T("La carga queda en paralelo con R2 y la salida baja. Por eso un divisor no sirve para alimentar cargas.", "Karga R2-rekin paraleloan geratzen da eta irteera jaisten da. Horregatik zatitzaile batek ez du balio kargak elikatzeko."));
+    }
+  }
+  function pot(){
+    var g = +$("giro").value / 100, R = 10000, Rac = R * g, Vo = 5 * (1 - g);
+    $("go").textContent = Math.round(g * 100) + " %"; $("rac").textContent = fR(Rac); $("rcb").textContent = fR(R - Rac); $("vpot").textContent = n(Vo, 2) + " V";
+    var ang = -135 + 270 * g, a = ang * Math.PI / 180;
+    var s = '<circle cx="160" cy="100" r="78" fill="#2d3340"/><path d="M104.8 155.2A78 78 0 1 1 215.2 155.2" fill="none" stroke="#c9a46c" stroke-width="14"/>';
+    var a0 = -225 * Math.PI / 180, a1 = (ang - 90) * Math.PI / 180;
+    s += '<path d="M' + (160 + 78 * Math.cos(a0)) + ' ' + (100 + 78 * Math.sin(a0)) + 'A78 78 0 ' + (g > 0.667 ? 1 : 0) + ' 1 ' + (160 + 78 * Math.cos(a1)) + ' ' + (100 + 78 * Math.sin(a1)) + '" fill="none" stroke="#f39200" stroke-width="14"/>';
+    s += '<circle cx="160" cy="100" r="38" fill="#c9cfd8" stroke="#242d5f" stroke-width="2"/><path d="M160 100L' + (160 + 60 * Math.sin(a)) + ' ' + (100 - 60 * Math.cos(a)) + '" stroke="#242d5f" stroke-width="6" stroke-linecap="round"/>';
+    s += '<path d="M104 160v40M160 180v20M216 160v40" stroke="#9aa3ad" stroke-width="6" stroke-linecap="round"/>';
+    s += '<text class="txt" x="104" y="222" text-anchor="middle">A · 5 V</text><text class="txt" x="160" y="222" text-anchor="middle">C · Vout</text><text class="txt" x="216" y="222" text-anchor="middle">B · GND</text>';
+    $("pot").innerHTML = s;
+  }
+  ["vin","r1","r2"].forEach(function(id){ $(id).addEventListener("input", pinta); });
+  $("giro").addEventListener("input", pot);
+  $("carga").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return; RL = +b.dataset.r;
+    [].forEach.call($("carga").querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); }); pinta();
+  });
+  alCambiarIdioma(function(){ pinta(); pot(); });
+  pinta(); pot();
+})();
+</script>
+</body>
+</html>

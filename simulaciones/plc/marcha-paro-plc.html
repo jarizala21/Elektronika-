@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marcha-paro con PLC</title>
+<meta name="description" content="Arranque de un motor con PLC Omron en diagrama de contactos: marcha, paro, relé térmico y autorretención, viendo cómo pasa la «corriente» por el programa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.dir{font-size:10px;font-weight:700;fill:#242d5f;font-family:ui-monospace,Menlo,Consolas,monospace}
+.nom{font-size:10px;font-weight:600;fill:#5d6382}
+.botonera{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.botonera button{border:0;border-radius:16px;padding:12px 4px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:#fff;box-shadow:var(--sombra);touch-action:none;user-select:none;-webkit-user-select:none}
+.botonera button[aria-pressed="true"]{outline:4px solid var(--naranja);outline-offset:2px}
+.lad{overflow-x:auto}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Industrial y PLC" data-eu="Industriala eta PLCa"></p>
+      <h1 data-es="Marcha-paro con PLC" data-eu="Martxa-geldialdia PLCarekin"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="programa" data-es="Programa" data-eu="Programa">
+    <figure class="fig lad"><svg id="lad" viewBox="0 0 360 290" role="img" aria-label="Diagrama de contactos"></svg>
+      <figcaption data-es="Verde = condición que se cumple y deja pasar. Mantén pulsados los botones." data-eu="Berdea = betetzen den baldintza, pasatzen uzten du. Eutsi botoiak sakatuta."></figcaption></figure>
+    <div class="botonera">
+      <button type="button" id="b0" style="background:#1e9a45" data-es="MARCHA (S1)" data-eu="MARTXA (S1)"></button>
+      <button type="button" id="b1" style="background:#c62f2f" data-es="PARO (S0)" data-eu="GELDIALDIA (S0)"></button>
+      <button type="button" id="b2" style="background:#5d6382" data-es="Disparar térmico" data-eu="Termikoa jaurti"></button>
+    </div>
+    <figure class="fig"><svg id="maq" viewBox="0 0 340 120" role="img" aria-label="Motor y pilotos"></svg></figure>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="kableatua" data-es="Entradas y salidas" data-eu="Sarrerak eta irteerak" hidden>
+    <div class="tabla"><table>
+      <tr><th data-es="Dirección" data-eu="Helbidea"></th><th data-es="Elemento" data-eu="Elementua"></th><th data-es="Contacto real" data-eu="Benetako kontaktua"></th></tr>
+      <tr><td>0.00</td><td data-es="S1 pulsador de marcha" data-eu="S1 martxa-sakagailua"></td><td>NA</td></tr>
+      <tr><td>0.01</td><td data-es="S0 pulsador de paro" data-eu="S0 geldialdi-sakagailua"></td><td>NA</td></tr>
+      <tr><td>0.02</td><td data-es="F2 relé térmico" data-eu="F2 erreles termikoa"></td><td>NA (95-96 → 97-98)</td></tr>
+      <tr><td>100.00</td><td data-es="KM1 contactor del motor" data-eu="KM1 motorraren kontaktorea"></td><td data-es="bobina" data-eu="bobina"></td></tr>
+      <tr><td>100.01</td><td data-es="H1 piloto de marcha (verde)" data-eu="H1 martxa-pilotua (berdea)"></td><td data-es="lámpara" data-eu="lanpara"></td></tr>
+      <tr><td>100.02</td><td data-es="H2 piloto de térmico (rojo)" data-eu="H2 termiko-pilotua (gorria)"></td><td data-es="lámpara" data-eu="lanpara"></td></tr>
+    </table></div>
+    <div class="card"><p class="es nota">Direcciones de un Omron CJ1M (CIO). En este ejemplo todos los pulsadores se cablean con contacto NA; en el programa, el paro y el térmico se usan con contacto <b>cerrado</b> (/).</p><p class="eu nota">Omron CJ1M baten helbideak (CIO). Adibide honetan sakagailu guztiak NA kontaktuarekin kableatzen dira; programan, geldialdia eta termikoa kontaktu <b>itxiarekin</b> (/) erabiltzen dira.</p></div>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="Autorretención" data-eu="Autoatxikimendua" hidden>
+    <div class="card"><h2 data-es="¿Por qué el contacto 100.00 en paralelo?" data-eu="Zergatik 100.00 kontaktua paraleloan?"></h2>
+      <p class="es">El pulsador de marcha solo da señal mientras se aprieta. Al activarse la salida 100.00, su propio contacto (en paralelo con MARCHA) mantiene el camino cerrado: es la <b>autorretención</b> (enclavamiento). Así el motor sigue en marcha al soltar el pulsador.</p>
+      <p class="eu">Martxa-sakagailuak sakatuta dagoen bitartean bakarrik ematen du seinalea. 100.00 irteera aktibatzean, bere kontaktu propioak (MARTXArekin paraleloan) bidea itxita mantentzen du: <b>autoatxikimendua</b> da. Horrela motorrak martxan jarraitzen du sakagailua askatzean.</p></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Paro prioritario" data-eu="Geldialdi lehentasunduna"></h3><p class="es">El contacto cerrado de PARO está en serie <b>después</b> del paralelo: si se pulsan marcha y paro a la vez, gana el paro.</p><p class="eu">GELDIALDIAren kontaktu itxia paraleloaren <b>ondoren</b> dago seriean: martxa eta geldialdia batera sakatzen badira, geldialdiak irabazten du.</p></div>
+      <div class="card"><h3 data-es="Lista de instrucciones" data-eu="Instrukzio-zerrenda"></h3><pre>LD     0.00
+OR     100.00
+ANDNOT 0.01
+ANDNOT 0.02
+OUT    100.00</pre></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var I = [0, 0, 0], Q = 0, giro = 0, vel = 0;
+  function contacto(x, y, dir, nom, nc, pasa){
+    var c = pasa ? "#1e9a45" : "#242d5f";
+    var s = '<path d="M' + x + ' ' + y + 'h12M' + (x + 12) + ' ' + (y - 12) + 'v24M' + (x + 28) + ' ' + (y - 12) + 'v24M' + (x + 28) + ' ' + y + 'h12" stroke="' + c + '" stroke-width="3" fill="none"/>';
+    if (nc) s += '<path d="M' + (x + 8) + ' ' + (y + 14) + 'L' + (x + 32) + ' ' + (y - 14) + '" stroke="' + c + '" stroke-width="2.5"/>';
+    if (pasa) s += '<rect x="' + (x + 13) + '" y="' + (y - 11) + '" width="14" height="22" fill="#1e9a45" opacity=".25"/>';
+    s += '<text class="dir" x="' + (x + 20) + '" y="' + (y - 18) + '" text-anchor="middle">' + dir + '</text><text class="nom" x="' + (x + 20) + '" y="' + (y + 26) + '" text-anchor="middle">' + nom + '</text>';
+    return s;
+  }
+  function bobina(x, y, dir, nom, on){
+    var c = on ? "#1e9a45" : "#242d5f";
+    return '<path d="M' + x + ' ' + y + 'h10" stroke="' + c + '" stroke-width="3"/><path d="M' + (x + 18) + ' ' + (y - 12) + 'q-8 12 0 24M' + (x + 28) + ' ' + (y - 12) + 'q8 12 0 24" fill="' + (on ? "rgba(30,154,69,.2)" : "none") + '" stroke="' + c + '" stroke-width="3"/><path d="M' + (x + 36) + ' ' + y + 'h10" stroke="' + c + '" stroke-width="3"/>' +
+      '<text class="dir" x="' + (x + 23) + '" y="' + (y - 18) + '" text-anchor="middle">' + dir + '</text><text class="nom" x="' + (x + 23) + '" y="' + (y + 26) + '" text-anchor="middle">' + nom + '</text>';
+  }
+  function ciclo(){ // un ciclo de scan: lee entradas, ejecuta el programa, escribe salidas
+    var term = I[2];
+    Q = ((I[0] || Q) && !I[1] && !term) ? 1 : 0;
+  }
+  function pinta(){
+    ciclo();
+    var term = I[2], tramo1 = I[0] || Q, tramo2 = tramo1 && !I[1], tramo3 = tramo2 && !term;
+    var verde = "#1e9a45", az = "#242d5f";
+    var s = '<path d="M14 10v270" stroke="#242d5f" stroke-width="4"/><path d="M346 10v270" stroke="#242d5f" stroke-width="4"/>';
+    // escalón 1
+    s += '<text class="nom" x="20" y="22">0</text>';
+    s += '<path d="M14 50h20" stroke="' + verde + '" stroke-width="3"/>';
+    s += contacto(34, 50, "0.00", T("MARCHA", "MARTXA"), false, I[0]);
+    s += '<path d="M24 50v62h10" stroke="' + verde + '" stroke-width="3" fill="none"/>' + contacto(34, 112, "100.00", "KM1", false, Q);
+    s += '<path d="M74 50h16M74 112h8v-62" stroke="' + (tramo1 ? verde : az) + '" stroke-width="3" fill="none"/>';
+    s += contacto(90, 50, "0.01", T("PARO", "GELDIALDIA"), true, !I[1]);
+    s += '<path d="M130 50h16" stroke="' + (tramo2 ? verde : az) + '" stroke-width="3"/>';
+    s += contacto(146, 50, "0.02", T("TÉRMICO", "TERMIKOA"), true, !term);
+    s += '<path d="M186 50h114" stroke="' + (tramo3 ? verde : az) + '" stroke-width="3"/>' + bobina(300, 50, "100.00", "KM1", Q);
+    // escalón 2: piloto de marcha
+    s += '<text class="nom" x="20" y="166">1</text>';
+    s += '<path d="M14 184h20" stroke="' + verde + '" stroke-width="3"/>' + contacto(34, 184, "100.00", "KM1", false, Q) + '<path d="M74 184h226" stroke="' + (Q ? verde : az) + '" stroke-width="3"/>' + bobina(300, 184, "100.01", "H1", Q);
+    // escalón 3: piloto de térmico
+    s += '<text class="nom" x="20" y="232">2</text>';
+    s += '<path d="M14 250h20" stroke="' + verde + '" stroke-width="3"/>' + contacto(34, 250, "0.02", T("TÉRMICO", "TERMIKOA"), false, term) + '<path d="M74 250h226" stroke="' + (term ? verde : az) + '" stroke-width="3"/>' + bobina(300, 250, "100.02", "H2", term);
+    $("lad").innerHTML = s;
+    vel += ((Q ? 1 : 0) - vel) * 0.05; giro = (giro + vel * 14) % 360;
+    var m = '<circle cx="70" cy="60" r="44" fill="#c9cfd8" stroke="#242d5f" stroke-width="3"/><g transform="rotate(' + giro + ' 70 60)"><path d="M70 60V22M70 60l33 19M70 60l-33 19" stroke="#242d5f" stroke-width="7" stroke-linecap="round"/></g><circle cx="70" cy="60" r="8" fill="#f39200"/><text class="nom" x="70" y="116" text-anchor="middle">M1 · 400 V</text>';
+    m += '<circle cx="200" cy="50" r="22" fill="' + (Q ? "#34c759" : "#cfe9d6") + '" stroke="#242d5f" stroke-width="2"/><text class="nom" x="200" y="92" text-anchor="middle">H1</text>';
+    m += '<circle cx="280" cy="50" r="22" fill="' + (term ? "#ff3b30" : "#f3cfcb") + '" stroke="#242d5f" stroke-width="2"/><text class="nom" x="280" y="92" text-anchor="middle">H2</text>';
+    $("maq").innerHTML = m;
+    var e = $("est");
+    if (term) { e.className = "estado mal"; e.textContent = T("Ha saltado el térmico (sobrecarga): el motor se para y se enciende H2. Rearma el térmico para seguir.", "Termikoa jauzi da (gainkarga): motorra gelditzen da eta H2 pizten da. Berrarmatu termikoa jarraitzeko."); }
+    else if (Q && I[0]) { e.className = "estado ok"; e.textContent = T("MARCHA pulsada: se activa 100.00 y su contacto se cierra.", "MARTXA sakatuta: 100.00 aktibatzen da eta bere kontaktua ixten da."); }
+    else if (Q) { e.className = "estado ok"; e.textContent = T("Has soltado MARCHA, pero el motor sigue: la corriente pasa por el contacto 100.00 (autorretención).", "MARTXA askatu duzu, baina motorrak jarraitzen du: korrontea 100.00 kontaktutik pasatzen da (autoatxikimendua)."); }
+    else if (I[1]) { e.className = "estado"; e.textContent = T("PARO pulsado: el contacto cerrado se abre y corta la autorretención.", "GELDIALDIA sakatuta: kontaktu itxia ireki egiten da eta autoatxikimendua mozten du."); }
+    else { e.className = "estado"; e.textContent = T("Motor parado. Pulsa MARCHA.", "Motorra geldirik. Sakatu MARTXA."); }
+    requestAnimationFrame(pinta);
+  }
+  function pulsador(id, i){
+    var b = $(id);
+    function on(e){ e.preventDefault(); I[i] = 1; b.setAttribute("aria-pressed", "true"); }
+    function off(){ I[i] = 0; b.setAttribute("aria-pressed", "false"); }
+    b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); b.addEventListener("pointercancel", off);
+    b.addEventListener("keydown", function(e){ if (e.key === " " || e.key === "Enter") on(e); }); b.addEventListener("keyup", off);
+  }
+  pulsador("b0", 0); pulsador("b1", 1);
+  $("b2").addEventListener("click", function(){ I[2] ^= 1; this.setAttribute("aria-pressed", I[2] ? "true" : "false"); this.textContent = I[2] ? T("Rearmar térmico", "Termikoa berrarmatu") : T("Disparar térmico", "Termikoa jaurti"); });
+  pinta();
+})();
+</script>
+</body>
+</html>

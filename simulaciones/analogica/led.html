@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LED y resistencia limitadora</title>
+<meta name="description" content="Calcula la resistencia que necesita un LED según su color, la tensión de alimentación y la corriente. Partes y polaridad del LED.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}.pasos p{margin:0 0 4px}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Diodos" data-eu="Analogikoa · Diodoak"></p>
+      <h1 data-es="LED y resistencia limitadora" data-eu="LEDa eta erresistentzia mugatzailea"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="kalkulagailua" data-es="Calculadora" data-eu="Kalkulagailua">
+    <div class="chips" id="color"></div>
+    <figure class="fig"><svg id="cir" viewBox="0 0 320 190" role="img" aria-label="LED con resistencia"></svg></figure>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Alimentación" data-eu="Elikadura"></span><output id="vso"></output></label><input id="vs" type="range" min="0" max="4" value="1"></div>
+      <div class="deslizador"><label><span data-es="Corriente deseada" data-eu="Nahi den korrontea"></span><output id="ifo"></output></label><input id="if" type="range" min="5" max="25" step="1" value="15"></div>
+    </div>
+    <div class="card pasos" id="pasos"></div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Prueba con otra resistencia" data-eu="Probatu beste erresistentzia batekin"></span><output id="rpo"></output></label><input id="rp" type="range" min="0" max="35" value="20"></div>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="atalak" data-es="Partes y polaridad" data-eu="Atalak eta polaritatea" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 230">
+        <path d="M120 40a30 30 0 0 1 60 0v90h-60z" fill="#ff8a80" opacity=".7" stroke="#c62f2f" stroke-width="2"/>
+        <path d="M112 130h76v12h-76z" fill="#ff8a80" stroke="#c62f2f" stroke-width="2"/><path d="M188 130v12" stroke="#fff" stroke-width="5"/>
+        <path d="M135 142v80M165 142v60" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/>
+        <path d="M135 70v40h10" stroke="#8a8f98" stroke-width="4" fill="none"/><path d="M165 110v-34l-14-6v40" fill="#8a8f98"/>
+        <text class="tt" x="128" y="228" text-anchor="end" data-es="ánodo + (larga)" data-eu="anodoa + (luzea)"></text>
+        <text class="tt" x="172" y="210" data-es="cátodo − (corta)" data-eu="katodoa − (laburra)"></text>
+        <text class="txt" x="196" y="140" data-es="lado plano = cátodo" data-eu="alde laua = katodoa"></text>
+        <text class="txt" x="186" y="44" data-es="cápsula de epoxi" data-eu="epoxizko kapsula"></text>
+      </svg></figure>
+      <div class="card"><h2 data-es="Diodo emisor de luz" data-eu="Argia igortzen duen diodoa"></h2>
+        <p class="es">Es un diodo: solo se enciende en <b>polarización directa</b>. Su tensión (Vf) depende del color, y <b>siempre necesita una resistencia en serie</b> que limite la corriente; sin ella se quema al instante.</p>
+        <p class="eu">Diodo bat da: <b>polarizazio zuzenean</b> bakarrik pizten da. Bere tentsioa (Vf) kolorearen araberakoa da, eta <b>beti behar du seriean erresistentzia bat</b> korrontea mugatzeko; hura gabe berehala erretzen da.</p>
+        <div class="tabla"><table><tr><th data-es="Color" data-eu="Kolorea"></th><th>Vf</th></tr>
+          <tr><td data-es="Rojo / infrarrojo" data-eu="Gorria / infragorria"></td><td>1,8 V</td></tr><tr><td data-es="Amarillo / naranja" data-eu="Horia / laranja"></td><td>2,0 V</td></tr><tr><td data-es="Verde" data-eu="Berdea"></td><td>2,2 V</td></tr><tr><td data-es="Azul / blanco" data-eu="Urdina / zuria"></td><td>3,2 V</td></tr></table></div>
+      </div>
+    </div>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M8 50h34M78 50h34M78 30v40"/><path class="s-l" d="M42 30v40l36-20z"/><path class="s-l" d="M70 26l12-14M80 30l12-14"/><path class="s-f" d="M84 10l-1 7-5-3zM94 14l-1 7-5-3z"/></svg><b>LED</b></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var COL = [ { es:"Rojo", eu:"Gorria", vf:1.8, c:"#ff3b30" }, { es:"Amarillo", eu:"Horia", vf:2.0, c:"#ffcc00" }, { es:"Verde", eu:"Berdea", vf:2.2, c:"#34c759" }, { es:"Azul", eu:"Urdina", vf:3.2, c:"#2f7cf6" }, { es:"Blanco", eu:"Zuria", vf:3.2, c:"#f4f6ff" } ];
+  var VS = [3.3, 5, 9, 12, 24], E = [10,12,15,18,22,27,33,39,47,56,68,82], RS = [];
+  [10, 100, 1000].forEach(function(m){ E.forEach(function(e){ RS.push(e * m); }); });
+  var col = 0, tocado = false;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? n(r / 1000, 2) + " kΩ" : n(r, 0) + " Ω"; }
+  function chips(){ $("color").innerHTML = COL.map(function(c, i){ return '<button data-i="' + i + '" aria-pressed="' + (i === col) + '"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + c.c + ';border:1px solid #0003;margin-right:6px;vertical-align:-1px"></span>' + T(c.es, c.eu) + "</button>"; }).join(""); }
+  function pinta(){
+    var c = COL[col], Vs = VS[+$("vs").value], If = +$("if").value / 1000;
+    $("vso").textContent = n(Vs, 1) + " V"; $("ifo").textContent = (If * 1000) + " mA";
+    var Rcalc = (Vs - c.vf) / If, Rn = RS.filter(function(r){ return r >= Rcalc; })[0] || RS[RS.length - 1];
+    if (!tocado) $("rp").value = RS.indexOf(Rn) - 0;
+    var Rp = RS[Math.min(+$("rp").value, RS.length - 1)];
+    $("rp").max = RS.length - 1;
+    var Ireal = Vs > c.vf ? (Vs - c.vf) / Rp : 0, P = Ireal * Ireal * Rp;
+    $("rpo").textContent = fR(Rp);
+    var h = "<h2>" + T("Cálculo", "Kalkulua") + "</h2>";
+    if (Vs <= c.vf) h += "<p class='mal'>" + T("La alimentación no llega a la Vf del LED: no se enciende.", "Elikadura ez da LEDaren Vf-ra iristen: ez da pizten.") + "</p>";
+    else h += "<p><span class='formula'>R = (Vs − Vf) / I</span></p><p>R = (" + n(Vs, 1) + " − " + n(c.vf, 1) + ") / " + n(If, 3) + " = <b>" + fR(Rcalc) + "</b></p>" +
+      "<p>" + T("Valor comercial (el siguiente mayor, serie E12): ", "Merkataritza-balioa (hurrengo handiagoa, E12 seriea): ") + "<b>" + fR(Rn) + "</b></p>" +
+      "<p>" + T("Potencia en la resistencia: ", "Erresistentziaren potentzia: ") + n(((Vs - c.vf) / Rn) * ((Vs - c.vf) / Rn) * Rn * 1000, 0) + " mW → " + (((Vs - c.vf) * (Vs - c.vf) / Rn) > 0.125 ? T("usa ½ W", "erabili ½ W") : "¼ W") + "</p>";
+    $("pasos").innerHTML = h;
+    var luz = Math.min(Ireal / 0.02, 1.4), quemado = Ireal > 0.03;
+    var s = '<path d="M40 60V30h70M170 30h110v130H40v-60" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    s += '<rect x="24" y="60" width="32" height="40" fill="#fff"/><path d="M28 70h24M34 80h12M28 90h24" stroke="#242d5f" stroke-width="3"/><text class="tt" x="4" y="118">' + n(Vs, 1) + ' V</text>';
+    s += '<rect x="110" y="21" width="60" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="tt" x="140" y="58" text-anchor="middle">' + fR(Rp) + '</text>';
+    if (!quemado && luz > 0.02) s += '<circle cx="280" cy="95" r="' + (20 + 26 * luz) + '" fill="' + c.c + '" opacity="' + (0.15 + 0.3 * Math.min(luz, 1)) + '"/>';
+    s += '<path d="M262 80h36l-18 30z" fill="' + (quemado ? "#2d3340" : luz > 0.02 ? c.c : "#d0d6db") + '" stroke="#242d5f" stroke-width="2"/><path d="M262 112h36" stroke="#242d5f" stroke-width="3"/>';
+    if (quemado) s += '<path d="M300 70c-4-6 4-8 0-14M312 74c-4-6 4-8 0-14" fill="none" stroke="#5d6382" stroke-width="2"/>';
+    s += '<text class="txt" x="230" y="100" text-anchor="end">I = ' + n(Ireal * 1000, 1) + ' mA</text>';
+    $("cir").innerHTML = s;
+    var e = $("est");
+    if (Ireal === 0) { e.className = "estado"; e.textContent = T("Apagado.", "Itzalita."); }
+    else if (quemado) { e.className = "estado mal"; e.textContent = T("¡Demasiada corriente! El LED se quema (más de 30 mA).", "Korronte gehiegi! LEDa erre egiten da (30 mA baino gehiago)."); }
+    else if (Ireal < 0.003) { e.className = "estado"; e.textContent = T("Luce muy poco: la resistencia es demasiado grande.", "Oso gutxi argitzen du: erresistentzia handiegia da."); }
+    else { e.className = "estado ok"; e.textContent = T("Bien: el LED trabaja dentro de su corriente.", "Ondo: LEDa bere korrontearen barruan dabil."); }
+  }
+  $("color").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; col = +b.dataset.i; tocado = false; chips(); pinta(); });
+  ["vs","if"].forEach(function(id){ $(id).addEventListener("input", function(){ tocado = false; pinta(); }); });
+  $("rp").addEventListener("input", function(){ tocado = true; pinta(); });
+  alCambiarIdioma(function(){ chips(); pinta(); });
+  chips(); pinta();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PWM: velocidad de un motor</title>
+<meta name="description" content="Modulación por ancho de pulso: el ciclo de trabajo cambia la tensión media y la velocidad del motor. analogWrite en Arduino.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}
+pre{margin:0;background:#1b2147;color:#e8eaf6;border-radius:16px;padding:12px 14px;font-size:13px;overflow-x:auto}pre b{color:#ffd257;font-weight:600}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Transistores" data-eu="Analogikoa · Transistoreak"></p>
+      <h1 data-es="PWM: velocidad de un motor" data-eu="PWM: motor baten abiadura"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <figure class="fig"><svg id="onda" viewBox="0 0 340 170" role="img" aria-label="Señal PWM"></svg></figure>
+    <div class="card mandos"><div class="deslizador"><label><span data-es="Ciclo de trabajo" data-eu="Lan-zikloa"></span><output id="do"></output></label><input id="d" type="range" min="0" max="255" value="128"></div></div>
+    <div class="dos">
+      <figure class="fig"><svg id="mot" viewBox="0 0 300 150" role="img" aria-label="Motor y LED"></svg></figure>
+      <div style="display:grid;gap:12px;align-content:start">
+        <div class="lectura-g"><div><small data-es="Tensión media" data-eu="Batez besteko tentsioa"></small><b id="vm"></b></div><div><small>analogWrite</small><b id="aw"></b></div></div>
+        <pre id="cod"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="Explicación" data-eu="Azalpena" hidden>
+    <div class="card"><h2 data-es="¿Qué es el PWM?" data-eu="Zer da PWMa?"></h2>
+      <p class="es">El transistor no se queda a medias: <b>enciende y apaga muy rápido</b> (en Arduino, unas 490 veces por segundo). Lo que cambia es <b>cuánto tiempo está encendido</b> en cada periodo: el <b>ciclo de trabajo</b>.</p>
+      <p class="eu">Transistorea ez da erdibidean geratzen: <b>oso azkar piztu eta itzaltzen da</b> (Arduinoan, segundoko 490 bat aldiz). Aldatzen dena da periodo bakoitzean <b>zenbat denbora dagoen piztuta</b>: <b>lan-zikloa</b>.</p>
+      <p><span class="formula">Vmedia = Vmax · D</span> &nbsp; <span class="formula">D = t<sub>on</sub> / T</span></p></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="¿Por qué funciona?" data-eu="Zergatik funtzionatzen du?"></h3><p class="es">El motor (por su inercia) y el ojo (con el LED) no ven los pulsos: notan la <b>media</b>.</p><p class="eu">Motorrak (bere inertziagatik) eta begiak (LEDarekin) ez dituzte pultsuak ikusten: <b>batez bestekoa</b> nabaritzen dute.</p></div>
+      <div class="card"><h3 data-es="Ventaja" data-eu="Abantaila"></h3><p class="es">El transistor está siempre en corte o en saturación, así que <b>casi no se calienta</b>. Con una resistencia en serie se perdería mucha energía en calor.</p><p class="eu">Transistorea beti ebakiduran edo asetasunean dago; beraz, <b>ia ez da berotzen</b>. Seriean erresistentzia batekin, energia asko galduko litzateke beroan.</p></div>
+      <div class="card"><h3>Arduino UNO</h3><p class="es">Pines con PWM (marcados con ~): 3, 5, 6, 9, 10 y 11. analogWrite(pin, 0…255).</p><p class="eu">PWMdun pinak (~ ikurrarekin): 3, 5, 6, 9, 10 eta 11. analogWrite(pin, 0…255).</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var giro = 0, vel = 0;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function pinta(){
+    var val = +$("d").value, D = val / 255;
+    $("do").textContent = Math.round(D * 100) + " %"; $("vm").textContent = n(12 * D, 1) + " V"; $("aw").textContent = val;
+    $("cod").innerHTML = "<b>analogWrite</b>(9, " + val + ");  // " + Math.round(D * 100) + " %";
+    var g = '<rect x="30" y="10" width="300" height="140" fill="#fbfcfe" stroke="#d0d6db"/>', d = "M30 130", T0 = 75;
+    for (var k = 0; k < 4; k++) { var x0 = 30 + k * T0, xon = x0 + T0 * D; d += (D > 0 ? "L" + x0 + " 30L" + xon + " 30L" + xon + " 130" : "") + "L" + (x0 + T0) + " 130"; }
+    g += '<path d="' + d + '" fill="none" stroke="#f39200" stroke-width="3"/>';
+    g += '<path d="M30 ' + (130 - 100 * D) + 'h300" stroke="#242d5f" stroke-width="2" stroke-dasharray="6 4"/><text class="tt" x="326" y="' + (126 - 100 * D) + '" text-anchor="end">' + T("media", "batez bestekoa") + ' ' + n(12 * D, 1) + ' V</text>';
+    g += '<text class="txt" x="26" y="34" text-anchor="end">12</text><text class="txt" x="26" y="134" text-anchor="end">0</text>';
+    g += '<path d="M30 160h75" stroke="#5d6382" stroke-width="1.5"/><text class="txt" x="68" y="168" text-anchor="middle">T ≈ 2 ms</text>';
+    if (D > 0 && D < 1) g += '<text class="txt" x="' + (30 + T0 * D / 2) + '" y="24" text-anchor="middle">t<tspan font-size="8">on</tspan></text>';
+    $("onda").innerHTML = g;
+    vel += (D - vel) * 0.05; giro = (giro + vel * 16) % 360;
+    var s = '<circle cx="90" cy="75" r="46" fill="#c9cfd8" stroke="#242d5f" stroke-width="3"/><g transform="rotate(' + giro + ' 90 75)"><path d="M90 75L90 33M90 75L126 96M90 75L54 96" stroke="#242d5f" stroke-width="6" stroke-linecap="round"/><circle cx="90" cy="33" r="6" fill="#f39200"/></g><circle cx="90" cy="75" r="8" fill="#242d5f"/>';
+    s += '<text class="txt" x="90" y="140" text-anchor="middle">' + Math.round(vel * 3000) + ' rpm</text>';
+    s += '<circle cx="220" cy="70" r="' + (20 + 30 * D) + '" fill="#ff3b30" opacity="' + (0.35 * D) + '"/><path d="M204 56h32l-16 28z" fill="' + (D > 0.02 ? "#ff3b30" : "#f3b0aa") + '" stroke="#242d5f" stroke-width="2"/><path d="M204 86h32" stroke="#242d5f" stroke-width="3"/><text class="txt" x="220" y="140" text-anchor="middle">LED</text>';
+    $("mot").innerHTML = s;
+    requestAnimationFrame(pinta);
+  }
+  pinta();
+})();
+</script>
+</body>
+</html>

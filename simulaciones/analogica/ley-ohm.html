@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ley de Ohm y potencia</title>
+<meta name="description" content="Simulador de la ley de Ohm: tensión, intensidad, resistencia y potencia, con la potencia máxima de la resistencia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.txt{font-size:12px;font-weight:600;fill:#242d5f}
+.instr{font-size:13px;font-weight:700;fill:#242d5f}
+.tri{max-width:260px;margin:0 auto}
+.lectura-g{grid-template-columns:repeat(4,1fr)}
+.ej input{width:120px}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Resistencias" data-eu="Analogikoa · Erresistentziak"></p>
+      <h1 data-es="Ley de Ohm y potencia" data-eu="Ohm-en legea eta potentzia"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 220" role="img" aria-label="Circuito con pila y resistencia"></svg></figure>
+    <div class="lectura-g">
+      <div><small data-es="Tensión" data-eu="Tentsioa"></small><b id="lv"></b></div>
+      <div><small data-es="Resistencia" data-eu="Erresistentzia"></small><b id="lr"></b></div>
+      <div><small data-es="Intensidad" data-eu="Intentsitatea"></small><b id="li"></b></div>
+      <div><small data-es="Potencia" data-eu="Potentzia"></small><b id="lp"></b></div>
+    </div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Tensión de la pila" data-eu="Pilaren tentsioa"></span><output id="vo"></output></label><input id="v" type="range" min="0" max="24" step="0.5" value="12"></div>
+      <div class="deslizador"><label><span data-es="Resistencia" data-eu="Erresistentzia"></span><output id="ro"></output></label><input id="r" type="range" min="0" max="36" step="1" value="24"></div>
+    </div>
+    <div class="chips" id="pmax">
+      <span class="nota" data-es="Potencia máxima de la resistencia:" data-eu="Erresistentziaren potentzia maximoa:"></span>
+      <button data-p="0.25" aria-pressed="true">¼ W</button><button data-p="0.5">½ W</button><button data-p="1">1 W</button><button data-p="2">2 W</button>
+    </div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="formulak" data-es="Fórmulas" data-eu="Formulak" hidden>
+    <div class="dos">
+      <div class="card">
+        <h2 data-es="Ley de Ohm" data-eu="Ohm-en legea"></h2>
+        <p class="es">La intensidad que circula por una resistencia es <b>proporcional a la tensión</b> e <b>inversamente proporcional a la resistencia</b>.</p>
+        <p class="eu">Erresistentzia batetik doan intentsitatea <b>tentsioarekiko proportzionala</b> da eta <b>erresistentziarekiko alderantziz proportzionala</b>.</p>
+        <p><span class="formula">V = I · R</span> &nbsp; <span class="formula">I = V / R</span> &nbsp; <span class="formula">R = V / I</span></p>
+        <p class="nota es">Tapa con el dedo la magnitud que buscas en el triángulo: lo que queda es la fórmula.</p>
+        <p class="nota eu">Estali hatzarekin bilatzen duzun magnitudea triangeluan: geratzen dena da formula.</p>
+      </div>
+      <figure class="fig tri"><svg viewBox="0 0 200 170">
+        <path d="M100 10L190 160H10z" fill="#fff0dc" stroke="#242d5f" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M45 100h110M100 100v60" stroke="#242d5f" stroke-width="3"/>
+        <text x="100" y="78" text-anchor="middle" style="font-size:34px;font-weight:700;fill:#b45f00">V</text>
+        <text x="62" y="146" text-anchor="middle" style="font-size:30px;font-weight:700;fill:#242d5f">I</text>
+        <text x="138" y="146" text-anchor="middle" style="font-size:30px;font-weight:700;fill:#242d5f">R</text>
+      </svg></figure>
+    </div>
+    <div class="card">
+      <h2 data-es="Potencia" data-eu="Potentzia"></h2>
+      <p class="es">Es la energía que se convierte en calor cada segundo. Si supera la potencia máxima de la resistencia, <b>se calienta y se quema</b>.</p>
+      <p class="eu">Segundo bakoitzean beroa bihurtzen den energia da. Erresistentziaren potentzia maximoa gainditzen badu, <b>berotu eta erre egiten da</b>.</p>
+      <p><span class="formula">P = V · I</span> &nbsp; <span class="formula">P = I² · R</span> &nbsp; <span class="formula">P = V² / R</span></p>
+    </div>
+    <div class="tabla"><table>
+      <tr><th data-es="Magnitud" data-eu="Magnitudea"></th><th data-es="Símbolo" data-eu="Ikurra"></th><th data-es="Unidad" data-eu="Unitatea"></th><th data-es="Se mide con" data-eu="Neurtzeko"></th></tr>
+      <tr><td data-es="Tensión" data-eu="Tentsioa"></td><td>V (U)</td><td>voltio (V)</td><td data-es="Voltímetro en paralelo" data-eu="Voltimetroa paraleloan"></td></tr>
+      <tr><td data-es="Intensidad" data-eu="Intentsitatea"></td><td>I</td><td>amperio (A)</td><td data-es="Amperímetro en serie" data-eu="Amperimetroa seriean"></td></tr>
+      <tr><td data-es="Resistencia" data-eu="Erresistentzia"></td><td>R</td><td>ohmio (Ω)</td><td data-es="Óhmetro sin tensión" data-eu="Ohmimetroa tentsiorik gabe"></td></tr>
+      <tr><td data-es="Potencia" data-eu="Potentzia"></td><td>P</td><td>vatio (W)</td><td data-es="Vatímetro o calculando" data-eu="Watimetroa edo kalkulatuz"></td></tr>
+    </table></div>
+  </section>
+
+  <section class="panel" data-tab="ariketa" data-es="Ejercicio" data-eu="Ariketa" hidden>
+    <div class="card ej">
+      <h2 data-es="Calcula" data-eu="Kalkulatu"></h2>
+      <p id="enun"></p>
+      <div class="mandos"><input id="resp" type="text" inputmode="decimal" autocomplete="off"><span id="uni" style="font-weight:700"></span>
+        <button type="button" class="boton" id="comp" data-es="Comprobar" data-eu="Egiaztatu"></button>
+        <button type="button" class="boton claro" id="otro" data-es="Otro" data-eu="Beste bat"></button></div>
+    </div>
+    <div class="estado" id="fb" hidden></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var E = [10,12,15,18,22,27,33,39,47,56,68,82], RS = [];
+  for (var k = 0; k < 4; k++) E.forEach(function(e){ RS.push(e * Math.pow(10, k)); });
+  RS.push(10000);
+  var pmax = 0.25, fase = 0;
+  function num(v, d){ return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? num(r / 1000, 2) + " kΩ" : num(r, 0) + " Ω"; }
+  function fI(i){ return i < 1 ? num(i * 1000, i < 0.01 ? 2 : 1) + " mA" : num(i, 2) + " A"; }
+  function fP(p){ return p < 1 ? num(p * 1000, 0) + " mW" : num(p, 2) + " W"; }
+  function pinta(t){
+    var V = +$("v").value, R = RS[+$("r").value], I = V / R, P = V * I, calor = Math.min(P / pmax, 1.6);
+    $("vo").textContent = num(V, 1) + " V"; $("ro").textContent = fR(R);
+    $("lv").textContent = num(V, 1) + " V"; $("lr").textContent = fR(R); $("li").textContent = fI(I); $("lp").textContent = fP(P);
+    var col = calor < 0.5 ? "#e9cf9f" : calor < 1 ? "#f0a35a" : "#d42a24";
+    var s = '<path d="M50 60V40h240v140H50v-60" fill="none" stroke="#242d5f" stroke-width="3"/>';
+    // pila
+    s += '<rect x="30" y="60" width="40" height="60" fill="#fff"/><path d="M36 80h28M44 92h12M36 104h28M44 116h12" stroke="#242d5f" stroke-width="3"/><text class="txt" x="76" y="84">+</text><text class="instr" x="6" y="140">' + num(V, 1) + ' V</text>';
+    // resistencia
+    s += '<rect x="130" y="28" width="80" height="24" rx="5" fill="' + col + '" stroke="#8a6a3a" stroke-width="2"/>';
+    if (calor >= 1) s += '<path d="M150 22c-4-6 4-8 0-14M170 22c-4-6 4-8 0-14M190 22c-4-6 4-8 0-14" fill="none" stroke="#b45f00" stroke-width="2"/>';
+    s += '<text class="txt" x="216" y="24">R = ' + fR(R) + '</text>';
+    // amperímetro
+    s += '<circle cx="290" cy="110" r="20" fill="#fff" stroke="#242d5f" stroke-width="3"/><text class="instr" x="290" y="115" text-anchor="middle">A</text><text class="txt" x="270" y="150" text-anchor="end">' + fI(I) + '</text>';
+    // voltímetro en paralelo
+    s += '<path d="M130 40v-0M130 40V98h18M210 40V98h-18" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-dasharray="4 3"/><circle cx="170" cy="98" r="18" fill="#fff" stroke="#2b6cb0" stroke-width="3"/><text class="instr" x="170" y="103" text-anchor="middle" style="fill:#2b6cb0">V</text>';
+    // electrones (sentido convencional)
+    var vel = Math.min(I * 60, 4), L = 760;
+    fase = (fase + vel) % 38;
+    for (var d = fase; d < L; d += 38) {
+      var x, y;
+      if (d < 140) { x = 50; y = 180 - d; }
+      else if (d < 380) { x = 50 + (d - 140); y = 40; }
+      else if (d < 520) { x = 290; y = 40 + (d - 380); }
+      else { x = 290 - (d - 520); y = 180; }
+      if (I > 0 && !(x === 50 && y > 58 && y < 122)) s += '<circle cx="' + x + '" cy="' + y + '" r="3.2" fill="#f39200"/>';
+    }
+    $("cir").innerHTML = s;
+    var e = $("est");
+    if (V === 0) { e.className = "estado"; e.textContent = T("Sin tensión no hay corriente.", "Tentsiorik gabe ez dago korronterik."); }
+    else if (calor >= 1) { e.className = "estado mal"; e.textContent = T("¡Cuidado! " + fP(P) + " es más de lo que aguanta (" + fP(pmax) + "): la resistencia se quema.", "Kontuz! " + fP(P) + " jasan dezakeena baino gehiago da (" + fP(pmax) + "): erresistentzia erre egiten da."); }
+    else if (calor >= 0.5) { e.className = "estado"; e.textContent = T("Trabaja por encima de la mitad de su potencia: se calienta bastante.", "Bere potentziaren erditik gora dabil: dezente berotzen da."); }
+    else { e.className = "estado ok"; e.textContent = T("Funciona bien: disipa " + fP(P) + " de " + fP(pmax) + ".", "Ondo dabil: " + fP(pmax) + "-tik " + fP(P) + " xahutzen ditu."); }
+  }
+  function bucle(){ pinta(); requestAnimationFrame(bucle); }
+  ["v","r"].forEach(function(id){ $(id).addEventListener("input", function(){ pinta(); }); });
+  $("pmax").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    pmax = +b.dataset.p;
+    [].forEach.call($("pmax").querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b); });
+  });
+  // ejercicios
+  var ej = null;
+  function nuevo(){
+    var tipo = Math.floor(Math.random() * 4), R = [100,220,330,470,1000,2200,4700][Math.floor(Math.random() * 7)], V = [5,9,12,24][Math.floor(Math.random() * 4)], I = V / R;
+    ej = { tipo: tipo, V: V, R: R, I: I, P: V * I };
+    pintaEj(); $("resp").value = ""; $("fb").hidden = true;
+  }
+  function pintaEj(){
+    if (!ej) return;
+    var e = ej;
+    var t = [
+      [T("Una resistencia de " + fR(e.R) + " está conectada a " + e.V + " V. ¿Qué intensidad circula?", fR(e.R) + "-ko erresistentzia bat " + e.V + " V-ra konektatuta dago. Zer intentsitate dabil?"), "mA"],
+      [T("Por una resistencia de " + fR(e.R) + " pasan " + fI(e.I) + ". ¿Qué tensión tiene?", fR(e.R) + "-ko erresistentzia batetik " + fI(e.I) + " pasatzen dira. Zer tentsio du?"), "V"],
+      [T("Con " + e.V + " V circulan " + fI(e.I) + ". ¿Cuánto vale la resistencia?", e.V + " V-rekin " + fI(e.I) + " dabiltza. Zenbat balio du erresistentziak?"), "Ω"],
+      [T("Una resistencia de " + fR(e.R) + " está a " + e.V + " V. ¿Qué potencia disipa?", fR(e.R) + "-ko erresistentzia bat " + e.V + " V-ra dago. Zer potentzia xahutzen du?"), "mW"]
+    ][e.tipo];
+    $("enun").textContent = t[0]; $("uni").textContent = t[1];
+  }
+  $("comp").addEventListener("click", function(){
+    if (!ej) return;
+    var r = parseFloat($("resp").value.replace(",", ".")), ok = [ej.I * 1000, ej.V, ej.R, ej.P * 1000][ej.tipo];
+    var bien = isFinite(r) && Math.abs(r - ok) <= Math.abs(ok) * 0.02;
+    $("fb").hidden = false; $("fb").className = "estado " + (bien ? "ok" : "mal");
+    $("fb").textContent = (bien ? T("¡Bien! ", "Ondo! ") : T("Revisa. ", "Berrikusi. ")) + T("Resultado: ", "Emaitza: ") + num(ok, 2) + " " + $("uni").textContent;
+  });
+  $("otro").addEventListener("click", nuevo);
+  alCambiarIdioma(function(){ pinta(); pintaEj(); });
+  nuevo(); bucle();
+})();
+</script>
+</body>
+</html>

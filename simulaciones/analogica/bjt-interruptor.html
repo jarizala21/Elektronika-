@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transistor BJT como interruptor</title>
+<meta name="description" content="El transistor NPN en corte y saturación: encender una carga de 12 V desde una salida de 5 V y calcular la resistencia de base.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}.pasos p{margin:0 0 4px}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Transistores" data-eu="Analogikoa · Transistoreak"></p>
+      <h1 data-es="Transistor BJT como interruptor" data-eu="BJT transistorea etengailu gisa"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <figure class="fig"><svg id="cir" viewBox="0 0 340 250" role="img" aria-label="Transistor NPN que enciende una lámpara"></svg></figure>
+    <div class="mandos"><button type="button" class="boton naranja" id="pin" aria-pressed="false" data-es="Salida del Arduino: 0 V" data-eu="Arduinoaren irteera: 0 V"></button></div>
+    <div class="card mandos">
+      <div class="deslizador"><label><span data-es="Resistencia de base Rb" data-eu="Oinarriko erresistentzia Rb"></span><output id="rbo"></output></label><input id="rb" type="range" min="0" max="12" value="5"></div>
+      <div class="deslizador"><label><span data-es="Ganancia β (hFE)" data-eu="β irabazia (hFE)"></span><output id="bo"></output></label><input id="b" type="range" min="50" max="300" step="10" value="100"></div>
+    </div>
+    <div class="lectura-g"><div><small>I<sub>B</sub></small><b id="ib"></b></div><div><small>I<sub>C</sub></small><b id="ic"></b></div><div><small>V<sub>CE</sub></small><b id="vce"></b></div><div><small>P<sub>transistor</sub></small><b id="pt"></b></div></div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="kalkulua" data-es="Cálculo de Rb" data-eu="Rb-ren kalkulua" hidden>
+    <div class="card pasos">
+      <h2 data-es="Paso a paso (lámpara 12 V / 100 mA, β = 100)" data-eu="Urratsez urrats (lanpara 12 V / 100 mA, β = 100)"></h2>
+      <p class="es">1. Corriente que pide la carga: <b>Ic = 100 mA</b>.</p><p class="eu">1. Kargak eskatzen duen korrontea: <b>Ic = 100 mA</b>.</p>
+      <p class="es">2. Corriente de base mínima: Ib = Ic / β = 100 / 100 = <b>1 mA</b>.</p><p class="eu">2. Oinarriko gutxieneko korrontea: Ib = Ic / β = 100 / 100 = <b>1 mA</b>.</p>
+      <p class="es">3. Para asegurar la saturación, se multiplica por 2–5: Ib ≈ <b>3 mA</b>.</p><p class="eu">3. Asetasuna ziurtatzeko, 2–5 aldiz biderkatzen da: Ib ≈ <b>3 mA</b>.</p>
+      <p class="es">4. Rb = (Vin − 0,7) / Ib = (5 − 0,7) / 0,003 = 1433 Ω → <b>1,2 kΩ</b> (comercial, algo menor).</p><p class="eu">4. Rb = (Vin − 0,7) / Ib = (5 − 0,7) / 0,003 = 1433 Ω → <b>1,2 kΩ</b> (merkataritzakoa, apur bat txikiagoa).</p>
+      <p><span class="formula">Rb = (Vin − 0,7) / (k · Ic / β)</span></p>
+    </div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Corte" data-eu="Ebakidura"></h3><p class="es">Ib = 0 → no conduce. Interruptor <b>abierto</b>. Vce ≈ Vcc.</p><p class="eu">Ib = 0 → ez du eroaten. Etengailua <b>irekita</b>. Vce ≈ Vcc.</p></div>
+      <div class="card"><h3 data-es="Zona activa" data-eu="Eremu aktiboa"></h3><p class="es">Ic = β · Ib. Amplifica, pero <b>se calienta</b>: no sirve como interruptor.</p><p class="eu">Ic = β · Ib. Anplifikatzen du, baina <b>berotu</b> egiten da: ez du balio etengailu gisa.</p></div>
+      <div class="card"><h3 data-es="Saturación" data-eu="Asetasuna"></h3><p class="es">Ib de sobra → conduce del todo. Interruptor <b>cerrado</b>. Vce ≈ 0,2 V.</p><p class="eu">Ib soberan → guztiz eroaten du. Etengailua <b>itxita</b>. Vce ≈ 0,2 V.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="sinboloak" data-es="Patillas y símbolos" data-eu="Hankak eta sinboloak" hidden>
+    <div class="dos">
+      <figure class="fig"><svg viewBox="0 0 300 200">
+        <path d="M100 30h100v70H100z" fill="#2d3340"/><path d="M100 30a50 34 0 0 1 100 0" fill="#2d3340"/><path d="M100 100h100" stroke="#2d3340" stroke-width="2"/>
+        <text x="150" y="66" text-anchor="middle" style="font-size:14px;font-weight:700;fill:#fff">BC547</text>
+        <path d="M120 100v80M150 100v80M180 100v80" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/>
+        <text class="tt" x="120" y="196" text-anchor="middle">C</text><text class="tt" x="150" y="196" text-anchor="middle">B</text><text class="tt" x="180" y="196" text-anchor="middle">E</text>
+        <text class="txt" x="214" y="140" data-es="(cara plana delante)" data-eu="(alde laua aurrean)"></text>
+      </svg></figure>
+      <div class="card"><h2 data-es="Las tres patillas" data-eu="Hiru hankak"></h2>
+        <ul class="es"><li><b>Base (B):</b> la corriente pequeña de control.</li><li><b>Colector (C):</b> por donde entra la corriente de la carga (NPN).</li><li><b>Emisor (E):</b> por donde sale, a masa (NPN).</li></ul>
+        <ul class="eu"><li><b>Oinarria (B):</b> kontrol-korronte txikia.</li><li><b>Kolektorea (C):</b> kargaren korrontea sartzen den lekua (NPN).</li><li><b>Igorlea (E):</b> ateratzen den lekua, masara (NPN).</li></ul>
+        <p class="nota es">El orden de las patillas cambia según el modelo: mira siempre su hoja de datos.</p><p class="nota eu">Hanken ordena modeloaren arabera aldatzen da: begiratu beti datu-orria.</p></div>
+    </div>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><circle class="s-l" cx="66" cy="45" r="30"/><path class="s-l" d="M20 45h30M50 28v34M50 36l26-16V6M50 54l26 16v14"/><path class="s-f" d="M76 70l-10-1 4-7z"/></svg><b>NPN</b><small data-es="Flecha hacia fuera" data-eu="Gezia kanpora"></small></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><circle class="s-l" cx="66" cy="45" r="30"/><path class="s-l" d="M20 45h30M50 28v34M50 36l26-16V6M50 54l26 16v14"/><path class="s-f" d="M52 55l10 0-4 7z"/></svg><b>PNP</b><small data-es="Flecha hacia dentro" data-eu="Gezia barrura"></small></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var RB = [220, 470, 680, 1000, 1500, 2200, 4700, 10000, 22000, 47000, 100000, 220000, 470000], VCC = 12, RL = 120, on = false;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1000 ? n(r / 1000, 1) + " kΩ" : r + " Ω"; }
+  function pinta(){
+    var Rb = RB[+$("rb").value], beta = +$("b").value, Vin = on ? 5 : 0;
+    $("rbo").textContent = fR(Rb); $("bo").textContent = beta;
+    $("pin").textContent = T("Salida del Arduino: ", "Arduinoaren irteera: ") + Vin + " V"; $("pin").setAttribute("aria-pressed", on);
+    var Ib = Vin > 0.7 ? (Vin - 0.7) / Rb : 0, Icsat = (VCC - 0.2) / RL, Ic = Math.min(beta * Ib, Icsat), Vce = VCC - Ic * RL, sat = beta * Ib >= Icsat;
+    if (sat) Vce = 0.2;
+    var P = Ic * Vce;
+    $("ib").textContent = n(Ib * 1000, 2) + " mA"; $("ic").textContent = n(Ic * 1000, 0) + " mA"; $("vce").textContent = n(Vce, 1) + " V"; $("pt").textContent = n(P * 1000, 0) + " mW";
+    var luz = Ic / Icsat;
+    var s = '<path d="M240 30v30M240 110v40M240 210v20H60" fill="none" stroke="#242d5f" stroke-width="3"/><text class="tt" x="250" y="24">+12 V</text>';
+    if (luz > 0.05) s += '<circle cx="240" cy="85" r="' + (22 + 18 * luz) + '" fill="#ffd257" opacity="' + (0.2 + 0.4 * luz) + '"/>';
+    s += '<circle cx="240" cy="85" r="22" fill="' + (luz > 0.05 ? "#fff3b0" : "#fff") + '" stroke="#242d5f" stroke-width="3"/><path d="M225 70l30 30M255 70l-30 30" stroke="#242d5f" stroke-width="2.5"/><text class="txt" x="270" y="90" data-es="">' + T("lámpara", "lanpara") + '</text><text class="txt" x="270" y="104">12 V · 100 mA</text>';
+    s += '<circle cx="230" cy="180" r="30" fill="#fff" stroke="#242d5f" stroke-width="2.5"/><path d="M212 165v30M212 172l28-22M212 188l28 22" stroke="#242d5f" stroke-width="3"/><path d="M240 210l-11-1 5-8z" fill="#242d5f"/>';
+    s += '<path d="M240 150v0M240 150l0 0" stroke="#242d5f"/><text class="txt" x="268" y="170">C</text><text class="txt" x="196" y="174">B</text><text class="txt" x="268" y="206">E</text>';
+    s += '<path d="M60 180h50M150 180h62" fill="none" stroke="#242d5f" stroke-width="3"/><rect x="110" y="171" width="40" height="18" rx="4" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="2"/><text class="tt" x="130" y="164" text-anchor="middle">Rb ' + fR(Rb) + '</text>';
+    s += '<rect x="10" y="150" width="50" height="90" rx="6" fill="#0f7c8c"/><text x="35" y="174" text-anchor="middle" style="font-size:9px;font-weight:700;fill:#fff">ARDUINO</text><text x="35" y="198" text-anchor="middle" style="font-size:11px;font-weight:700;fill:' + (on ? "#ffd257" : "#fff") + '">D8</text><text x="35" y="214" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#fff">' + Vin + ' V</text>';
+    s += '<path d="M240 230h0" stroke="#242d5f"/><text class="txt" x="100" y="246">GND</text>';
+    if (Ic > 0.001) { var t = (performance.now() / 25) % 24; for (var d = t; d < 200; d += 24) { s += '<circle cx="240" cy="' + (30 + d) + '" r="3" fill="#f39200"/>'; } }
+    $("cir").innerHTML = s;
+    var e = $("est");
+    if (!on) { e.className = "estado"; e.textContent = T("CORTE: sin corriente de base el transistor no conduce. La lámpara está apagada.", "EBAKIDURA: oinarriko korronterik gabe transistoreak ez du eroaten. Lanpara itzalita dago."); }
+    else if (sat) { e.className = "estado ok"; e.textContent = T("SATURACIÓN: conduce del todo, Vce ≈ 0,2 V y casi no se calienta. Así se usa como interruptor.", "ASETASUNA: guztiz eroaten du, Vce ≈ 0,2 V eta ia ez da berotzen. Horrela erabiltzen da etengailu gisa."); }
+    else { e.className = "estado mal"; e.textContent = T("ZONA ACTIVA: Rb es demasiado grande. Solo pasan " + n(Ic * 1000, 0) + " mA, la lámpara luce poco y el transistor disipa " + n(P * 1000, 0) + " mW (se calienta).", "EREMU AKTIBOA: Rb handiegia da. " + n(Ic * 1000, 0) + " mA bakarrik pasatzen dira, lanparak gutxi argitzen du eta transistoreak " + n(P * 1000, 0) + " mW xahutzen ditu (berotu egiten da)."); }
+  }
+  function bucle(){ pinta(); requestAnimationFrame(bucle); }
+  $("pin").addEventListener("click", function(){ on = !on; });
+  bucle();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sensor de temperatura y humedad</title>
+<meta name="description" content="Un sensor DHT vigila la sala de servidores: lectura, alarmas entre 10 y 50 °C y envío de datos por MQTT a una base de datos y un panel de gráficas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:10.5px;font-weight:600;fill:#5d6382}.tt{font-size:11.5px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Microprogramables" data-eu="Mikroprogramagarriak"></p>
+      <h1 data-es="Sensor de temperatura y humedad" data-eu="Tenperatura- eta hezetasun-sentsorea"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Sala de servidores" data-eu="Zerbitzari-gela">
+    <figure class="fig"><svg id="flujo" viewBox="0 0 340 170" role="img" aria-label="Recorrido de los datos"></svg></figure>
+    <figure class="fig"><svg id="gr" viewBox="0 0 340 190" role="img" aria-label="Gráfica de temperatura y humedad"></svg></figure>
+    <div class="mandos">
+      <button type="button" class="boton claro" id="aire" aria-pressed="true" data-es="Aire acondicionado" data-eu="Aire girotua"></button>
+      <button type="button" class="boton claro" id="carga" aria-pressed="false" data-es="Servidores a tope" data-eu="Zerbitzariak gehienean"></button>
+      <button type="button" class="boton claro" id="puerta" aria-pressed="false" data-es="Ventana abierta (invierno)" data-eu="Leihoa irekita (negua)"></button>
+    </div>
+    <div class="lectura-g"><div><small data-es="Temperatura" data-eu="Tenperatura"></small><b id="t"></b></div><div><small data-es="Humedad" data-eu="Hezetasuna"></small><b id="h"></b></div><div><small data-es="Mensajes enviados" data-eu="Bidalitako mezuak"></small><b id="nm"></b></div></div>
+    <div class="estado" id="est"></div>
+  </section>
+
+  <section class="panel" data-tab="kodea" data-es="Código" data-eu="Kodea" hidden>
+    <div class="card"><p class="es">El <b>Arduino (o ESP32)</b> lee el sensor y publica cada valor en un <b>tema MQTT</b>. La <b>Raspberry Pi</b> hace de servidor (broker Mosquitto), guarda los datos (InfluxDB) y los dibuja (Grafana). Si un valor sale de los límites, manda el aviso por <b>correo y Telegram</b>.</p>
+      <p class="eu"><b>Arduinoak (edo ESP32-k)</b> sentsorea irakurtzen du eta balio bakoitza <b>MQTT gai</b> batean argitaratzen du. <b>Raspberry Pi</b>-k zerbitzari lana egiten du (Mosquitto broker-a), datuak gordetzen ditu (InfluxDB) eta marrazten ditu (Grafana). Balio bat mugetatik ateratzen bada, abisua <b>posta eta Telegram</b> bidez bidaltzen du.</p></div>
+    <pre>
+<b>#include</b> &lt;DHT.h&gt;
+<b>#include</b> &lt;PubSubClient.h&gt;   <i>// MQTT</i>
+
+DHT dht(4, DHT22);
+
+<b>void</b> loop() {
+  <b>float</b> t = dht.readTemperature();
+  <b>float</b> h = dht.readHumidity();
+  <b>if</b> (isnan(t) || isnan(h)) <b>return</b>;   <i>// lectura fallida</i>
+
+  mqtt.publish(<u>"zerbitzaria/tenperatura"</u>, String(t).c_str());
+  mqtt.publish(<u>"zerbitzaria/hezetasuna"</u>,  String(h).c_str());
+
+  <b>if</b> (t &lt; 10 || t &gt; 50) {
+    mqtt.publish(<u>"zerbitzaria/alarma"</u>, <u>"1"</u>);  <i>// la Raspberry envía correo y Telegram</i>
+  }
+  delay(5000);   <i>// una lectura cada 5 s</i>
+}</pre>
+    <div class="rejilla">
+      <div class="card"><h3>DHT11 / DHT22</h3><p class="es">Sensor digital de temperatura y humedad con un solo cable de datos. El DHT22 es más preciso (±0,5 °C) y mide de −40 a 80 °C.</p><p class="eu">Tenperatura eta hezetasuneko sentsore digitala, datu-kable bakarrekoa. DHT22 zehatzagoa da (±0,5 °C) eta −40tik 80 °C-ra neurtzen du.</p></div>
+      <div class="card"><h3>MQTT</h3><p class="es">Protocolo ligero de <b>publicar / suscribirse</b>: los dispositivos publican en «temas» y quien esté suscrito recibe los mensajes. El broker los reparte.</p><p class="eu"><b>Argitaratu / harpidetu</b> protokolo arina: gailuek «gaietan» argitaratzen dute eta harpidetuta dagoenak mezuak jasotzen ditu. Broker-ak banatzen ditu.</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var aire = true, carga = false, ventana = false, Tm = 22, H = 45, datos = [], nm = 0, paquetes = [], ultimo = null, acum = 0, alarmas = 0;
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function paso(dt){
+    var objetivo = 22 + (carga ? 20 : 0) - (aire ? 4 : -10) - (ventana ? 28 : 0), objH = 45 + (ventana ? 25 : 0) - (aire ? 8 : 0);
+    Tm += (objetivo - Tm) * dt * 0.25 + (Math.random() - 0.5) * 0.2; H += (objH - H) * dt * 0.2 + (Math.random() - 0.5) * 0.4;
+    acum += dt;
+    if (acum > 0.8) { acum = 0; datos.push([Tm, H]); if (datos.length > 60) datos.shift(); nm += 2; paquetes.push(0); if (Tm < 10 || Tm > 50) { alarmas++; paquetes.push(-1); } }
+    paquetes = paquetes.map(function(p){ return p < 0 ? p - dt : p + dt; }).filter(function(p){ return p < 2 && p > -2; });
+  }
+  function pinta(){
+    var al = Tm < 10 || Tm > 50;
+    $("t").textContent = n(Tm, 1) + " °C"; $("h").textContent = n(H, 0) + " %"; $("nm").textContent = nm;
+    var s = "", nodos = [[34, 50, "DHT22", "#f39200"], [104, 50, "Arduino", "#0f7c8c"], [184, 50, "Raspberry Pi", "#c51a4a"], [264, 30, "InfluxDB", "#242d5f"], [264, 76, "Grafana", "#f46800"]];
+    s += '<path d="M54 50h30M124 50h40M220 50l24-20M220 50l24 26" stroke="#9aa3ad" stroke-width="3" fill="none"/><text class="txt" x="144" y="42" text-anchor="middle">WiFi · MQTT</text>';
+    nodos.forEach(function(nd){ s += '<rect x="' + (nd[0] - (nd[2].length > 8 ? 34 : 22)) + '" y="' + (nd[1] - 14) + '" width="' + (nd[2].length > 8 ? 68 : 44) + '" height="28" rx="8" fill="' + nd[3] + '"/><text x="' + nd[0] + '" y="' + (nd[1] + 4) + '" text-anchor="middle" style="font-size:9.5px;font-weight:700;fill:#fff">' + nd[2] + '</text>'; });
+    paquetes.forEach(function(p){
+      if (p >= 0) { var x = 34 + Math.min(p, 1) * 196; s += '<circle cx="' + x + '" cy="50" r="5" fill="#f39200" stroke="#fff" stroke-width="1.5"/>'; }
+      else { var q = -p; s += '<circle cx="' + (184 - q * 60) + '" cy="' + (64 + q * 40) + '" r="6" fill="#c62f2f"/>'; }
+    });
+    s += '<rect x="20" y="118" width="130" height="40" rx="10" fill="' + (al ? "#fde6e3" : "#f1efea") + '"/><text class="tt" x="34" y="136">✉ ' + T("Correo", "Posta") + '</text><text class="tt" x="34" y="152">➤ Telegram</text>';
+    s += '<text class="tt" x="146" y="144" text-anchor="end" style="fill:' + (al ? "#c62f2f" : "#5d6382") + '">' + alarmas + '</text>';
+    s += '<text class="txt" x="174" y="130">' + T("Límites de alarma:", "Alarma-mugak:") + '</text><text class="tt" x="174" y="148">10 °C – 50 °C</text>';
+    $("flujo").innerHTML = s;
+    var g = '<rect x="34" y="10" width="270" height="160" fill="#181b26" rx="6"/>', k = 160 / 70;
+    function y(t){ return 170 - t * k; }
+    g += '<path d="M34 ' + y(50) + 'h270M34 ' + y(10) + 'h270" stroke="#c62f2f" stroke-dasharray="5 4"/><text class="txt" x="30" y="' + (y(50) + 4) + '" text-anchor="end">50</text><text class="txt" x="30" y="' + (y(10) + 4) + '" text-anchor="end">10</text>';
+    if (datos.length > 1) {
+      var dt = "", dh = ""; datos.forEach(function(p, i){ var x = 34 + i / 59 * 270; dt += (i ? "L" : "M") + x + " " + y(p[0]); dh += (i ? "L" : "M") + x + " " + (170 - p[1] / 100 * 160); });
+      g += '<path d="' + dh + '" fill="none" stroke="#5ac8fa" stroke-width="2"/><path d="' + dt + '" fill="none" stroke="#f39200" stroke-width="2.6"/>';
+    }
+    g += '<text class="txt" x="40" y="24" style="fill:#f39200">°C</text><text class="txt" x="64" y="24" style="fill:#5ac8fa">% HR</text><text class="txt" x="300" y="24" text-anchor="end" style="fill:#c9cfd8">Grafana</text>';
+    $("gr").innerHTML = g;
+    var e = $("est");
+    if (Tm > 50) { e.className = "estado mal"; e.textContent = T("¡ALARMA! Más de 50 °C: se envía aviso por correo y Telegram al administrador.", "ALARMA! 50 °C baino gehiago: abisua bidaltzen zaio administratzaileari postaz eta Telegramez."); }
+    else if (Tm < 10) { e.className = "estado mal"; e.textContent = T("¡ALARMA! Menos de 10 °C: riesgo de condensación. Aviso enviado.", "ALARMA! 10 °C baino gutxiago: kondentsazio-arriskua. Abisua bidalita."); }
+    else { e.className = "estado ok"; e.textContent = T("Todo en orden: los datos se guardan y se dibujan cada pocos segundos.", "Dena ondo: datuak segundo gutxiro gordetzen eta marrazten dira."); }
+  }
+  function bucle(a){ if (ultimo !== null) paso(Math.min((a - ultimo) / 1000, 0.1)); ultimo = a; pinta(); requestAnimationFrame(bucle); }
+  [["aire", function(v){ aire = v; }], ["carga", function(v){ carga = v; }], ["puerta", function(v){ ventana = v; }]].forEach(function(c){
+    $(c[0]).addEventListener("click", function(){ var v = this.getAttribute("aria-pressed") !== "true"; this.setAttribute("aria-pressed", v); c[1](v); });
+  });
+  requestAnimationFrame(bucle);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resistencias variables: LDR, NTC y PTC</title>
+<meta name="description" content="Resistencias que cambian con la luz (LDR) y con la temperatura (NTC y PTC): curvas, símbolos y usos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.txt{font-size:11px;font-weight:600;fill:#5d6382}.tt{font-size:12px;font-weight:700;fill:#242d5f}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Analógica · Resistencias" data-eu="Analogikoa · Erresistentziak"></p>
+      <h1 data-es="LDR, NTC y PTC" data-eu="LDR, NTC eta PTC"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="ldr" data-es="LDR (luz)" data-eu="LDR (argia)">
+    <div class="card"><p class="es"><b>LDR</b> (fotorresistencia): cuanta <b>más luz</b>, <b>menos resistencia</b>. Sirve para encender farolas al anochecer o medir la luz ambiente.</p>
+      <p class="eu"><b>LDR</b> (fotoerresistentzia): zenbat eta <b>argi gehiago</b>, orduan eta <b>erresistentzia txikiagoa</b>. Ilunabarrean farolak pizteko edo giro-argia neurtzeko balio du.</p></div>
+    <div class="dos">
+      <figure class="fig"><svg id="gl" viewBox="0 0 320 220" role="img" aria-label="Curva de la LDR"></svg></figure>
+      <figure class="fig"><svg id="dl" viewBox="0 0 320 220" role="img" aria-label="LDR iluminada"></svg></figure>
+    </div>
+    <div class="card mandos"><div class="deslizador"><label><span data-es="Luz" data-eu="Argia"></span><output id="lo"></output></label><input id="luz" type="range" min="0" max="100" value="50"></div></div>
+    <div class="lectura-g"><div><small data-es="Resistencia LDR" data-eu="LDR erresistentzia"></small><b id="rl"></b></div><div><small data-es="Salida divisor (5 V, 10 kΩ)" data-eu="Zatitzailearen irteera (5 V, 10 kΩ)"></small><b id="vl"></b></div></div>
+  </section>
+
+  <section class="panel" data-tab="ntc-ptc" data-es="NTC y PTC (temperatura)" data-eu="NTC eta PTC (tenperatura)" hidden>
+    <div class="rejilla">
+      <div class="card"><h2>NTC</h2><p class="es">Coeficiente de temperatura <b>negativo</b>: al <b>calentarse baja</b> su resistencia. Se usa como sensor de temperatura (termistor 10 kΩ).</p>
+        <p class="eu">Tenperatura-koefiziente <b>negatiboa</b>: <b>berotzean</b> bere erresistentzia <b>jaisten</b> da. Tenperatura-sentsore gisa erabiltzen da (10 kΩ-ko termistorea).</p></div>
+      <div class="card"><h2>PTC</h2><p class="es">Coeficiente <b>positivo</b>: al <b>calentarse sube</b> su resistencia. Se usa como protección (fusible rearmable) en motores y fuentes.</p>
+        <p class="eu">Koefiziente <b>positiboa</b>: <b>berotzean igo</b> egiten da bere erresistentzia. Babes gisa erabiltzen da (fusible berrarmagarria) motorretan eta iturrietan.</p></div>
+    </div>
+    <figure class="fig"><svg id="gt" viewBox="0 0 320 220" role="img" aria-label="Curvas NTC y PTC"></svg></figure>
+    <div class="card mandos"><div class="deslizador"><label><span data-es="Temperatura" data-eu="Tenperatura"></span><output id="to"></output></label><input id="tem" type="range" min="-10" max="120" value="25"></div></div>
+    <div class="lectura-g"><div><small>NTC</small><b id="rn"></b></div><div><small>PTC</small><b id="rp"></b></div></div>
+  </section>
+
+  <section class="panel" data-tab="sinboloak" data-es="Símbolos" data-eu="Sinboloak" hidden>
+    <div class="simbolos">
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 50h25M85 50h25"/><rect class="s-l" x="35" y="40" width="50" height="20"/><path class="s-l" d="M30 12l16 20M44 12l16 20"/><path class="s-f" d="M46 32l-7-3 5-4zM60 32l-7-3 5-4z"/></svg><b>LDR</b><small data-es="Flechas: luz que entra" data-eu="Geziak: sartzen den argia"></small></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h25M85 45h25"/><rect class="s-l" x="35" y="35" width="50" height="20"/><path class="s-l" d="M28 70l12 0 40-50"/><text class="s-t" x="88" y="22">-t°</text></svg><b>NTC</b><small data-es="Termistor negativo" data-eu="Termistore negatiboa"></small></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h25M85 45h25"/><rect class="s-l" x="35" y="35" width="50" height="20"/><path class="s-l" d="M28 70l12 0 40-50"/><text class="s-t" x="88" y="22">+t°</text></svg><b>PTC</b><small data-es="Termistor positivo" data-eu="Termistore positiboa"></small></div>
+      <div class="simbolo"><svg viewBox="0 0 120 90"><path class="s-l" d="M10 45h25M85 45h25"/><rect class="s-l" x="35" y="35" width="50" height="20"/><path class="s-l" d="M40 68L82 22"/><path class="s-f" d="M84 20l-2 9-6-5z"/></svg><b data-es="Variable / potenciómetro" data-eu="Aldakorra / potentziometroa"></b></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function n(v, d){ return ((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) || 0).toLocaleString("es-ES"); }
+  function fR(r){ return r >= 1e6 ? n(r / 1e6, 2) + " MΩ" : r >= 1000 ? n(r / 1000, 1) + " kΩ" : n(r, 0) + " Ω"; }
+  function ejes(xl, yl){
+    var s = '<rect x="40" y="10" width="270" height="170" fill="#fbfcfe" stroke="#d0d6db"/>';
+    s += '<path d="M40 180h270M40 10v170" stroke="#5d6382" stroke-width="1.4"/>';
+    s += '<text class="txt" x="305" y="198" text-anchor="end">' + xl + '</text><text class="txt" x="8" y="14">' + yl + '</text>';
+    return s;
+  }
+  // LDR: 1 MΩ a oscuras, ~200 Ω a pleno sol (escala logarítmica)
+  function rLdr(l){ return Math.pow(10, 6 - 3.7 * l / 100); }
+  function ldr(){
+    var l = +$("luz").value, R = rLdr(l), V = 5 * R / (R + 10000);
+    $("lo").textContent = l + " %"; $("rl").textContent = fR(R); $("vl").textContent = n(V, 2) + " V";
+    var s = ejes(T("luz →", "argia →"), T("R (log)", "R (log)")), d = "";
+    for (var x = 0; x <= 100; x += 2) d += (x ? "L" : "M") + (40 + x * 2.7) + " " + (180 - (Math.log10(rLdr(x)) - 2) / 4.2 * 170);
+    s += '<path d="' + d + '" fill="none" stroke="#f39200" stroke-width="3"/>';
+    s += '<circle cx="' + (40 + l * 2.7) + '" cy="' + (180 - (Math.log10(R) - 2) / 4.2 * 170) + '" r="6" fill="#242d5f"/>';
+    ["1 MΩ","100 kΩ","10 kΩ","1 kΩ"].forEach(function(t, i){ s += '<text class="txt" x="36" y="' + (180 - (4 - i) / 4.2 * 170 + 4) + '" text-anchor="end" style="font-size:9px">' + t + '</text>'; });
+    $("gl").innerHTML = s;
+    var sol = 0.15 + 0.85 * l / 100;
+    var d2 = '<rect width="320" height="220" fill="' + 'rgb(' + Math.round(30 + 220 * sol) + ',' + Math.round(34 + 210 * sol) + ',' + Math.round(70 + 160 * sol) + ')"/>';
+    d2 += '<circle cx="60" cy="50" r="' + (14 + 10 * sol) + '" fill="#ffd257" opacity="' + sol + '"/>';
+    for (var k = 0; k < 5; k++) d2 += '<path d="M' + (80 + k * 10) + ' ' + (70 + k * 6) + 'L' + (150 + k * 10) + ' ' + (110 + k * 6) + '" stroke="#ffd257" stroke-width="2" opacity="' + sol + '" stroke-dasharray="6 6"/>';
+    d2 += '<circle cx="190" cy="130" r="40" fill="#e9cf9f" stroke="#8a6a3a" stroke-width="3"/><path d="M165 115h40v8h-40zM165 131h40v8h-40z" fill="#c62f2f" opacity=".75"/><path d="M175 170v40M205 170v40" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/>';
+    d2 += '<text class="tt" x="240" y="60" style="fill:' + (sol > 0.5 ? "#242d5f" : "#fff") + '">' + fR(R) + '</text>';
+    $("dl").innerHTML = d2;
+  }
+  function rNtc(t){ return 10000 * Math.exp(3950 * (1 / (t + 273.15) - 1 / 298.15)); }
+  function rPtc(t){ return t < 80 ? 100 * (1 + 0.004 * (t - 25)) : 100 * (1 + 0.004 * 55) * Math.exp((t - 80) / 6); }
+  function temp(){
+    var t = +$("tem").value;
+    $("to").textContent = t + " °C"; $("rn").textContent = fR(rNtc(t)); $("rp").textContent = fR(rPtc(t));
+    var s = ejes("°C →", "R (log)"), dn = "", dp = "";
+    function y(R){ return 180 - (Math.log10(R) - 1) / 5 * 170; }
+    function x(t){ return 40 + (t + 10) / 130 * 270; }
+    for (var k = -10; k <= 120; k += 2) { dn += (k > -10 ? "L" : "M") + x(k) + " " + y(rNtc(k)); dp += (k > -10 ? "L" : "M") + x(k) + " " + Math.max(10, y(rPtc(k))); }
+    s += '<path d="' + dn + '" fill="none" stroke="#2b6cb0" stroke-width="3"/><path d="' + dp + '" fill="none" stroke="#c62f2f" stroke-width="3"/>';
+    s += '<path d="M' + x(t) + ' 10v170" stroke="#f39200" stroke-width="2" stroke-dasharray="4 3"/>';
+    s += '<circle cx="' + x(t) + '" cy="' + y(rNtc(t)) + '" r="5" fill="#2b6cb0"/><circle cx="' + x(t) + '" cy="' + Math.max(10, y(rPtc(t))) + '" r="5" fill="#c62f2f"/>';
+    s += '<text class="tt" x="60" y="34" style="fill:#2b6cb0">NTC</text><text class="tt" x="270" y="34" style="fill:#c62f2f">PTC</text>';
+    $("gt").innerHTML = s;
+  }
+  $("luz").addEventListener("input", ldr); $("tem").addEventListener("input", temp);
+  alCambiarIdioma(function(){ ldr(); temp(); });
+  ldr(); temp();
+})();
+</script>
+</body>
+</html>

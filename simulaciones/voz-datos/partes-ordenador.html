@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Partes del ordenador</title>
+<meta name="description" content="Dentro de la caja: placa base, procesador, memoria RAM, discos, fuente y tarjeta gráfica. Para qué sirve cada una y en qué orden se montan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>.lbl{font-size:10px;font-weight:700;fill:#fff;pointer-events:none}.orden{display:grid;gap:8px}.orden button{text-align:left}</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Voz y datos · Hardware" data-eu="Ahotsa eta datuak · Hardwarea"></p>
+      <h1 data-es="Partes del ordenador" data-eu="Ordenagailuaren zatiak"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="zatiak" data-es="Partes" data-eu="Zatiak">
+    <div class="dos">
+      <figure class="fig"><svg id="pc" viewBox="0 0 300 380" role="img" aria-label="Interior de un ordenador de sobremesa">
+        <rect x="6" y="6" width="288" height="368" rx="10" fill="#3a3f4b"/>
+        <rect x="16" y="16" width="268" height="348" rx="6" fill="#2a2e38"/>
+        <g class="resaltable" data-parte="placa"><rect x="30" y="24" width="200" height="236" rx="4" fill="#1f5c3c"/><path d="M40 40h40M40 48h30M200 230h20M190 238h30M40 240h60" stroke="#c9a227" stroke-width="1.5"/><text class="lbl" x="44" y="252" data-es="PLACA BASE" data-eu="PLAKA NAGUSIA"></text></g>
+        <g class="resaltable" data-parte="cpu"><rect x="74" y="50" width="72" height="72" rx="6" fill="#9aa3ad"/><circle cx="110" cy="86" r="28" fill="#5d6382"/><circle cx="110" cy="86" r="22" fill="none" stroke="#c9cfd8" stroke-width="3" stroke-dasharray="8 6"/><text class="lbl" x="96" y="90">CPU</text></g>
+        <g class="resaltable" data-parte="ram"><rect x="166" y="40" width="9" height="96" rx="1" fill="#2b6cb0"/><rect x="180" y="40" width="9" height="96" rx="1" fill="#2b6cb0"/><rect x="194" y="40" width="9" height="96" rx="1" fill="#555"/><rect x="208" y="40" width="9" height="96" rx="1" fill="#555"/><text class="lbl" x="166" y="150">RAM</text></g>
+        <g class="resaltable" data-parte="m2"><rect x="60" y="140" width="90" height="16" rx="2" fill="#111"/><rect x="66" y="143" width="20" height="10" fill="#555"/><text class="lbl" x="92" y="152" style="font-size:8px">M.2</text></g>
+        <g class="resaltable" data-parte="gpu"><rect x="36" y="172" width="186" height="40" rx="4" fill="#111"/><circle cx="90" cy="192" r="14" fill="#2d3340"/><circle cx="150" cy="192" r="14" fill="#2d3340"/><path d="M90 178v28M76 192h28M150 178v28M136 192h28" stroke="#5d6382" stroke-width="2"/><text class="lbl" x="176" y="196">GPU</text></g>
+        <g class="resaltable" data-parte="fuente"><rect x="26" y="280" width="140" height="74" rx="4" fill="#111"/><circle cx="96" cy="317" r="26" fill="#2d3340"/><path d="M96 291v52M70 317h52" stroke="#5d6382" stroke-width="2"/><text class="lbl" x="34" y="296" data-es="FUENTE" data-eu="ITURRIA"></text></g>
+        <g class="resaltable" data-parte="disco"><rect x="186" y="280" width="90" height="34" rx="3" fill="#8a8f98"/><text class="lbl" x="196" y="301">HDD 3,5"</text><rect x="196" y="322" width="70" height="30" rx="3" fill="#2b6cb0"/><text class="lbl" x="206" y="341">SSD 2,5"</text></g>
+        <g class="resaltable" data-parte="ventilador"><rect x="244" y="40" width="34" height="80" rx="4" fill="#111"/><circle cx="261" cy="60" r="12" fill="#2d3340"/><circle cx="261" cy="98" r="12" fill="#2d3340"/></g>
+      </svg></figure>
+      <ul class="partes" data-svg="pc">
+        <li><button data-parte="placa"><span class="n">1</span><span><b data-es="Placa base" data-eu="Plaka nagusia"></b><small class="es">Une todo: zócalo del procesador, ranuras de RAM, PCIe, M.2, SATA y conectores traseros. Lleva el chipset y la BIOS/UEFI.</small><small class="eu">Dena lotzen du: prozesadorearen zokalua, RAM zirrikituak, PCIe, M.2, SATA eta atzeko konektoreak. Chipseta eta BIOS/UEFIa ditu.</small></span></button></li>
+        <li><button data-parte="cpu"><span class="n">2</span><span><b data-es="Procesador (CPU) y disipador" data-eu="Prozesadorea (PUZ) eta xahutzailea"></b><small class="es">El «cerebro»: ejecuta las instrucciones. Necesita pasta térmica y un disipador con ventilador.</small><small class="eu">«Burmuina»: instrukzioak exekutatzen ditu. Pasta termikoa eta haizagailudun xahutzailea behar ditu.</small></span></button></li>
+        <li><button data-parte="ram"><span class="n">3</span><span><b data-es="Memoria RAM" data-eu="RAM memoria"></b><small class="es">Memoria rápida y <b>volátil</b> donde están los programas que se usan. Se borra al apagar.</small><small class="eu">Erabiltzen diren programak dauden memoria azkar eta <b>lurrunkorra</b>. Itzaltzean ezabatu egiten da.</small></span></button></li>
+        <li><button data-parte="m2"><span class="n">4</span><span><b data-es="SSD M.2 (NVMe)" data-eu="M.2 SSDa (NVMe)"></b><small class="es">Disco sólido en forma de tarjeta, conectado directo a la placa. El más rápido.</small><small class="eu">Txartel itxurako disko solidoa, plakara zuzenean konektatuta. Azkarrena.</small></span></button></li>
+        <li><button data-parte="gpu"><span class="n">5</span><span><b data-es="Tarjeta gráfica (GPU)" data-eu="Txartel grafikoa (GPU)"></b><small class="es">Genera la imagen del monitor. Va en la ranura PCIe x16. Algunas CPU la llevan integrada.</small><small class="eu">Monitorearen irudia sortzen du. PCIe x16 zirrikituan doa. PUZ batzuek integratuta daramate.</small></span></button></li>
+        <li><button data-parte="fuente"><span class="n">6</span><span><b data-es="Fuente de alimentación" data-eu="Elikadura-iturria"></b><small class="es">Convierte los 230 V~ de la red en 12 V, 5 V y 3,3 V de continua. Conector ATX de 24 pines y 8 pines de CPU.</small><small class="eu">Sareko 230 V~ korronte zuzeneko 12 V, 5 V eta 3,3 V bihurtzen ditu. 24 pineko ATX konektorea eta PUZaren 8 pinekoa.</small></span></button></li>
+        <li><button data-parte="disco"><span class="n">7</span><span><b data-es="Discos HDD y SSD SATA" data-eu="HDD eta SATA SSD diskoak"></b><small class="es">Almacenamiento <b>permanente</b>. Cable de datos SATA y cable de alimentación SATA.</small><small class="eu">Biltegiratze <b>iraunkorra</b>. SATA datu-kablea eta SATA elikadura-kablea.</small></span></button></li>
+        <li><button data-parte="ventilador"><span class="n">8</span><span><b data-es="Ventiladores de la caja" data-eu="Kaxako haizagailuak"></b><small class="es">Meten aire frío por delante y sacan el caliente por detrás y por arriba.</small><small class="eu">Aire hotza aurretik sartzen dute eta beroa atzetik eta goitik ateratzen dute.</small></span></button></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="ordenatu" data-es="Orden de montaje" data-eu="Muntaketa-ordena" hidden>
+    <div class="recuerda"><h2 data-es="Antes de abrir" data-eu="Ireki aurretik"></h2><p class="es">Apaga, <b>desenchufa</b> y pulsa el botón de encendido para descargar. Usa <b>pulsera antiestática</b> y haz fotos antes de desconectar nada.</p><p class="eu">Itzali, <b>deskonektatu</b> eta sakatu pizteko botoia deskargatzeko. Erabili <b>eskumuturreko antiestatikoa</b> eta atera argazkiak ezer deskonektatu aurretik.</p></div>
+    <div class="card"><p class="es">Toca las piezas en el orden en que las montarías (empezando con la placa fuera de la caja).</p><p class="eu">Ukitu piezak muntatuko zenituzkeen ordenan (plaka kaxatik kanpo dagoela hasita).</p></div>
+    <div class="orden" id="orden"></div>
+    <div class="estado" id="fb"></div>
+    <button type="button" class="boton claro" id="otra" data-es="Empezar de nuevo" data-eu="Berriz hasi"></button>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var BIEN = [
+    ["CPU en el zócalo de la placa", "PUZa plakaren zokaluan"],
+    ["Pasta térmica y disipador", "Pasta termikoa eta xahutzailea"],
+    ["Módulos de RAM", "RAM moduluak"],
+    ["SSD M.2", "M.2 SSDa"],
+    ["Placa base dentro de la caja (con separadores)", "Plaka nagusia kaxaren barruan (bereizgailuekin)"],
+    ["Fuente de alimentación", "Elikadura-iturria"],
+    ["Discos SATA", "SATA diskoak"],
+    ["Tarjeta gráfica", "Txartel grafikoa"],
+    ["Cables: ATX 24 pines, CPU 8 pines, SATA, panel frontal", "Kableak: ATX 24 pin, PUZ 8 pin, SATA, aurreko panela"]
+  ];
+  var mezcla = [], elegidos = [];
+  function nueva(){ mezcla = BIEN.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }); elegidos = []; pinta(); }
+  function pinta(){
+    $("orden").innerHTML = mezcla.map(function(i){
+      var k = elegidos.indexOf(i), ok = k >= 0 && k === i;
+      return '<button type="button" class="boton ' + (k < 0 ? "claro" : ok ? "verde" : "rojo") + '" data-i="' + i + '"' + (k >= 0 ? " disabled" : "") + ">" + (k >= 0 ? (k + 1) + ". " : "") + T(BIEN[i][0], BIEN[i][1]) + "</button>";
+    }).join("");
+    var fallos = elegidos.filter(function(i, k){ return i !== k; }).length, e = $("fb");
+    if (elegidos.length < BIEN.length) { e.className = "estado"; e.textContent = elegidos.length ? T("Llevas " + elegidos.length + " de " + BIEN.length + (fallos ? " (" + fallos + " fuera de orden)" : ""), elegidos.length + " / " + BIEN.length + (fallos ? " (" + fallos + " ordenez kanpo)" : "")) : T("Elige la primera pieza.", "Aukeratu lehen pieza."); }
+    else { e.className = "estado " + (fallos ? "mal" : "ok"); e.textContent = fallos ? T("Hay " + fallos + " pasos fuera de orden. Lo habitual: CPU, disipador y RAM con la placa fuera; luego placa a la caja, fuente, discos, gráfica y cables.", fallos + " urrats ordenez kanpo daude. Ohikoa: PUZ, xahutzailea eta RAM plaka kanpoan dagoela; gero plaka kaxara, iturria, diskoak, grafikoa eta kableak.") : T("¡Perfecto! Para desmontar se sigue el orden inverso.", "Primeran! Desmuntatzeko alderantzizko ordena jarraitzen da."); }
+  }
+  $("orden").addEventListener("click", function(e){ var b = e.target.closest("button"); if (!b) return; elegidos.push(+b.dataset.i); pinta(); });
+  $("otra").addEventListener("click", nueva);
+  alCambiarIdioma(pinta); nueva();
+})();
+</script>
+</body>
+</html>

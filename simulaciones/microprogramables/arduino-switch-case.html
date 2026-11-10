@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arduino: máquina de estados con switch-case</title>
+<meta name="description" content="Una máquina con estados (reposo, arranque, trabajo y emergencia) programada en Arduino con switch-case. Pulsa los botones y sigue el código.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.txt{font-size:11px;font-weight:700;fill:#242d5f}
+pre .ln{display:block;padding:0 6px;border-radius:6px}
+pre .ln.act{background:rgba(243,146,0,.28)}
+.botonera{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.botonera button{border:0;border-radius:16px;padding:12px 4px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:#fff;box-shadow:var(--sombra)}
+.botonera button:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Microprogramables" data-eu="Mikroprogramagarriak"></p>
+      <h1 data-es="Máquina de estados con switch-case" data-eu="Egoera-makina switch-case-rekin"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="simulagailua" data-es="Simulador" data-eu="Simulagailua">
+    <div class="dos">
+      <figure class="fig"><svg id="maq" viewBox="0 0 320 200" role="img" aria-label="Máquina con motor y pantalla"></svg></figure>
+      <figure class="fig"><svg id="dia" viewBox="0 0 320 200" role="img" aria-label="Diagrama de estados"></svg></figure>
+    </div>
+    <div class="botonera">
+      <button type="button" id="b-marcha" style="background:#1e9a45" data-es="MARCHA" data-eu="MARTXA"></button>
+      <button type="button" id="b-paro" style="background:#5d6382" data-es="PARO" data-eu="GELDIALDIA"></button>
+      <button type="button" id="b-seta" style="background:#c62f2f" data-es="SETA" data-eu="PERRETXIKOA"></button>
+      <button type="button" id="b-rearme" style="background:#2b6cb0" data-es="REARME" data-eu="BERRARMEA"></button>
+    </div>
+    <pre id="cod"></pre>
+  </section>
+
+  <section class="panel" data-tab="azalpena" data-es="switch-case" data-eu="switch-case" hidden>
+    <div class="card"><h2 data-es="¿Para qué sirve?" data-eu="Zertarako balio du?"></h2>
+      <p class="es">Una máquina real no hace siempre lo mismo: tiene <b>estados</b> (parada, arrancando, trabajando…). Guardamos el estado en una variable y, en cada vuelta del <code>loop()</code>, <b>switch</b> salta directamente al <b>case</b> de ese estado.</p>
+      <p class="eu">Benetako makina batek ez du beti gauza bera egiten: <b>egoerak</b> ditu (geldirik, abiatzen, lanean…). Egoera aldagai batean gordetzen dugu eta, <code>loop()</code>-aren itzuli bakoitzean, <b>switch</b>-ek egoera horren <b>case</b>-ra jauzi egiten du zuzenean.</p></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Partes" data-eu="Atalak"></h3><ul class="es"><li><code>switch (variable)</code>: qué valor miramos.</li><li><code>case VALOR:</code> lo que se hace para ese valor.</li><li><code>break;</code> termina el case. ¡Si se olvida, sigue con el siguiente!</li><li><code>default:</code> para cualquier otro valor.</li></ul><ul class="eu"><li><code>switch (aldagaia)</code>: zein balio begiratzen dugun.</li><li><code>case BALIOA:</code> balio horretarako egiten dena.</li><li><code>break;</code> case-a amaitzen du. Ahazten bada, hurrengoarekin jarraitzen du!</li><li><code>default:</code> beste edozein baliotarako.</li></ul></div>
+      <div class="card"><h3 data-es="Relación con el Grafcet" data-eu="Grafcet-arekin lotura"></h3><p class="es">Cada <b>etapa</b> del Grafcet es un <b>case</b>. Las <b>acciones</b> de la etapa van dentro del case y las <b>transiciones</b> son los <code>if</code> que cambian el estado.</p><p class="eu">Grafcet-aren <b>etapa</b> bakoitza <b>case</b> bat da. Etaparen <b>ekintzak</b> case-aren barruan doaz eta <b>trantsizioak</b> egoera aldatzen duten <code>if</code>-ak dira.</p></div>
+    </div>
+    <div class="recuerda"><h2 data-es="Seguridad" data-eu="Segurtasuna"></h2><p class="es">La seta de emergencia se comprueba <b>fuera del switch</b>, en cada vuelta, para que funcione en cualquier estado. En una máquina real, además, la seta corta la potencia por hardware.</p><p class="eu">Larrialdiko perretxikoa <b>switch-etik kanpo</b> egiaztatzen da, itzuli bakoitzean, edozein egoeratan funtziona dezan. Benetako makina batean, gainera, perretxikoak potentzia hardware bidez mozten du.</p></div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var COD = [
+    ["enum Estado { REPOSO, ARRANQUE, TRABAJO, EMERGENCIA };", ""],
+    ["Estado estado = REPOSO;", ""],
+    ["", ""],
+    ["void loop() {", ""],
+    ["  switch (estado) {", ""],
+    ["    case REPOSO:", "REPOSO"], ["      motor(0);  lcd(\"REPOSO\");", "REPOSO"], ["      if (pulsado(MARCHA)) { estado = ARRANQUE; t0 = millis(); }", "REPOSO"], ["      break;", "REPOSO"],
+    ["    case ARRANQUE:", "ARRANQUE"], ["      motor(90);  lcd(\"ARRANCANDO\");", "ARRANQUE"], ["      if (millis() - t0 > 3000) estado = TRABAJO;", "ARRANQUE"], ["      if (pulsado(PARO)) estado = REPOSO;", "ARRANQUE"], ["      break;", "ARRANQUE"],
+    ["    case TRABAJO:", "TRABAJO"], ["      motor(255);  lcd(\"TRABAJANDO\");", "TRABAJO"], ["      if (pulsado(PARO)) estado = REPOSO;", "TRABAJO"], ["      break;", "TRABAJO"],
+    ["    case EMERGENCIA:", "EMERGENCIA"], ["      motor(0);  lcd(\"EMERGENCIA!\");", "EMERGENCIA"], ["      if (pulsado(REARME)) estado = REPOSO;", "EMERGENCIA"], ["      break;", "EMERGENCIA"],
+    ["  }", ""],
+    ["  if (pulsado(SETA)) estado = EMERGENCIA;  // en cualquier estado", "SETA"],
+    ["}", ""]
+  ];
+  var estado = "REPOSO", t0 = 0, giro = 0, vel = 0, flash = 0;
+  function esc(s){ return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function color(l){ return esc(l).replace(/\b(switch|case|break|if|void|enum)\b/g, "<b>$1</b>").replace(/(\/\/.*)$/, "<i>$1</i>").replace(/(&quot;|")([^"]*)(")/g, '<u>"$2"</u>'); }
+  function pinta(){
+    var ahora = performance.now();
+    if (estado === "ARRANQUE" && ahora - t0 > 3000) estado = "TRABAJO";
+    var objetivo = estado === "TRABAJO" ? 1 : estado === "ARRANQUE" ? 0.35 : 0;
+    vel += (objetivo - vel) * 0.05; giro = (giro + vel * 15) % 360;
+    var lcd = { REPOSO: "REPOSO", ARRANQUE: "ARRANCANDO", TRABAJO: "TRABAJANDO", EMERGENCIA: "EMERGENCIA!" }[estado];
+    var lcdEu = { REPOSO: "ATSEDENEAN", ARRANQUE: "ABIATZEN", TRABAJO: "LANEAN", EMERGENCIA: "LARRIALDIA!" }[estado];
+    var s = '<rect x="10" y="10" width="300" height="180" rx="16" fill="#e8ecf1"/>';
+    s += '<rect x="24" y="24" width="150" height="56" rx="6" fill="#2b4c7e"/><rect x="32" y="32" width="134" height="40" rx="3" fill="#9ec7ff"/>';
+    s += '<text x="40" y="50" style="font-family:monospace;font-size:13px;font-weight:700;fill:#0d2a55">' + T(lcd, lcdEu) + '</text><text x="40" y="66" style="font-family:monospace;font-size:11px;fill:#0d2a55">PWM ' + Math.round(objetivo * 255) + '</text>';
+    if (estado === "EMERGENCIA" && Math.floor(ahora / 400) % 2) s += '<rect x="32" y="32" width="134" height="40" rx="3" fill="#ff6b6b" opacity=".5"/>';
+    s += '<circle cx="240" cy="70" r="44" fill="#c9cfd8" stroke="#242d5f" stroke-width="3"/><g transform="rotate(' + giro + ' 240 70)"><path d="M240 70V30M240 70l35 20M240 70l-35 20" stroke="#242d5f" stroke-width="7" stroke-linecap="round"/></g><circle cx="240" cy="70" r="8" fill="#f39200"/>';
+    s += '<text class="txt" x="240" y="134" text-anchor="middle">' + Math.round(vel * 1400) + ' rpm</text>';
+    s += '<rect x="24" y="96" width="60" height="80" rx="8" fill="#0f7c8c"/><text x="54" y="140" text-anchor="middle" style="font-size:9px;font-weight:700;fill:#fff">ARDUINO</text>';
+    s += '<path d="M84 136h80l30-50" fill="none" stroke="#5d6382" stroke-width="2" stroke-dasharray="4 3"/><path d="M54 96V80" stroke="#5d6382" stroke-width="2" stroke-dasharray="4 3"/>';
+    $("maq").innerHTML = s;
+    // diagrama de estados
+    var P = { REPOSO: [60, 50], ARRANQUE: [260, 50], TRABAJO: [260, 150], EMERGENCIA: [60, 150] };
+    var EU = { REPOSO: "ATSEDENA", ARRANQUE: "ABIARAZTEA", TRABAJO: "LANA", EMERGENCIA: "LARRIALDIA" };
+    var d = '<defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5d6382"/></marker></defs>';
+    d += '<path d="M110 44H206" stroke="#5d6382" stroke-width="2" marker-end="url(#fl)"/><text class="txt" x="158" y="36" text-anchor="middle">' + T("MARCHA", "MARTXA") + '</text>';
+    d += '<path d="M268 76V120" stroke="#5d6382" stroke-width="2" marker-end="url(#fl)"/><text class="txt" x="274" y="104">3 s</text>';
+    d += '<path d="M206 60H112" stroke="#5d6382" stroke-width="2" marker-end="url(#fl)"/><path d="M216 140L104 66" stroke="#5d6382" stroke-width="2" marker-end="url(#fl)"/><text class="txt" x="150" y="86" text-anchor="middle">' + T("PARO", "GELDIALDIA") + '</text>';
+    d += '<path d="M48 124V80" stroke="#2b6cb0" stroke-width="2" marker-end="url(#fl)"/><text class="txt" x="10" y="106" style="fill:#2b6cb0">' + T("REARME", "BERRARMEA") + '</text>';
+    d += '<path d="M206 160H112" stroke="#c62f2f" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#fl)"/><text class="txt" x="158" y="182" text-anchor="middle" style="fill:#c62f2f">' + T("SETA (desde cualquiera)", "PERRETXIKOA (edozeinetatik)") + '</text>';
+    Object.keys(P).forEach(function(k){ var act = k === estado, p = P[k];
+      d += '<rect x="' + (p[0] - 52) + '" y="' + (p[1] - 22) + '" width="104" height="44" rx="22" fill="' + (act ? (k === "EMERGENCIA" ? "#c62f2f" : "#242d5f") : "#fff") + '" stroke="' + (k === "EMERGENCIA" ? "#c62f2f" : "#242d5f") + '" stroke-width="2.5"/>';
+      d += '<text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="middle" style="font-size:10.5px;font-weight:700;fill:' + (act ? "#fff" : "#242d5f") + '">' + T(k, EU[k]) + '</text>'; });
+    $("dia").innerHTML = d;
+    var h = COD.map(function(l){ var act = l[1] === estado || (l[1] === "SETA" && flash > 0); return '<span class="ln' + (act ? " act" : "") + '">' + (color(l[0]) || " ") + '</span>'; }).join("");
+    if ($("cod").dataset.h !== h) { $("cod").innerHTML = h; $("cod").dataset.h = h; }
+    if (flash > 0) flash--;
+    requestAnimationFrame(pinta);
+  }
+  $("b-marcha").addEventListener("click", function(){ if (estado === "REPOSO") { estado = "ARRANQUE"; t0 = performance.now(); } });
+  $("b-paro").addEventListener("click", function(){ if (estado === "ARRANQUE" || estado === "TRABAJO") estado = "REPOSO"; });
+  $("b-seta").addEventListener("click", function(){ estado = "EMERGENCIA"; flash = 60; });
+  $("b-rearme").addEventListener("click", function(){ if (estado === "EMERGENCIA") estado = "REPOSO"; });
+  pinta();
+})();
+</script>
+</body>
+</html>

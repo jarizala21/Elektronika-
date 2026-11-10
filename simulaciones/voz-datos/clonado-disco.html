@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clonado y restauración del disco</title>
+<meta name="description" content="Practica paso a paso la copia de seguridad del sistema en una imagen, el formateo del disco y la restauración, como en el reto del ordenador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.term{background:#1b2147;color:#e8eaf6;border-radius:18px;padding:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.5;box-shadow:var(--sombra);display:grid;gap:10px}
+.term h3{color:#ffd257;font-family:inherit;font-size:13px;margin:0}
+.term p{margin:0;white-space:pre-wrap}
+.ops{display:grid;gap:6px}
+.ops button{border:0;border-radius:10px;padding:9px 12px;text-align:left;font:inherit;font-size:12.5px;background:#2d3766;color:#fff;cursor:pointer}
+.ops button:hover{background:#3a4682}
+.barra-p{height:16px;border-radius:8px;background:#2d3766;overflow:hidden}.barra-p i{display:block;height:100%;background:#f39200;width:0}
+.pasos-l{display:flex;gap:6px;flex-wrap:wrap}
+.pasos-l span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--blanco);color:var(--marino-txt);box-shadow:var(--sombra)}
+.pasos-l span.hecho{background:var(--verde);color:#fff}.pasos-l span.ahora{background:var(--naranja);color:var(--marino)}
+</style>
+</head>
+<body>
+<main class="ficha">
+  <header class="cab">
+    <div class="cab-t">
+      <p class="tema" data-es="Voz y datos · Hardware" data-eu="Ahotsa eta datuak · Hardwarea"></p>
+      <h1 data-es="Clonado y restauración del disco" data-eu="Diskoaren klonazioa eta berreskurapena"></h1>
+    </div>
+    <button type="button" class="idioma"></button>
+  </header>
+  <nav class="pestanas"></nav>
+
+  <section class="panel" data-tab="praktika" data-es="Practica" data-eu="Praktika">
+    <div class="pasos-l" id="pl"></div>
+    <div class="term" id="term"></div>
+    <div class="estado" id="fb" hidden></div>
+    <button type="button" class="boton claro" id="reinicio" data-es="Empezar de nuevo" data-eu="Berriz hasi"></button>
+  </section>
+
+  <section class="panel" data-tab="gida" data-es="Resumen" data-eu="Laburpena" hidden>
+    <div class="card"><h2 data-es="Los tres puntos del reto" data-eu="Erronkaren hiru puntuak"></h2>
+      <ol class="es"><li><b>Copia:</b> arrancar desde un USB con Clonezilla y guardar una <b>imagen</b> del disco del sistema en otro disco.</li><li><b>Formatear:</b> borrar particiones del disco del sistema y formatearlo.</li><li><b>Restaurar:</b> volver a arrancar con Clonezilla, recuperar la imagen sobre el disco y comprobar que Windows arranca.</li></ol>
+      <ol class="eu"><li><b>Kopia:</b> Clonezilla duen USB batetik abiarazi eta sistemaren diskoaren <b>irudi</b> bat beste disko batean gorde.</li><li><b>Formateatu:</b> sistemaren diskoaren partizioak ezabatu eta formateatu.</li><li><b>Berreskuratu:</b> berriz Clonezillarekin abiarazi, irudia diskoan berreskuratu eta Windows abiarazten dela egiaztatu.</li></ol></div>
+    <div class="rejilla">
+      <div class="card"><h3 data-es="Clonar frente a imagen" data-eu="Klonatu vs irudia"></h3><p class="es"><b>device-device:</b> copia un disco directamente a otro (el destino queda igual). <b>device-image:</b> guarda el disco en archivos de imagen; se pueden tener varias copias en un mismo disco.</p><p class="eu"><b>device-device:</b> disko bat zuzenean beste batera kopiatzen du (helmuga berdin geratzen da). <b>device-image:</b> diskoa irudi-fitxategietan gordetzen du; disko berean hainbat kopia izan daitezke.</p></div>
+      <div class="card"><h3 data-es="Nombres de los discos en Linux" data-eu="Diskoen izenak Linuxen"></h3><p class="es">sda = primer disco, sdb = segundo… nvme0n1 = SSD NVMe. Fíjate en el <b>tamaño y el modelo</b> para no confundirte: elegir mal el destino borra ese disco.</p><p class="eu">sda = lehen diskoa, sdb = bigarrena… nvme0n1 = NVMe SSDa. Begiratu <b>tamainari eta modeloari</b> ez nahasteko: helmuga gaizki aukeratzeak disko hori ezabatzen du.</p></div>
+    </div>
+  </section>
+</main>
+<script src="../comun/ficha.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  // Cada paso: título, texto de pantalla, opciones [texto, correcta, explicación]
+  var P = [
+    { t: ["1. Arranque", "1. Abiaraztea"], p: ["Has conectado el USB de Clonezilla y el disco externo. Enciendes el PC.\n¿Qué haces?", "Clonezillaren USBa eta kanpoko diskoa konektatu dituzu. PCa piztu duzu.\nZer egiten duzu?"],
+      o: [ [["Pulsar F12 (menú de arranque) y elegir el USB", "F12 sakatu (abiarazte-menua) eta USBa aukeratu"], 1, ["Bien: el menú de arranque permite elegir el USB solo esta vez.", "Ondo: abiarazte-menuak USBa aldi honetan bakarrik aukeratzen uzten du."]],
+           [["Esperar a que arranque Windows", "Windows abiarazi arte itxaron"], 0, ["Así arranca el disco de siempre, no Clonezilla.", "Horrela betiko diskoa abiarazten da, ez Clonezilla."]] ] },
+    { t: ["2. Modo", "2. Modua"], p: ["Clonezilla - Select mode:", "Clonezilla - Select mode:"],
+      o: [ [["device-image  (disco → archivo de imagen)", "device-image  (diskoa → irudi-fitxategia)"], 1, ["Correcto: queremos guardar una copia en archivos.", "Zuzen: kopia fitxategietan gorde nahi dugu."]],
+           [["device-device (disco → disco)", "device-device (diskoa → diskoa)"], 0, ["Eso copiaría encima del otro disco y lo dejaría igual: no es una copia de seguridad en archivos.", "Horrek beste diskoaren gainean kopiatuko luke: ez da fitxategietako segurtasun-kopia bat."]] ] },
+    { t: ["3. Dónde guardar", "3. Non gorde"], p: ["Mount image repository. Discos detectados:\n  sda  500 GB  ST500DM002 (disco del sistema)\n  sdb  1 TB    WD Elements (USB externo)\n  sdc  16 GB   Kingston (USB Clonezilla)\n¿Dónde guardas la imagen?", "Mount image repository. Detektatutako diskoak:\n  sda  500 GB  ST500DM002 (sistemaren diskoa)\n  sdb  1 TB    WD Elements (kanpoko USBa)\n  sdc  16 GB   Kingston (Clonezilla USBa)\nNon gordetzen duzu irudia?"],
+      o: [ [["sdb1 (WD Elements, 1 TB)", "sdb1 (WD Elements, 1 TB)"], 1, ["Bien: el disco externo tiene sitio de sobra.", "Ondo: kanpoko diskoak leku nahikoa du."]],
+           [["sda (el propio disco del sistema)", "sda (sistemaren disko bera)"], 0, ["No se puede guardar la copia en el mismo disco que vas a formatear.", "Ezin da kopia formateatuko duzun disko berean gorde."]],
+           [["sdc (USB de Clonezilla)", "sdc (Clonezillaren USBa)"], 0, ["Solo tiene 16 GB y es el que está arrancado.", "16 GB bakarrik ditu eta abiarazita dagoena da."]] ] },
+    { t: ["4. Origen", "4. Jatorria"], p: ["savedisk: elige el disco ORIGEN que quieres copiar:", "savedisk: aukeratu kopiatu nahi duzun JATORRIZKO diskoa:"],
+      o: [ [["sda  500 GB  ST500DM002", "sda  500 GB  ST500DM002"], 1, ["Correcto: es el disco con Windows.", "Zuzen: Windows duen diskoa da."]],
+           [["sdb  1 TB  WD Elements", "sdb  1 TB  WD Elements"], 0, ["Ese es donde se guarda la imagen, no el que se copia.", "Hori irudia gordetzen den lekua da, ez kopiatzen dena."]] ] },
+    { t: ["5. Copiando", "5. Kopiatzen"], p: ["Partclone guardando sda1, sda2, sda3…", "Partclone sda1, sda2, sda3… gordetzen"], progreso: true,
+      o: [ [["Comprobar que la imagen se puede restaurar (check)", "Egiaztatu irudia berreskura daitekeela (check)"], 1, ["Muy bien: Clonezilla revisa la imagen. Así sabes que la copia es buena antes de borrar nada.", "Oso ondo: Clonezillak irudia berrikusten du. Horrela badakizu kopia ona dela ezer ezabatu aurretik."]],
+           [["No comprobar, ir rápido", "Ez egiaztatu, azkar joan"], 0, ["Arriesgado: si la imagen está mal, al formatear perderías todo.", "Arriskutsua: irudia gaizki badago, formateatzean dena galduko zenuke."]] ] },
+    { t: ["6. Formatear", "6. Formateatu"], p: ["Ahora toca borrar el disco del sistema (por ejemplo con el instalador de Windows o GParted).\n¿Qué disco formateas?", "Orain sistemaren diskoa ezabatzea tokatzen da (adibidez Windows instalatzailearekin edo GParted-ekin).\nZein disko formateatzen duzu?"],
+      o: [ [["sda (500 GB, el del sistema)", "sda (500 GB, sistemarena)"], 1, ["Correcto. Borras sus particiones y lo formateas: ahora el PC no arranca.", "Zuzen. Bere partizioak ezabatu eta formateatzen duzu: orain PCa ez da abiarazten."]],
+           [["sdb (1 TB, el externo)", "sdb (1 TB, kanpokoa)"], 0, ["¡Ahí está tu copia de seguridad! La perderías.", "Hor dago zure segurtasun-kopia! Galduko zenuke."]] ] },
+    { t: ["7. Restaurar", "7. Berreskuratu"], p: ["Arrancas otra vez Clonezilla → device-image → sdb1.\nElige la opción:", "Clonezilla berriz abiarazi → device-image → sdb1.\nAukeratu aukera:"],
+      o: [ [["restoredisk (restaurar imagen en un disco)", "restoredisk (irudia disko batean berreskuratu)"], 1, ["Bien. Eliges la imagen guardada y el destino sda.", "Ondo. Gordetako irudia eta sda helmuga aukeratzen dituzu."]],
+           [["savedisk (guardar otra imagen)", "savedisk (beste irudi bat gorde)"], 0, ["Eso haría una copia del disco vacío.", "Horrek disko hutsaren kopia bat egingo luke."]] ] },
+    { t: ["8. Confirmar", "8. Berretsi"], p: ["¡AVISO! Todos los datos de sda serán sobrescritos.\nDestino: sda 500 GB ST500DM002\nAre you sure you want to continue? (y/n)", "ABISUA! sda-ko datu guztiak gainidatziko dira.\nHelmuga: sda 500 GB ST500DM002\nAre you sure you want to continue? (y/n)"], progreso2: true,
+      o: [ [["y (el destino es el disco correcto)", "y (helmuga disko zuzena da)"], 1, ["Restaurando… Al terminar reinicias sin el USB y Windows arranca como antes. ¡Reto completado!", "Berreskuratzen… Amaitzean USBrik gabe berrabiarazten duzu eta Windows lehen bezala abiarazten da. Erronka eginda!"]],
+           [["n", "n"], 0, ["Se cancela. Comprueba el disco y vuelve a intentarlo.", "Bertan behera geratzen da. Egiaztatu diskoa eta saiatu berriz."]] ] }
+  ];
+  var paso = 0, fallos = 0, ultima = null, prog = 0, timer = null;
+  function pinta(){
+    $("pl").innerHTML = P.map(function(_, i){ return '<span class="' + (i < paso ? "hecho" : i === paso ? "ahora" : "") + '">' + (i + 1) + "</span>"; }).join("");
+    var t = $("term");
+    if (paso >= P.length) { t.innerHTML = "<h3>Clonezilla</h3><p>" + T("Restauración terminada. Errores: ", "Berreskurapena amaituta. Akatsak: ") + fallos + "</p><div class='barra-p'><i style='width:100%'></i></div>"; return; }
+    var p = P[paso], h = "<h3>" + T(p.t[0], p.t[1]) + "</h3><p>" + T(p.p[0], p.p[1]) + "</p>";
+    if (p.progreso) h += "<div class='barra-p'><i style='width:" + prog + "%'></i></div><p>" + Math.round(prog) + " %</p>";
+    if (!p.progreso || prog >= 100) h += '<div class="ops">' + p.o.map(function(o, i){ return '<button type="button" data-i="' + i + '">' + T(o[0][0], o[0][1]) + "</button>"; }).join("") + "</div>";
+    t.innerHTML = h;
+  }
+  function correr(){ clearInterval(timer); prog = 0; timer = setInterval(function(){ prog = Math.min(100, prog + 3); pinta(); if (prog >= 100) clearInterval(timer); }, 60); }
+  $("term").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    var o = P[paso].o[+b.dataset.i]; ultima = o;
+    $("fb").hidden = false; $("fb").className = "estado " + (o[1] ? "ok" : "mal"); $("fb").textContent = T(o[2][0], o[2][1]);
+    if (o[1]) { paso++; if (paso < P.length && P[paso].progreso) correr(); } else fallos++;
+    pinta();
+  });
+  $("reinicio").addEventListener("click", function(){ paso = 0; fallos = 0; $("fb").hidden = true; pinta(); });
+  alCambiarIdioma(function(){ pinta(); if (ultima && !$("fb").hidden) $("fb").textContent = T(ultima[2][0], ultima[2][1]); });
+  pinta();
+})();
+</script>
+</body>
+</html>

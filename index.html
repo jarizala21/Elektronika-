@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elektronika</title>
+<meta name="description" content="Simulaciones para entender la teoría del ciclo superior de Mantenimiento Electrónico (La Salle Berrozpe).">
+<meta name="theme-color" content="#fff8ef">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="iconos/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="iconos/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Elektronika">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== Portada / Ongi etorri ===================== -->
+  <section id="vista-portada" class="portada" hidden>
+    <div class="portada-top">
+      <span class="burbuja b1" aria-hidden="true"></span>
+      <span class="burbuja b2" aria-hidden="true"></span>
+      <div class="logo-wrap"><img class="logo" src="imagenes/la-salle-berrozpe-portada.webp" width="354" height="520" alt="La Salle Berrozpe Andoain"></div>
+      <div class="trio" aria-hidden="true">
+        <img class="t1" src="imagenes/area-microprogramables.webp" alt="">
+        <img class="t2" src="imagenes/area-analogica.webp" alt="">
+        <img class="t3" src="imagenes/area-digital.webp" alt="">
+      </div>
+    </div>
+    <div class="portada-in">
+      <div class="bienvenida">
+        <h1><span lang="eu">Elektronika</span><span lang="es">Electrónica</span></h1>
+        <p lang="eu">Hemen zikloko teoria ulertzen lagunduko dizuten simulazioak eta animazioak aurkituko dituzu.</p>
+        <p lang="es">Aquí encontrarás simulaciones y animaciones que te ayudarán a entender la teoría del ciclo.</p>
+      </div>
+
+      <div class="idiomas">
+        <a class="entrar" href="#areas" data-idioma="eu" lang="eu"><span class="entrar-t"><strong>Euskara</strong><small>Sartu</small></span><span class="entrar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        <a class="entrar" href="#areas" data-idioma="es" lang="es"><span class="entrar-t"><strong>Castellano</strong><small>Entrar</small></span><span class="entrar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      </div>
+
+      <footer class="creditos">
+        <p class="autoria"><span lang="eu">LSBko Mantentze Elektronikoko sailak egindako aplikazioa.</span>
+           <span lang="es">Aplicación realizada por el departamento de Mantenimiento Electrónico de LSB.</span></p>
+        <div class="licencia">
+          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener license"><img src="imagenes/cc-by-nc-sa.svg" width="66" height="16" alt="Creative Commons BY-NC-SA 4.0"></a>
+          <p><span lang="eu">Lan honek Creative Commons Aitortu-EzKomertziala-PartekatuBerdin 4.0 Nazioarteko Baimena dauka (CC BY-NC-SA 4.0).</span>
+             <span lang="es">Esta obra está bajo una licencia Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0).</span></p>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ===================== Menú de áreas ===================== -->
+  <section id="vista-areas" class="pantalla" hidden>
+    <header class="barra">
+      <a class="redondo" href="#inicio" aria-label="Volver a la portada" data-t-aria="portada">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span class="barra-titulo" data-t="app">Electrónica</span>
+      <a class="redondo" href="#avisos" aria-label="Avisos y peticiones" title="Avisos y peticiones" data-t-aria="avisos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20l1-4.4A7.5 7.5 0 1 1 20 12.5z"/><path d="M12.5 9v3.6M12.5 15.6v.1"/></svg>
+      </a>
+      <button type="button" class="redondo" id="abrir-buscar" aria-label="Buscar simulación" data-t-aria="buscar" aria-expanded="false" aria-controls="buscador">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      </button>
+      <button type="button" class="redondo naranja" id="instalar" title="Instalar la app" aria-label="Instalar la app" data-t-aria="instalar" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+      </button>
+    </header>
+
+    <div class="aviso" id="aviso-ios" role="note" hidden>
+      <p data-solo="es"><strong>Para instalarla en el iPhone o iPad:</strong> en Safari, pulsa
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>
+        <em>Compartir</em> y elige <em>Añadir a pantalla de inicio</em>.</p>
+      <p data-solo="eu" lang="eu"><strong>iPhone edo iPadean instalatzeko:</strong> Safarin, sakatu
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>
+        <em>Partekatu</em> eta aukeratu <em>Gehitu hasierako pantailan</em>.</p>
+      <button type="button" class="cerrar" id="cerrar-ios" aria-label="Cerrar aviso" data-t-aria="cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="buscador" id="buscador" hidden>
+      <label class="search" for="buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input id="buscar" type="search" placeholder="Buscar simulación" autocomplete="off" spellcheck="false" aria-label="Buscar simulación" data-t-aria="buscar" data-t-ph="buscar">
+      </label>
+    </div>
+
+    <div class="areas-head" id="areas-head">
+      <h2 data-t="elige">Elige un área</h2>
+    </div>
+    <nav class="areas" id="areas" aria-label="Áreas" data-t-aria="areas"></nav>
+    <div class="resultados" id="resultados" hidden></div>
+  </section>
+
+  <!-- ===================== Lista de un área ===================== -->
+  <section id="vista-seccion" class="pantalla" hidden>
+    <header class="barra">
+      <a class="redondo" href="#areas" aria-label="Volver a las áreas" data-t-aria="volverAreas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span class="barra-titulo" id="sec-barra"></span>
+      <a class="redondo" id="sec-avisos" href="#avisos" aria-label="Avisos y peticiones" title="Avisos y peticiones" data-t-aria="avisos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20l1-4.4A7.5 7.5 0 1 1 20 12.5z"/><path d="M12.5 9v3.6M12.5 15.6v.1"/></svg>
+      </a>
+    </header>
+    <header class="sec-hero" id="sec-hero">
+      <div class="sec-text">
+        <h2 id="sec-nombre" tabindex="-1"></h2>
+        <p class="sec-desc" id="sec-desc"></p>
+        <span class="pastilla" id="sec-count"></span>
+      </div>
+      <div class="sec-foto" id="sec-foto" aria-hidden="true"></div>
+    </header>
+    <div class="lista" id="sec-cards"></div>
+  </section>
+
+  <!-- ===================== Avisos y peticiones ===================== -->
+  <section id="vista-avisos" class="pantalla" hidden>
+    <header class="barra">
+      <a class="redondo" id="av-volver" href="#areas" aria-label="Volver" data-t-aria="volver">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span class="barra-titulo" data-t="avisos">Avisos y peticiones</span>
+    </header>
+
+    <div class="av-cuerpo">
+      <header class="av-hero">
+        <h2 id="av-h" tabindex="-1" data-t="avTitulo">¿Algo no funciona o echas algo en falta?</h2>
+        <p data-t="avIntro">Cuéntanoslo. Le llega al profesorado del departamento. Es anónimo: no pongas tu nombre ni datos personales.</p>
+      </header>
+
+      <div class="aviso av-prueba" id="av-prueba" role="note" hidden>
+        <p data-t-html="avPrueba"></p>
+      </div>
+
+      <form id="av-form" class="av-form" novalidate>
+        <fieldset class="av-campo">
+          <legend data-t="avTipo">¿Qué quieres hacer?</legend>
+          <div class="av-tipos" id="av-tipos"></div>
+        </fieldset>
+
+        <label class="av-campo" for="av-donde">
+          <span class="av-et" data-t="avDonde">¿Dónde?</span>
+          <select id="av-donde"></select>
+        </label>
+
+        <label class="av-campo" for="av-msg">
+          <span class="av-et" data-t="avMsg">Explícalo</span>
+          <textarea id="av-msg" rows="6" maxlength="1500" required data-t-ph="avMsgPh"></textarea>
+          <span class="av-ayuda"><span id="av-pista"></span><span id="av-cuenta">0 / 1500</span></span>
+        </label>
+
+        <!-- trampa para robots: las personas no la ven -->
+        <input type="checkbox" name="botcheck" id="av-bot" class="av-trampa" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <details class="av-extra">
+          <summary data-t="avExtra">Qué más se envía (sin datos personales)</summary>
+          <dl id="av-datos"></dl>
+        </details>
+
+        <p class="av-error" id="av-error" role="alert" hidden></p>
+        <button type="submit" class="av-enviar" id="av-enviar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4 18-7z"/></svg>
+          <span data-t="avEnviar">Enviar</span>
+        </button>
+      </form>
+
+      <div class="av-hecho" id="av-hecho" role="status" hidden tabindex="-1">
+        <div class="av-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2 id="av-hecho-t"></h2>
+        <p id="av-hecho-p"></p>
+        <div class="av-resumen" id="av-resumen" hidden></div>
+        <div class="av-botones">
+          <a class="av-enviar" id="av-seguir" href="#areas" data-t="avSeguir">Volver</a>
+          <button type="button" class="av-otro" id="av-otro" data-t="avOtro">Enviar otro</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== Visor ===================== -->
+<div id="visor" class="visor" hidden>
+  <header class="vbar">
+    <a class="redondo" id="v-back" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+    </a>
+    <div class="vtitle"><span class="vpos"><span class="vpos-sec" id="v-sec"></span><span id="v-pos"></span></span><span class="vname" id="v-name"></span></div>
+    <div class="vactions">
+      <button type="button" class="redondo" id="v-prev" aria-label="Simulación anterior" data-t-aria="anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button type="button" class="redondo" id="v-next" aria-label="Simulación siguiente" data-t-aria="siguiente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <a class="redondo" id="v-avisos" href="#avisos" aria-label="Avisar de un error en esta ficha" title="Avisar de un error" data-t-aria="avisarFicha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20l1-4.4A7.5 7.5 0 1 1 20 12.5z"/><path d="M12.5 9v3.6M12.5 15.6v.1"/></svg>
+      </a>
+      <button type="button" class="redondo" id="v-reload" aria-label="Reiniciar la simulación" title="Reiniciar" data-t-aria="reiniciar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
+      </button>
+      <button type="button" class="redondo" id="v-full" aria-label="Pantalla completa" title="Pantalla completa" data-t-aria="completa" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="stage" id="stage">
+    <iframe id="frame" title="Simulación" allow="fullscreen"></iframe>
+    <div class="loading" id="loading"><span class="spinner"></span><span data-t="cargando">Cargando…</span></div>
+  </div>
+</div>
+
+<script src="catalogo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
