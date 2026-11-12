@@ -48,7 +48,7 @@
    quieres recibir los avisos y te llegará una «Access Key». Pégala aquí.
    Mientras esté vacía, el formulario funciona en modo prueba (no envía nada). */
 var AVISOS = {
-  clave: ""
+  clave: "405c341a-8642-4ed6-9fab-38c4757e60f6"
 };
 
 self.CATALOGO = {
